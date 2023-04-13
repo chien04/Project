@@ -264,12 +264,13 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
     }
     else{
         mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 64, boxPlayer.y - camera.y - 64,
-                           &mPlayerTakeHit[frame_takehit/(PLAYER_TAKEHIT*3)], 0, NULL, flip, PLAYER_WIDTH*9/2, PLAYER_HEIGHT*4/3);
+                           &mPlayerTakeHit[frame_takehit/(PLAYER_TAKEHIT*4)], 0, NULL, flip, PLAYER_WIDTH*9/2, PLAYER_HEIGHT*4/3);
         frame_takehit++;
-        if(frame_takehit / (PLAYER_TAKEHIT*3) >= PLAYER_TAKEHIT){
+        if(frame_takehit / (PLAYER_TAKEHIT*4) >= PLAYER_TAKEHIT){
             frame_takehit = 0;
             isTakeHit = false;
         }
+
     }
 
 }
