@@ -1,0 +1,161 @@
+#include "game.h"
+
+commom::commom(){
+
+    mTexture[MAP_TEXTURE] = NULL;
+    mMap.loadMap(mtile);
+    createTilesClip();
+    camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+
+    mMonster[0] = monster(300, 0);
+    mMonster[1] = monster(700, 0);
+    mMonster[2] = monster(1000, 0);
+    posX_monster[0] = mMonster[0].getPosX();
+    posX_monster[1] = mMonster[1].getPosX();
+    posX_monster[2] = mMonster[2].getPosX();
+
+
+    mWizard[0] = wizard(500, 0);
+    mWizard[1] = wizard(1400, 0);
+    mWizard[2] = wizard(1800, 0);
+
+    for(int i = 0; i < TOTAL_WIZARD; i++){
+        posX_wizard[i] = mWizard[i].getPosX();
+    }
+    check = false;
+}
+
+commom::~commom(){
+    if(mTexture[MAP_TEXTURE] == NULL){
+        SDL_DestroyTexture(mTexture[MAP_TEXTURE]);
+    }
+    mTexture[MAP_TEXTURE] = NULL;
+}
+bool commom::checkInit(){
+    if(!mWindow.init()){
+        std::cout << "unable create window in game.h\n";
+        return false;
+    }
+    return true;
+}
+
+bool commom::checkLoadFile(){
+    mTexture[BACK_TEXTURE] = mWindow.loadFromFile("image//back.png");
+    if(mTexture[BACK_TEXTURE] == NULL){
+        std::cout << "unable load backtexture\n";
+        return false;
+    }
+    mTexture[MIDDLE_TEXTURE] = mWindow.loadFromFile("image//middle.png");
+    if(mTexture[MIDDLE_TEXTURE] == NULL){
+        std::cout << "unable load backtexture\n";
+        return false;
+    }
+
+    mTexture[MAP_TEXTURE] = mWindow.loadFromFile("image//tiles - Copy.png");
+    if(mTexture[MAP_TEXTURE] == NULL){
+        std::cout << "unable load image\n";
+        return false;
+    }
+    mTexture[PLAYER_TEXTURE] = mWindow.loadFromFile("image//player.png");
+
+    if(mTexture[PLAYER_TEXTURE] == NULL){
+        std::cout << "unable load player_texture\n";
+        return false;
+    }
+    mTexture[EFFECT_TEXTURE] = mWindow.loadFromFile("image//effect.png");
+
+    if(mTexture[EFFECT_TEXTURE] == NULL){
+        std::cout << "unable load effect_texture\n";
+        return false;
+    }
+    mTexture[MONSTER_TEXTURE] = mWindow.loadFromFile("image//monster.png");
+    if(mTexture[MONSTER_TEXTURE] == NULL){
+        std::cout << "unable load monster texture\n";
+        return false;
+    }
+    mTexture[WIZARD_TEXTURE] = mWindow.loadFromFile("image//wizard.png");
+    if(mTexture[WIZARD_TEXTURE] == NULL){
+        std::cout << "unable load wizard texture\n";
+        return false;
+    }
+
+    return true;
+}
+void commom::createTilesClip(){
+    int x = 0; int y = 0;
+    for(int i = 0; i < TILES_CLIP; i++){
+//        if(i < TILES_CLIP / 2)
+//        std::cout << x << " " << y << "\n";
+        mTilesClip[i] = {x, y, 48, 48};
+        x += 48;
+        if(x >= 480){
+            x = 0;
+            y += 48;
+        }
+//        std::cout << x << " " << y << std::endl;
+    }
+}
+
+void commom::handlePlayer(SDL_Event &e){
+    mPlayer.handle(e);
+}
+
+void commom::setCamera(){
+    SDL_Rect cam = mPlayer.getBox();
+    camera.x = (cam.x + PLAYER_WIDTH/2) - SCREEN_WIDTH/2;
+    camera.y = (cam.y + PLAYER_HEIGHT/2) - SCREEN_HEIGHT/2;
+    if(camera.x < 0){
+        camera.x = 0;
+    }
+    if(camera.y < 0){
+        camera.y = 0;
+    }
+    if(camera.x > WIDTH_MAP - SCREEN_WIDTH){
+        camera.x = WIDTH_MAP - SCREEN_WIDTH;
+    }
+    if(camera.y > HEIGHT_MAP - SCREEN_HEIGHT){
+        camera.y = HEIGHT_MAP - SCREEN_HEIGHT;
+    }
+
+}
+
+
+
+
+
+void commom::render(){
+    mWindow.setRender();
+    mWindow.renderClear();
+    setCamera();
+
+//    std::cout << camera.x << " " << camera.y << '\n';
+    mMap.renderMap(mPlayer.getVelX(), mPlayer.getFlip(), mWindow, camera, mTexture, mtile, mTilesClip);
+    mPlayer.move(mtile);
+    for(int i = 0; i < TOTAL_MONSTER; i++){
+        mMonster[i].move(mPlayer, mtile, posX_monster[i]);
+        mMonster[i].render(mWindow, camera, mTexture, mPlayer);
+        if(mMonster[i].getMonsterAttack()){
+            check = true;
+            break;
+        }
+        else
+            check = false;
+    }
+    for(int i = 0; i < TOTAL_WIZARD; i++){
+        mWizard[i].move(mPlayer, mtile, posX_wizard[i]);
+        mWizard[i].render(mWindow, camera, mTexture, mPlayer);
+    }
+    if(check)
+        mPlayer.setIsTakeHit(check);
+    mPlayer.render(mWindow, camera, mTexture);
+    mWindow.renderPresent();
+
+}
+
+void commom::endGame(){
+    mWindow.close();
+}
+
+
+
+

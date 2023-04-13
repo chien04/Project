@@ -1,0 +1,94 @@
+# depslib dependency file v1.0
+1679414508 source:d:\code\game_test\main.cpp
+	"game.h"
+	"player.h"
+
+1680614585 source:d:\code\game_test\base.cpp
+	"base.h"
+
+1680614526 d:\code\game_test\base.h
+	<iostream>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	<string>
+	"hangso_const.h"
+
+1679191779 d:\code\game_test\load_image.h
+	"base.h"
+	<string>
+
+1679190696 d:\code\game_test\createwindow.h
+	"load_image.h"
+	"base.h"
+
+1679192378 source:d:\code\game_test\load_image.cpp
+	"base.h"
+	"load_image.h"
+	<iostream>
+
+1679913711 d:\code\game_test\tile_map.h
+	"base.h"
+	"hangso_const.h"
+
+1680614045 source:d:\code\game_test\tile_map.cpp
+	"tile_map.h"
+	"base.h"
+	<fstream>
+	"player.h"
+
+1681380891 d:\code\game_test\game.h
+	"base.h"
+	"tile_map.h"
+	"base.h"
+	"hangso_const.h"
+	"player.h"
+	"monster.h"
+	"wizard.h"
+
+1681399717 source:d:\code\game_test\game.cpp
+	"game.h"
+
+1681399632 source:d:\code\game_test\player.cpp
+	"player.h"
+	"game.h"
+	"hangso_const.h"
+	<time.h>
+	<stdlib.h>
+	"monster.h"
+
+1681379641 d:\code\game_test\hangso_const.h
+
+1681400367 d:\code\game_test\player.h
+	"base.h"
+	"tile_map.h"
+
+1681378295 d:\code\game_test\monster.h
+	<vector>
+	"base.h"
+	"tile_map.h"
+	"player.h"
+	"hangso_const.h"
+
+1681398262 source:d:\code\game_test\monster.cpp
+	<vector>
+	"monster.h"
+
+1681290516 d:\code\game_test\ice_ball.h
+	"base.h"
+	"tile_map.h"
+
+1681294784 source:d:\code\game_test\ice_ball.cpp
+	"ice_ball.h"
+
+1681311668 d:\code\game_test\wizard.h
+	<vector>
+	"base.h"
+	"ice_ball.h"
+	"tile_map.h"
+	"player.h"
+
+1681311560 source:d:\code\game_test\wizard.cpp
+	"wizard.h"
+

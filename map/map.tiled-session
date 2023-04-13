@@ -1,0 +1,44 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "map.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "map.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2748.6666666666665,
+                "y": 681.3333333333333
+            }
+        },
+        "tiles - Copy.tsx": {
+            "scaleInDock": 0.25,
+            "scaleInEditor": 1
+        }
+    },
+    "last.exportedFilePath": "D:/code/game_test/map",
+    "last.imagePath": "D:/code/game_test/image",
+    "map.lastUsedExportFilter": "CSV files (*.csv)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 48,
+    "map.tileWidth": 48,
+    "map.width": 100,
+    "openFiles": [
+        "map.tmx",
+        "tiles - Copy.tsx"
+    ],
+    "project": "map.tiled-project",
+    "recentFiles": [
+        "tiles - Copy.tsx",
+        "map.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 48,
+        "width": 48
+    }
+}

@@ -1,0 +1,109 @@
+#include "ice_ball.h"
+
+
+bool ice_ball::checkCollision( SDL_Rect a, SDL_Rect b )
+{
+    //The sides of the rectangles
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    //Calculate the sides of rect A
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    //Calculate the sides of rect B
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+//    printf("%d %d %d %d\n", leftB, rightB, topB, bottomB);
+//    printf("%d %d %d %d\n", leftA, rightA, topA, bottomA);
+
+    //If any of the sides from A are outside of B
+    if( bottomA <= topB )
+    {
+        return false;
+    }
+
+    if( topA >= bottomB )
+    {
+        return false;
+    }
+
+    if( rightA <= leftB )
+    {
+        return false;
+    }
+
+    if( leftA >= rightB )
+    {
+        return false;
+    }
+
+    //If none of the sides from A are outside B
+    return true;
+}
+
+bool ice_ball::touchesWall( SDL_Rect boxWizard, tile tiles[] )
+{
+    //Go through the tiles
+    for( int i = 0; i < TOTAL_TILES; ++i )
+    {
+        //If the tile is a wall type tile
+        if(tiles[ i ].getTileType() != -1)
+        {
+            //If the collision box touches the wall tile
+            if( checkCollision( boxWizard, tiles[ i ].getBox() ) )
+            {
+                return true;
+            }
+        }
+    }
+
+    //If no wall tiles were touched
+    return false;
+}
+ice_ball::ice_ball(){
+    boxBall = {0,0,0,0};
+    boxBallClip = {0, 0, 0, 0};
+    isBan = false;
+}
+
+ice_ball::ice_ball(SDL_Rect box, SDL_RendererFlip flip){
+    if(flip == SDL_FLIP_NONE){
+        boxBall = {box.x + 48, box.y + 64, 32, 32};
+        initialPosX = boxBall.x;
+    }
+    else{
+        boxBall = {box.x - 48, box.y + 64, 32, 32};
+        initialPosX = boxBall.x;
+    }
+
+    boxBallClip = {0, 320, 16, 16};
+    isBan = true;
+}
+
+void ice_ball::move(SDL_RendererFlip flip){
+    if(flip == SDL_FLIP_NONE){
+        if(isBan) boxBall.x += BULLET_VEL;
+    }
+    if(flip == SDL_FLIP_HORIZONTAL){
+        if(isBan) boxBall.x -= BULLET_VEL;
+    }
+    if(abs(initialPosX - boxBall.x) > 500) isBan = false;
+}
+void ice_ball::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]){
+    if(isBan) mWindow.render(mTexture[WIZARD_TEXTURE], boxBall.x - camera.x, boxBall.y - camera.y - 20,
+                   &boxBallClip, 0, NULL, SDL_FLIP_HORIZONTAL, 32, 32);
+}
+
+bool ice_ball::getBan()
+{
+    return isBan;
+}
+
+
