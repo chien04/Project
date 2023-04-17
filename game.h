@@ -8,6 +8,7 @@
 #include "player.h"
 #include "monster.h"
 #include "wizard.h"
+#include "menu.h"
 class commom{
 private:
 
@@ -17,6 +18,7 @@ private:
     player mPlayer;
     monster mMonster[TOTAL_MONSTER];
     wizard mWizard[TOTAL_WIZARD];
+    menu mMenu;
     SDL_Rect mTilesClip[256];
 
     SDL_Texture* mTexture[TOTAL_TEXTURE];
@@ -25,6 +27,7 @@ private:
     int posX_monster[TOTAL_MONSTER];
     int posX_wizard[TOTAL_WIZARD];
     bool check;
+    bool check_ball;
 public:
     commom();
     ~commom();

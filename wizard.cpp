@@ -16,10 +16,13 @@ wizard::wizard(int x, int y)
     }
     inZone = false;
     isAttacking = false;
+    isHitting = false;
+    attackPlayer = false;
     isDeath = false;
     boxWizard = {x, y, WIZARD_WIDTH, WIZARD_HEIGHT};
     ban = false;
     cnt = 0;
+    hp = 3;
 }
 
 void wizard::createWizardClip()
@@ -39,13 +42,19 @@ void wizard::createWizardClip()
     sum = 0;
     for(int i = 0; i < WIZARD_TAKE_HIT; i++)
     {
-        wizardTakeHit[i] = {0, 160, 48, 48};
+        wizardTakeHit[i] = {sum, 160, 48, 48};
         sum += 48;
     }
     for(int i = 0; i < WIZARD_DEATH; i++)
     {
-        wizardDeath[i] = {0, 240, 64, 48};
+        wizardDeath[i] = {sum, 240, 64, 48};
         sum += 64;
+    }
+    sum = 144;
+    for(int i = WIZARD_HP - 1; i >= 0; i--)
+    {
+        wizardHP[i] = {0, sum, 128, 16};
+        sum += 32;
     }
 }
 //
@@ -120,18 +129,42 @@ void wizard::move(player mPlayer, tile tiles[], int pos_x)
 {
     if(isDeath)
         return;
-    if(isAttacking)
-        return;
-    boxWizard.x = pos_x;
     boxWizard.y += velY;
     if(touchesWall(boxWizard, tiles))
     {
         boxWizard.y -= velY;
     }
-
+    if(checkCollision(mPlayer.getBox(), boxWizard))
+    {
+        if(mPlayer.getIsttacking())
+        {
+            isHitting = true;
+            isAttacking = false;
+            hp--;
+            if(hp < 0)
+                hp = 0;
+        }
+    }
+    if(isAttacking)
+        return;
+    if(boxWizard.x > mPlayer.getPosX())
+    {
+        if(flip == SDL_FLIP_NONE)
+        {
+            flip = SDL_FLIP_HORIZONTAL;
+        }
+    }
+    else
+    {
+        if(flip == SDL_FLIP_HORIZONTAL)
+        {
+            flip = SDL_FLIP_NONE;
+        }
+    }
     if(abs(mPlayer.getPosX() - pos_x) < 350)
     {
         inZone = true;
+        isAttacking = true;
     }
     else
     {
@@ -149,72 +182,141 @@ void wizard::move(player mPlayer, tile tiles[], int pos_x)
 
 }
 
+void wizard::setPosX(int posX)
+{
+    if(isHitting)
+        posX = boxWizard.x - 32;
+}
 void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer)
 {
     if(isDeath)
         return;
     if(!ban)
         flip_ball = flip;
-    if(inZone == false || (cnt < 91 && inZone == true))
+    if(hp > 0)
     {
-        mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x, boxWizard.y - camera.y,
-                       &wizardIdle[frame[IDLE]/WIZARD_IDLE], 0, NULL, flip, WIZARD_WIDTH, WIZARD_HEIGHT);
+        if(inZone == false || (cnt < 91 && inZone == true))
+        {
+            mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x, boxWizard.y - camera.y,
+                           &wizardIdle[frame[IDLE]/WIZARD_IDLE], 0, NULL, flip, WIZARD_WIDTH, WIZARD_HEIGHT);
 
-        frame[IDLE]++;
-        if(frame[IDLE] / WIZARD_IDLE >= WIZARD_IDLE)
-            frame[IDLE] = 0;
-    }
-    if(inZone == true && cnt >= 91)
-    {
-        isAttacking = true;
-        if(flip == SDL_FLIP_NONE)
-            mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x - 32, boxWizard.y - camera.y,
-                           &wizardAttack[frame[ATTACK]/(WIZARD_ATTACK*2)], 0, NULL, flip, WIZARD_WIDTH*5/2, WIZARD_HEIGHT);
-        else if(flip == SDL_FLIP_HORIZONTAL)
-            mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x - 64, boxWizard.y - camera.y,
-                           &wizardAttack[frame[ATTACK]/(WIZARD_ATTACK*2)], 0, NULL, flip, WIZARD_WIDTH*5/2, WIZARD_HEIGHT);
-        if(mBall.size() == 0)
+            frame[IDLE]++;
+            if(frame[IDLE] / WIZARD_IDLE >= WIZARD_IDLE)
+                frame[IDLE] = 0;
+        }
+        if(inZone)
         {
-            mBall.push_back(ice_ball(boxWizard, flip_ball));
+            if(isHitting)
+            {
+                if(boxWizard.x > mplayer.getPosX())
+                {
+                    if(frame[TAKE_HIT] == 20)
+                        boxWizard.x += 50;
+                }
+                else
+                {
+                    if(frame[TAKE_HIT] == 20)
+                        boxWizard.x -= 50;
+                }
+                mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x - 32, boxWizard.y - camera.y,
+                               &wizardTakeHit[frame[TAKE_HIT]/(WIZARD_TAKE_HIT*5)], 0, NULL, flip, WIZARD_WIDTH*3/2, WIZARD_HEIGHT);
+                frame[TAKE_HIT]++;
+                if(frame[TAKE_HIT] / (WIZARD_TAKE_HIT*5) >= WIZARD_TAKE_HIT)
+                {
+                    frame[TAKE_HIT] = 0;
+                    isHitting = false;
+                    isAttacking = true;
+                    frame[ATTACK] = 0;
+                }
+            }
+        }
+        if(inZone == true && cnt >= 91 && isHitting == false)
+        {
+
+            if(isAttacking)
+            {
+                if(flip == SDL_FLIP_NONE)
+                    mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x - 32, boxWizard.y - camera.y,
+                                   &wizardAttack[frame[ATTACK]/(WIZARD_ATTACK*2)], 0, NULL, flip, WIZARD_WIDTH*5/2, WIZARD_HEIGHT);
+                else if(flip == SDL_FLIP_HORIZONTAL)
+                    mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x - 64, boxWizard.y - camera.y,
+                                   &wizardAttack[frame[ATTACK]/(WIZARD_ATTACK*2)], 0, NULL, flip, WIZARD_WIDTH*5/2, WIZARD_HEIGHT);
+                if(mBall.size() == 0)
+                {
+                    mBall.push_back(ice_ball(boxWizard, flip_ball));
+                }
+
+                frame[ATTACK]++;
+                if(frame[ATTACK]/(WIZARD_ATTACK*2) == 7 )
+                {
+                    ban = true;
+                }
+                if(frame[ATTACK] / (WIZARD_ATTACK*2) >= WIZARD_ATTACK)
+                {
+                    isAttacking = false;
+                    frame[ATTACK] = 0;
+                    cnt = 0;
+                }
+            }
         }
 
-        frame[ATTACK]++;
-        if(frame[ATTACK]/(WIZARD_ATTACK*2) == 7 )
-        {
-            ban = true;
-        }
-        if(frame[ATTACK] / (WIZARD_ATTACK*2) >= WIZARD_ATTACK)
-        {
-            isAttacking = false;
-            frame[ATTACK] = 0;
-            cnt = 0;
-        }
-    }
-    for(int i = 0; i < mBall.size(); i++)
-    {
         if(ban)
         {
-            mBall[i].move(flip_ball);
-        }
-    }
+            for(int i = 0; i < mBall.size(); i++)
+            {
+                mBall[i].move(flip_ball, mplayer.getBox());
+                if(mBall[i].getBan())
+                {
+                    mBall[i].render(mWindow, camera, mTexture);
+                }
+                else
+                {
+                    mBall.erase(mBall.begin() + i);
+                    ban = false;
+                }
+                if(mBall[i].getAttackPlayer())
+                    attackPlayer = true;
+                else
+                    attackPlayer = false;
 
-    if(ban)
-    {
-        for(int i = 0; i < mBall.size(); i++)
+            }
+        }
+        else
+            attackPlayer = false;
+        cnt++;
+
+        if(flip == SDL_FLIP_NONE)
         {
-            if(mBall[i].getBan())
+            for(int i = 0; i < WIZARD_HP; i++)
             {
-                mBall[i].render(mWindow, camera, mTexture);
+                if(i == hp)
+                    mWindow.render(mTexture[HP_ENEMY_TEXTURE], boxWizard.x - camera.x + 10, boxWizard.y - camera.y - 15,
+                        &wizardHP[i], 0, NULL, flip, 48, 6);
             }
-            else
+        }
+        else if(flip == SDL_FLIP_HORIZONTAL)
+        {
+            for(int i = 0; i < WIZARD_HP; i++)
             {
-                mBall.erase(mBall.begin() + i);
-                ban = false;
+                if(i == hp)
+                    mWindow.render(mTexture[HP_ENEMY_TEXTURE], boxWizard.x - camera.x + 20, boxWizard.y - camera.y - 15,
+                        &wizardHP[i], 0, NULL, flip, 48, 6);
             }
         }
     }
-    cnt++;
 
+
+    if(hp == 0)
+    {
+        mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x - 32, boxWizard.y - camera.y,
+                       &wizardDeath[frame[DEATH]/(WIZARD_DEATH*2)], 0, NULL, flip, WIZARD_WIDTH*5/2, WIZARD_HEIGHT);
+        frame[DEATH]++;
+        if(frame[DEATH] / (WIZARD_DEATH*2) >= WIZARD_DEATH)
+        {
+            frame[DEATH] = 0;
+            isDeath = true;
+        }
+    }
 
 }
 
@@ -237,4 +339,7 @@ SDL_Rect wizard::getBoxWizard()
     return boxWizard;
 }
 
-
+bool wizard::getAttackPlayer()
+{
+    return attackPlayer;
+}

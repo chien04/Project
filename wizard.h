@@ -16,13 +16,13 @@ public:
 
     void move(player mPlayer, tile tiles[], int pos_x);
     void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer);
-
+    void setPosX(int posX);
     int getPosX();
     int getPosY();
     SDL_Rect getBoxWizard();
     bool getBan();
     SDL_RendererFlip getFlip();
-
+    bool getAttackPlayer();
 private:
     SDL_Rect boxWizard;
 
@@ -34,12 +34,16 @@ private:
     SDL_Rect wizardAttack[WIZARD_ATTACK];
     SDL_Rect wizardTakeHit[WIZARD_TAKE_HIT];
     SDL_Rect wizardDeath[WIZARD_DEATH];
+    SDL_Rect wizardHP[WIZARD_HP];
     int frame[WIZARD_FRAME];
     bool inZone;
     bool isAttacking;
+    bool isHitting;
+    bool attackPlayer;
     bool isDeath;
     bool ban;
     int cnt;
+    int hp;
 };
 
 

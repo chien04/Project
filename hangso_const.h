@@ -32,6 +32,9 @@ enum textureID{
     EFFECT_TEXTURE,
     MONSTER_TEXTURE,
     WIZARD_TEXTURE,
+    HEALTH_TEXTURE,
+    HP_ENEMY_TEXTURE,
+    MENU_TEXTURE,
     TOTAL_TEXTURE
 };
 
@@ -39,15 +42,16 @@ const int PLAYER_IDLE = 4;
 const int PLAYER_RUN = 8;
 const int PLAYER_JUMP = 15;
 const int PLAYER_ATTACK = 8;
-const int PLAYER_TAKEHIT = 2;
-
+const int PLAYER_TAKEHIT = 3;
+const int PLAYER_DEATH = 8;
+const int PLAYER_HEALTH = 6;
 const int  EFFECT_CLIP = 60;
 
 const int MONSTER_WIDTH = 80;
 const int MONSTER_HEIGHT = 96;
 
 
-const int MONSTER_VEL_X= 1;
+const int MONSTER_VEL_X = 1;
 const int MONSTER_VEL_Y = 5;
 const int MONSTER_IDLE = 2;
 const int MONSTER_RUN = 8;
@@ -63,6 +67,7 @@ const int FRAME_ATTACK = 2;
 const int FRAME_KNOCKBACK = 3;
 const int FRAME_DEATH = 4;
 
+const int MONSTER_HP = 5;
 const int TOTAL_MONSTER = 3;
 
 const int WIZARD_WIDTH = 64;
@@ -73,7 +78,7 @@ const int WIZARD_IDLE = 13;
 const int WIZARD_ATTACK = 10;
 const int WIZARD_TAKE_HIT = 4;
 const int WIZARD_DEATH = 10;
-
+const int WIZARD_HP = 4;
 enum wizardId{
     IDLE,
     ATTACK,
@@ -83,4 +88,7 @@ enum wizardId{
 };
 
 const int BULLET_VEL = 3;
+
+const int RESTART_GAME_WIDTH = 500;
+const int RESTART_GAME_HEIGHT = 400;
 #endif // CONST_H

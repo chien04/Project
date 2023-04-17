@@ -71,6 +71,7 @@ ice_ball::ice_ball(){
     boxBall = {0,0,0,0};
     boxBallClip = {0, 0, 0, 0};
     isBan = false;
+    attackPlayer = false;
 }
 
 ice_ball::ice_ball(SDL_Rect box, SDL_RendererFlip flip){
@@ -85,9 +86,10 @@ ice_ball::ice_ball(SDL_Rect box, SDL_RendererFlip flip){
 
     boxBallClip = {0, 320, 16, 16};
     isBan = true;
+    attackPlayer = false;
 }
 
-void ice_ball::move(SDL_RendererFlip flip){
+void ice_ball::move(SDL_RendererFlip flip, SDL_Rect boxPlayer){
     if(flip == SDL_FLIP_NONE){
         if(isBan) boxBall.x += BULLET_VEL;
     }
@@ -95,6 +97,10 @@ void ice_ball::move(SDL_RendererFlip flip){
         if(isBan) boxBall.x -= BULLET_VEL;
     }
     if(abs(initialPosX - boxBall.x) > 500) isBan = false;
+    if(checkCollision(boxBall, boxPlayer)){
+        attackPlayer = true;
+        isBan = false;
+    }
 }
 void ice_ball::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]){
     if(isBan) mWindow.render(mTexture[WIZARD_TEXTURE], boxBall.x - camera.x, boxBall.y - camera.y - 20,
@@ -106,4 +112,10 @@ bool ice_ball::getBan()
     return isBan;
 }
 
+SDL_Rect ice_ball::getBoxBall(){
+    return boxBall;
+}
 
+bool ice_ball::getAttackPlayer(){
+    return attackPlayer;
+}

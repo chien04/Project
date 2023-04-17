@@ -23,7 +23,7 @@ public:
 
 private:
     SDL_Rect boxMonster;
-    int velX, velY;
+    double velX, velY;
 
     SDL_RendererFlip flip;
 
@@ -32,15 +32,17 @@ private:
     SDL_Rect monsterAttack[MONSTER_ATTACK];
     SDL_Rect monsterDeath[MONSTER_DEATH];
     SDL_Rect monsterKnockBack[MONSTER_KNOCKBACK];
+    SDL_Rect monsterHP[MONSTER_HP];
     int frame[TOTAL_FRAME];
     bool on_ground;
     bool isIdle;
     bool isRunning;
+    bool inZone;
     bool isAttacking;
     bool attackPlayer;
+    bool attackPlayerFlip;
     bool isHitting;
     int hp;
-
     bool is_death;
     int cnt;
 

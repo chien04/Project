@@ -7,7 +7,7 @@ commom::commom(){
     createTilesClip();
     camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
-    mMonster[0] = monster(300, 0);
+    mMonster[0] = monster(500, 0);
     mMonster[1] = monster(700, 0);
     mMonster[2] = monster(1000, 0);
     posX_monster[0] = mMonster[0].getPosX();
@@ -23,6 +23,7 @@ commom::commom(){
         posX_wizard[i] = mWizard[i].getPosX();
     }
     check = false;
+    check_ball = false;
 }
 
 commom::~commom(){
@@ -78,6 +79,21 @@ bool commom::checkLoadFile(){
         std::cout << "unable load wizard texture\n";
         return false;
     }
+    mTexture[HEALTH_TEXTURE] = mWindow.loadFromFile("image//health.png");
+    if(mTexture[HEALTH_TEXTURE] == NULL){
+        std::cout << "unable load health texture\n";
+        return false;
+    }
+    mTexture[HP_ENEMY_TEXTURE] = mWindow.loadFromFile("image//hpenemy.png");
+    if(mTexture[HP_ENEMY_TEXTURE] == NULL){
+        std::cout << "unable load hp enemy texture\n";
+        return false;
+    }
+    mTexture[MENU_TEXTURE] = mWindow.loadFromFile("image//menu.png");
+    if(mTexture[MENU_TEXTURE] == NULL){
+        std::cout << "unable load menu texture\n";
+        return false;
+    }
 
     return true;
 }
@@ -98,6 +114,8 @@ void commom::createTilesClip(){
 
 void commom::handlePlayer(SDL_Event &e){
     mPlayer.handle(e);
+    if(mPlayer.getIsDeath())
+        mMenu.handle(e);
 }
 
 void commom::setCamera(){
@@ -142,12 +160,39 @@ void commom::render(){
             check = false;
     }
     for(int i = 0; i < TOTAL_WIZARD; i++){
+        mWizard[i].setPosX(posX_wizard[i]);
         mWizard[i].move(mPlayer, mtile, posX_wizard[i]);
         mWizard[i].render(mWindow, camera, mTexture, mPlayer);
+        if(mWizard[i].getAttackPlayer()){
+            check_ball = true;
+            break;
+        }
+        else
+            check_ball = false;
     }
-    if(check)
-        mPlayer.setIsTakeHit(check);
+    if(check == true || check_ball == true)
+        mPlayer.setIsTakeHit(check, check_ball);
     mPlayer.render(mWindow, camera, mTexture);
+
+    if(mPlayer.getIsDeath()){
+        mMenu.render(mWindow, mTexture);
+
+        if(mMenu.getRestart()){
+            mPlayer = player();
+            mMonster[0] = monster(500, 0);
+            mMonster[1] = monster(700, 0);
+            mMonster[2] = monster(1000, 0);
+            posX_monster[0] = mMonster[0].getPosX();
+            posX_monster[1] = mMonster[1].getPosX();
+            posX_monster[2] = mMonster[2].getPosX();
+
+            mWizard[0] = wizard(500, 0);
+            mWizard[1] = wizard(1400, 0);
+            mWizard[2] = wizard(1800, 0);
+            mMenu = menu();
+        }
+    }
+
     mWindow.renderPresent();
 
 }

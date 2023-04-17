@@ -1,5 +1,5 @@
 #include "base.h"
-
+#include "game.h"
 createWindow background;
 createWindow::createWindow(){
     gWindow = NULL;
@@ -7,7 +7,9 @@ createWindow::createWindow(){
 
 }
 
-
+//void createWindow::setColor(Uint8 red, Uint8 green, Uint8 blue){
+//    SDL_SetTextureColorMod(, red, green, blue);
+//}
 SDL_Texture* createWindow::loadFromFile(std::string path){
 //    std::cout << (gRenderer != NULL) << '\n';
     SDL_Texture* newObject = NULL;

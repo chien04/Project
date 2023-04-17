@@ -40,6 +40,8 @@
 		<Unit filename="ice_ball.cpp" />
 		<Unit filename="ice_ball.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="menu.cpp" />
+		<Unit filename="menu.h" />
 		<Unit filename="monster.cpp" />
 		<Unit filename="monster.h" />
 		<Unit filename="player.cpp" />

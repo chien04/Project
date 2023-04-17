@@ -116,6 +116,7 @@ void gameMap::renderMap(int velX, SDL_RendererFlip flip, createWindow mWindow, S
 
         }
     }
+
 }
 
 

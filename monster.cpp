@@ -64,12 +64,13 @@ monster::monster(int x, int y)
     boxMonster = {x, y, MONSTER_WIDTH, MONSTER_HEIGHT};
     isIdle = false;
     isRunning = true;
+    inZone = false;
     isAttacking = false;
     isHitting = false;
     attackPlayer = false;
-
+    attackPlayerFlip = false;
     is_death = false;
-    hp = 6;
+    hp = 4;
     cnt = 120;
 }
 
@@ -105,6 +106,11 @@ void monster::createMonsterClip()
     {
         monsterDeath[i] = {sum, 576, 112, 80};
         sum += 128;
+    }
+    sum = 0;
+    for(int i = MONSTER_HP - 1; i >= 0; i--){
+        monsterHP[i] = {0 , sum, 128, 16};
+        sum += 32;
     }
 }
 
@@ -176,12 +182,22 @@ bool monster::touchesWall( SDL_Rect boxMonster, tile tiles[] )
 
 void monster::move(player mPlayer, tile tiles[], int pos_x)
 {
+    if(is_death)
+        return;
+    boxMonster.y += velY;
+        if(touchesWall(boxMonster, tiles))
+        {
+            boxMonster.y -= velY;
+        }
+
     if(checkCollision(boxMonster, mPlayer.getBox()))
     {
         isRunning = false;
         if(mPlayer.getIsttacking())
         {
             isHitting = true;
+            isAttacking = false;
+            isRunning = false;
             hp--;
             if(hp < 0)
                 hp = 0;
@@ -195,16 +211,18 @@ void monster::move(player mPlayer, tile tiles[], int pos_x)
 
             if(cnt >= 120 && cnt <= 227)
                 isAttacking = true;
+            if(frame[FRAME_ATTACK] == 0)
+                attackPlayerFlip = true;
+            else
+                attackPlayerFlip = false;
             if(frame[FRAME_ATTACK] == 54)
                 attackPlayer = true;
             else
                 attackPlayer = false;
-//            std::cout << frame[FRAME_ATTACK] << std::endl;
-//            std::cout << attackPlayer << std::endl;
-            if(!attackPlayer)
+            if(!attackPlayerFlip)
                 return;
         }
-        if(boxMonster.x > mPlayer.getPosX())
+            if(boxMonster.x > mPlayer.getPosX())
             {
                 if(flip == SDL_FLIP_NONE)
                 {
@@ -225,29 +243,77 @@ void monster::move(player mPlayer, tile tiles[], int pos_x)
     }
     if(!checkCollision(boxMonster, mPlayer.getBox()))
     {
-
-        if(isRunning == false)
+        if(!isRunning)
             return ;
-        isRunning = true;
 
-        isIdle = false;
-        boxMonster.x += velX;
-        if(boxMonster.x >= pos_x + 200)
-        {
-            velX *= -1;
-            flip = SDL_FLIP_HORIZONTAL;
+        isRunning = true;
+        if(isRunning)
+            isIdle = false;
+        SDL_Rect chaSingBox = {pos_x - 300, boxMonster.y, pos_x + 600, MONSTER_HEIGHT};
+        if(checkCollision(chaSingBox, mPlayer.getBox())){
+            inZone = true;
+            if(boxMonster.x > mPlayer.getPosX())
+            {
+                if(flip == SDL_FLIP_NONE){
+                    velX = -3 * MONSTER_VEL_X;
+                    flip = SDL_FLIP_HORIZONTAL;
+                }
+                else{
+                    velX = -3 * MONSTER_VEL_X;
+                }
+            }
+            else
+            {
+                if(flip == SDL_FLIP_NONE){
+                    velX = 3 * MONSTER_VEL_X;
+                }
+                else{
+                    velX = 3 * MONSTER_VEL_X;
+                    flip = SDL_FLIP_NONE;
+                }
+            }
+            if(boxMonster.x >= pos_x + 300)
+            {
+                    boxMonster.x = pos_x + 300;
+            }
+            if(boxMonster.x <= pos_x - 300)
+            {
+                    boxMonster.x = pos_x - 300;
+            }
         }
-        if(boxMonster.x <= pos_x - 200)
-        {
-            velX *= -1;
+        else{
+            inZone = false;
+            if(boxMonster.x >= pos_x + 200)
+            {
+
+                velX = -1*MONSTER_VEL_X;
+                flip = SDL_FLIP_HORIZONTAL;
+
+            }
+            if(boxMonster.x <= pos_x - 200)
+            {
+
+                velX = 1 * MONSTER_VEL_X;
+                flip = SDL_FLIP_NONE;
+            }
+
+        }
+        if(!isIdle)
+            boxMonster.x += velX;
+    }
+    if(!inZone){
+        if(boxMonster.x > pos_x + 200 && boxMonster.x <= pos_x + 300){
+            boxMonster.x -= 1;
+
+            flip == SDL_FLIP_HORIZONTAL;
+        }
+        if(boxMonster.x >= pos_x - 300 && boxMonster.x < pos_x - 200){
+            boxMonster.x += 1;
             flip = SDL_FLIP_NONE;
         }
-        boxMonster.y += velY;
-        if(touchesWall(boxMonster, tiles))
-        {
-            boxMonster.y -= velY;
-        }
     }
+    std::cout << boxMonster.x << std::endl;
+
 
 }
 
@@ -267,7 +333,7 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
                 frame[FRAME_RUN] = 0;
             }
         }
-        if(isAttacking == true)
+        if(isAttacking)
         {
             isIdle = false;
             if(flip == SDL_FLIP_NONE)
@@ -287,19 +353,19 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
         }
         if(isHitting == true)
         {
-            isAttacking = false;
+            isIdle = false;
             if(boxMonster.x > mPlayer.getPosX())
             {
-                boxMonster.x += 3;
+                boxMonster.x += 1;
             }
             else
             {
-                boxMonster.x -= 3;
+                boxMonster.x -= 1;
             }
             mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x, boxMonster.y - camera.y,
-                           &monsterKnockBack[frame[FRAME_KNOCKBACK]/ (MONSTER_KNOCKBACK*30)], 0, NULL, flip, MONSTER_WIDTH, MONSTER_HEIGHT);
+                           &monsterKnockBack[frame[FRAME_KNOCKBACK]/ (MONSTER_KNOCKBACK*50)], 0, NULL, flip, MONSTER_WIDTH, MONSTER_HEIGHT);
             frame[FRAME_KNOCKBACK]++;
-            if(frame[FRAME_KNOCKBACK] / (MONSTER_KNOCKBACK*30) >= MONSTER_KNOCKBACK)
+            if(frame[FRAME_KNOCKBACK] / (MONSTER_KNOCKBACK*50) >= MONSTER_KNOCKBACK)
             {
                 frame[FRAME_KNOCKBACK] = 0;
                 isRunning = false;
@@ -307,8 +373,9 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
                 isAttacking = false;
                 isIdle = true;
                 frame[FRAME_ATTACK] = 0;
-
             }
+
+
             cnt = 0;
         }
         if(isIdle)
@@ -319,7 +386,23 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
             if(frame[FRAME_IDLE] / (MONSTER_IDLE*16) >= MONSTER_IDLE)
             {
                 frame[FRAME_IDLE] = 0;
+                isIdle = false;
                 isRunning = true;
+            }
+        }
+        //render thanh mau cho monster
+        if(flip == SDL_FLIP_NONE){
+            for(int i = 0; i < MONSTER_HP;  i++){
+                if(i == hp)
+                    mWindow.render(mTexture[HP_ENEMY_TEXTURE], boxMonster.x - camera.x + 35, boxMonster.y - camera.y - 10,
+                            &monsterHP[i], 0, NULL, flip, 48, 6);
+            }
+        }
+        else if(flip == SDL_FLIP_HORIZONTAL){
+            for(int i = 0; i < MONSTER_HP;  i++){
+                if(i == hp)
+                    mWindow.render(mTexture[HP_ENEMY_TEXTURE], boxMonster.x - camera.x + 10, boxMonster.y - camera.y - 10,
+                            &monsterHP[i], 0, NULL, flip, 48, 6);
             }
         }
     }

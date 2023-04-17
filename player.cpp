@@ -4,7 +4,8 @@
 #include <time.h>
 #include <stdlib.h>
 #include "monster.h"
-player::player(){
+player::player()
+{
     cnt_jump = 0;
     boxPlayer.x = 0;
     boxPlayer.y = 0;
@@ -16,6 +17,7 @@ player::player(){
     frame = 0;
     frame_attack = 0;
     frame_takehit = 0;
+    frame_death = 0;
     on_ground = false;
     isIdle = false;
     isRunning = false;
@@ -23,79 +25,112 @@ player::player(){
     attacking = false;
     attackMonster = false;
     isTakeHit = false;
+    isDeath = false;
     createPlayerClip();
     createEffectTexture();
-
+    hp = 5;
 }
 
-void player::createPlayerClip(){
+void player::createPlayerClip()
+{
     int sum = 0;
-    for(int i = 0; i < PLAYER_IDLE; i++){
+    for(int i = 0; i < PLAYER_IDLE; i++)
+    {
         mPlayerIdle[i] = {sum, 16, 32, 48};
         sum += 48;
     }
     sum = 16;
-    for(int i = 0; i < PLAYER_RUN; i++){
+    for(int i = 0; i < PLAYER_RUN; i++)
+    {
         mPlayerRun[i] = {sum, 384, 32, 48};
         sum += 48;
     }
     sum = 0;
-    for(int i = 0; i < PLAYER_JUMP; i++){
+    for(int i = 0; i < PLAYER_JUMP; i++)
+    {
         mPlayerJump[i] = {sum, 288, 64, 67};
         sum += 64;
     }
     sum = 0;
-    for(int i = 0; i < PLAYER_ATTACK; i++){
+    for(int i = 0; i < PLAYER_ATTACK; i++)
+    {
         mPlayerAttack[i] = {sum, 160, 96, 80};
         sum += 96;
     }
-    mPlayerTakeHit[0] = {320, 0, 144, 64};
-    mPlayerTakeHit[1] = {464, 0, 144, 64};
+    mPlayerTakeHit[0] = {560, 512, 288, 160};
+    mPlayerTakeHit[1] = {0, 512, 288, 160};
+    mPlayerTakeHit[2] = {288, 512, 288, 160};
+
+    sum = 0;
+
+    for(int i = 0; i < PLAYER_DEATH; i++)
+    {
+        mPlayerDeath[i] = {sum, 96, 64, 64};
+        sum += 64;
+    }
+    sum = 0;
+    for(int i = PLAYER_HEALTH - 1; i >= 0; i--)
+    {
+        mPlayeHeath[i] = {0, sum, 672, 224};
+        sum += 224;
+    }
 }
 
-void player::createEffectTexture(){
+void player::createEffectTexture()
+{
     int sum = 0;
     int sum1 = 0;
-    for(int i = 0; i < EFFECT_CLIP; i++){
+    for(int i = 0; i < EFFECT_CLIP; i++)
+    {
         mEffectClip[i] = {sum, sum1, 192, 192};
         sum += 192;
-        if(sum >= 2304){
+        if(sum >= 2304)
+        {
             sum = 0;
             sum1 += 192;
         }
     }
 }
-void player::handle(SDL_Event& e){
-    if(e.type == SDL_KEYDOWN && e.key.repeat == 0){
-        switch(e.key.keysym.sym){
-            case SDLK_RIGHT:
-                velX += PLAYER_VEL;
-                break;
-            case SDLK_LEFT:
-                velX -= PLAYER_VEL;
-                break;
-            case SDLK_UP:
-                if(on_ground){
-                    velY = -PLAYER_VEL;
-                    on_ground = false;
-                    cnt_jump = 0;
-                }
-                break;
-            case SDLK_a:
-                if(attacking == false){
-                    attacking = true;
-                }
-                break;
+void player::handle(SDL_Event& e)
+{
+    if(isDeath)
+        return;
+    if(e.type == SDL_KEYDOWN && e.key.repeat == 0)
+    {
+        switch(e.key.keysym.sym)
+        {
+        case SDLK_RIGHT:
+            velX += PLAYER_VEL;
+            break;
+        case SDLK_LEFT:
+            velX -= PLAYER_VEL;
+            break;
+        case SDLK_UP:
+            if(on_ground)
+            {
+                velY = -PLAYER_VEL;
+                on_ground = false;
+                cnt_jump = 0;
+            }
+            break;
+        case SDLK_a:
+            if(attacking == false)
+            {
+                attacking = true;
+            }
+            break;
         }
     }
-    else if(e.type == SDL_KEYUP){
-        switch(e.key.keysym.sym){
-            case SDLK_RIGHT:
-                velX -= PLAYER_VEL;
-                break;
-            case SDLK_LEFT:
-                velX += PLAYER_VEL;
-                break;
+    else if(e.type == SDL_KEYUP)
+    {
+        switch(e.key.keysym.sym)
+        {
+        case SDLK_RIGHT:
+            velX -= PLAYER_VEL;
+            break;
+        case SDLK_LEFT:
+            velX += PLAYER_VEL;
+            break;
         }
     }
 }
@@ -166,131 +201,216 @@ bool player::touchesWall( SDL_Rect boxPlayer, tile tiles[] )
     return false;
 }
 
-void player::move(tile tiles[]){
-
-    if(velY < 0){
+void player::move(tile tiles[])
+{
+    if(isDeath)
+        return;
+    if(velY < 0)
+    {
         cnt_jump++;
-        if(cnt_jump >= PLAYER_MAX_JUMP){
+        if(cnt_jump >= PLAYER_MAX_JUMP)
+        {
             cnt_jump = 0;
             velY *= -1;
         }
     }
 
     boxPlayer.x += velX;
-    if(boxPlayer.x < 0 || boxPlayer.x + PLAYER_WIDTH > WIDTH_MAP || touchesWall(boxPlayer, tiles) ){
+    if(boxPlayer.x < 0 || boxPlayer.x + PLAYER_WIDTH > WIDTH_MAP || touchesWall(boxPlayer, tiles) )
+    {
         boxPlayer.x -= velX;
     }
     boxPlayer.y += velY;
-    if(boxPlayer.y < 0 || boxPlayer.y + PLAYER_HEIGHT > HEIGHT_MAP || touchesWall(boxPlayer, tiles)){
+    if(boxPlayer.y < 0 || boxPlayer.y + PLAYER_HEIGHT > HEIGHT_MAP || touchesWall(boxPlayer, tiles))
+    {
         boxPlayer.y -= velY;
         on_ground = true;
     }
 
-    if(velX < 0){
+    if(velX < 0)
+    {
         flip = SDL_FLIP_HORIZONTAL;
     }
-    else if(velX > 0){
+    else if(velX > 0)
+    {
         flip = SDL_FLIP_NONE;
     }
-    if(velX == 0 && on_ground == true && attacking == false){
+    if(velX == 0 && on_ground == true && attacking == false)
+    {
         isIdle = true;
         isRunning = false;
         isJump = false;
     }
-    if(velX != 0 && on_ground == true && attacking == false){
+    if(velX != 0 && on_ground == true && attacking == false)
+    {
         isIdle = false;
         isRunning = true;
         isJump = false;
     }
-    if(on_ground == false && attacking == false){
+    if(on_ground == false && attacking == false)
+    {
         isJump = true;
         isIdle = false;
         isRunning = false;
     }
-    if(attacking){
+    if(attacking)
+    {
         isIdle = false;
         isRunning = false;
         isJump = false;
     }
 
 }
-void player::setIsTakeHit(bool x){
-    isTakeHit = x;
+void player::setIsTakeHit(bool x, bool y)
+{
+    if(x == false && y == false)
+        isTakeHit = false;
+    else
+        isTakeHit = true;
+
 }
 
-bool player::isTakeHitByMonster(){
+bool player::isTakeHitByMonster()
+{
     return isTakeHit;
 }
-void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]){
-    if(!isTakeHit){
-    if(isIdle){
-            mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x, boxPlayer.y - camera.y,
-                           &mPlayerIdle[frame/(PLAYER_IDLE*4)], 0, NULL, flip, PLAYER_WIDTH, PLAYER_HEIGHT);
-            frame++;
-            if(frame / (PLAYER_IDLE*4) >= PLAYER_IDLE)
-                frame = 0;
+void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[])
+{
+    for(int i = 0; i < PLAYER_HEALTH; i++)
+    {
+        if(i == hp)
+            mWindow.render(mTexture[HEALTH_TEXTURE], 10, 30,
+                           &mPlayeHeath[i], 0, NULL, SDL_FLIP_NONE, 210, 70);
     }
-    if(isRunning){
-            mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x , boxPlayer.y - camera.y,
-                           &mPlayerRun[frame/PLAYER_RUN], 0, NULL, flip, PLAYER_WIDTH, PLAYER_HEIGHT);
-            frame++;
-            if(frame / PLAYER_RUN >= PLAYER_RUN){
-                frame = 0;
+    if(isDeath)
+        return;
+    if(hp > 0)
+    {
+        if(!isTakeHit)
+        {
+            if(isIdle)
+            {
+                mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x, boxPlayer.y - camera.y,
+                               &mPlayerIdle[frame/(PLAYER_IDLE*4)], 0, NULL, flip, PLAYER_WIDTH, PLAYER_HEIGHT);
+                frame++;
+                if(frame / (PLAYER_IDLE*4) >= PLAYER_IDLE)
+                    frame = 0;
             }
-    }
-    if(isJump){
-            mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 24, boxPlayer.y - camera.y - 24,
-                           &mPlayerJump[frame/PLAYER_JUMP], 0, NULL, flip, PLAYER_WIDTH_JUMP, PLAYER_HEIGHT_JUMP);
-            frame++;
-            if(frame / PLAYER_JUMP >= PLAYER_JUMP){
-                frame = 0;
+            if(isRunning)
+            {
+                mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x, boxPlayer.y - camera.y,
+                               &mPlayerRun[frame/PLAYER_RUN], 0, NULL, flip, PLAYER_WIDTH, PLAYER_HEIGHT);
+                frame++;
+                if(frame / PLAYER_RUN >= PLAYER_RUN)
+                {
+                    frame = 0;
+                }
             }
-    }
-    if(attacking){
-        mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 48, boxPlayer.y - camera.y - 48,
-                        &mPlayerAttack[frame_attack/PLAYER_ATTACK], 0, NULL, flip, PLAYER_WIDTH_ATTACK, PLAYER_HEIGHT_ATTACK);
-        if(frame_attack == 48){
-            attackMonster = true;
+            if(isJump)
+            {
+                mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 24, boxPlayer.y - camera.y - 24,
+                               &mPlayerJump[frame/PLAYER_JUMP], 0, NULL, flip, PLAYER_WIDTH_JUMP, PLAYER_HEIGHT_JUMP);
+                frame++;
+                if(frame / PLAYER_JUMP >= PLAYER_JUMP)
+                {
+                    frame = 0;
+                }
+            }
+            if(attacking)
+            {
+                if(flip == SDL_FLIP_HORIZONTAL)
+                {
+                    mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 48, boxPlayer.y - camera.y - 48,
+                                   &mPlayerAttack[frame_attack/PLAYER_ATTACK], 0, NULL, flip, PLAYER_WIDTH_ATTACK, PLAYER_HEIGHT_ATTACK);
+                }
+                else if(flip == SDL_FLIP_NONE)
+                {
+                    mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 64, boxPlayer.y - camera.y - 48,
+                                   &mPlayerAttack[frame_attack/PLAYER_ATTACK], 0, NULL, flip, PLAYER_WIDTH_ATTACK, PLAYER_HEIGHT_ATTACK);
+                }
+                if(frame_attack == 16)
+                {
+                    attackMonster = true;
+                }
+                else
+                    attackMonster = false;
+
+                frame_attack++;
+                if(frame_attack / PLAYER_ATTACK >= PLAYER_ATTACK)
+                {
+                    frame_attack = 0;
+                    attacking = false;
+                }
+            }
         }
         else
-            attackMonster = false;
-
-        frame_attack++;
-        if(frame_attack / PLAYER_ATTACK >= PLAYER_ATTACK){
-            frame_attack = 0;
-            attacking = false;
+        {
+            if(flip == SDL_FLIP_NONE)
+            {
+                mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 204, boxPlayer.y - camera.y - 128,
+                               &mPlayerTakeHit[frame_takehit/(PLAYER_TAKEHIT*3)], 0, NULL, flip, PLAYER_WIDTH*9, PLAYER_HEIGHT*10/3);
+                frame_takehit++;
+                if(frame_takehit / (PLAYER_TAKEHIT*3) >= PLAYER_TAKEHIT)
+                {
+                    frame_takehit = 0;
+                    isTakeHit = false;
+                    hp--;
+                }
+            }
+            else if(flip == SDL_FLIP_HORIZONTAL)
+            {
+                mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 308, boxPlayer.y - camera.y - 128,
+                               &mPlayerTakeHit[frame_takehit/(PLAYER_TAKEHIT*3)], 0, NULL, flip, PLAYER_WIDTH*9, PLAYER_HEIGHT*10/3);
+                frame_takehit++;
+                if(frame_takehit / (PLAYER_TAKEHIT*3) >= PLAYER_TAKEHIT)
+                {
+                    frame_takehit = 0;
+                    isTakeHit = false;
+                    hp--;
+                }
+            }
         }
     }
-    }
-    else{
-        mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 64, boxPlayer.y - camera.y - 64,
-                           &mPlayerTakeHit[frame_takehit/(PLAYER_TAKEHIT*4)], 0, NULL, flip, PLAYER_WIDTH*9/2, PLAYER_HEIGHT*4/3);
-        frame_takehit++;
-        if(frame_takehit / (PLAYER_TAKEHIT*4) >= PLAYER_TAKEHIT){
-            frame_takehit = 0;
-            isTakeHit = false;
+    if(hp <= 0)
+    {
+        mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x, boxPlayer.y - camera.y,
+                       &mPlayerDeath[frame_death/(PLAYER_DEATH*2)], 0, NULL, flip, PLAYER_WIDTH*2, PLAYER_HEIGHT*4/3);
+        frame_death++;
+        if(frame_death / (PLAYER_DEATH*2) >= PLAYER_DEATH)
+        {
+            frame_death = 0;
+            isDeath = true;
         }
-
     }
+
 
 }
 
-int player::getVelX(){
+int player::getVelX()
+{
     return velX;
 }
 
-SDL_RendererFlip player::getFlip(){
+SDL_RendererFlip player::getFlip()
+{
     return flip;
 }
 
-int player::getPosX(){
+int player::getPosX()
+{
     return boxPlayer.x;
 }
 
-bool player::getIsttacking(){
+bool player::getIsttacking()
+{
     return attackMonster;
 }
 
-SDL_Rect player::getBox(){
+SDL_Rect player::getBox()
+{
     return boxPlayer;
+}
+
+bool player::getIsDeath(){
+    return isDeath;
 }

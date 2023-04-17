@@ -6,6 +6,7 @@
 class player{
 public:
     player();
+
     void createPlayerClip();
     void createEffectTexture();
 
@@ -23,8 +24,9 @@ public:
 
     int getPosX();
     bool getIsttacking();
-    void setIsTakeHit(bool x);
+    void setIsTakeHit(bool x, bool y);
     bool isTakeHitByMonster();
+    bool getIsDeath();
 
 private:
     int cnt_jump;
@@ -34,6 +36,7 @@ private:
     int frame;
     int frame_attack;
     int frame_takehit;
+    int frame_death;
     bool on_ground;
     bool isIdle;
     bool isRunning;
@@ -41,13 +44,17 @@ private:
     bool attacking;
     bool attackMonster;
     bool isTakeHit;
+    bool isDeath;
     SDL_Rect mPlayerIdle[PLAYER_IDLE];
     SDL_Rect mPlayerRun[PLAYER_RUN];
     SDL_Rect mPlayerJump[PLAYER_JUMP];
     SDL_Rect mPlayerAttack[PLAYER_ATTACK];
     SDL_Rect mPlayerTakeHit[PLAYER_TAKEHIT];
+    SDL_Rect mPlayerDeath[PLAYER_DEATH];
+    SDL_Rect mPlayeHeath[PLAYER_HEALTH];
     SDL_Rect mEffectClip[EFFECT_CLIP];
 
+    int hp;
 };
 
 
