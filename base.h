@@ -27,7 +27,7 @@ public:
     void renderClear();
 
     void renderPresent();
-
+    void renderBox(SDL_Rect rect);
 private:
     SDL_Window* gWindow;
     SDL_Renderer* gRenderer;

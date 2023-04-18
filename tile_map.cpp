@@ -35,7 +35,7 @@ SDL_Rect tile::getBox(){
 
 bool gameMap::loadMap( tile tiles[]){
     bool success = true;
-    std::ifstream map_game("map//map.txt");
+    std::ifstream map_game("map//test.txt");
     if(map_game.fail()){
         success = false;
         std::cout << "unable to load map\n";
@@ -45,13 +45,8 @@ bool gameMap::loadMap( tile tiles[]){
         for(int i = 0; i < TOTAL_TILES; i++){
             int tileType = -1;
             map_game >> tileType;
-//            if(tileType >= -1 && tileType <= 255){
                 tiles[i] = tile(x_coordinate, y_coordinate, tileType);
-//            }
-//            else{
-//                std::cout << "Error load mapGame\n";
-//            }
-//            std::cout << x_coordinate << " " << y_coordinate << "\n";
+
             x_coordinate += TILE_WIDTH;
             if(x_coordinate >= WIDTH_MAP){
                 x_coordinate = 0;

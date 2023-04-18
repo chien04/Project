@@ -27,11 +27,12 @@ public:
     void setIsTakeHit(bool x, bool y);
     bool isTakeHitByMonster();
     bool getIsDeath();
+    void setHP();
 
 private:
     int cnt_jump;
     SDL_Rect boxPlayer;
-    int velX, velY;
+    double velX, velY;
     SDL_RendererFlip flip;
     int frame;
     int frame_attack;

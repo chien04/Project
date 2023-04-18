@@ -106,7 +106,7 @@ void player::handle(SDL_Event& e)
             velX -= PLAYER_VEL;
             break;
         case SDLK_UP:
-            if(on_ground)
+            if(on_ground && velY > 0)
             {
                 velY = -PLAYER_VEL;
                 on_ground = false;
@@ -146,7 +146,7 @@ bool player::checkCollision( SDL_Rect a, SDL_Rect b )
     //Calculate the sides of rect A
     leftA = a.x;
     rightA = a.x + a.w;
-    topA = a.y;
+    topA = a.y - 24;
     bottomA = a.y + a.h;
 
     //Calculate the sides of rect B
@@ -154,33 +154,16 @@ bool player::checkCollision( SDL_Rect a, SDL_Rect b )
     rightB = b.x + b.w;
     topB = b.y;
     bottomB = b.y + b.h;
-//    printf("%d %d %d %d\n", leftB, rightB, topB, bottomB);
-//    printf("%d %d %d %d\n", leftA, rightA, topA, bottomA);
 
-    //If any of the sides from A are outside of B
-    if( bottomA <= topB )
+    if( bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB)
     {
         return false;
     }
-
-    if( topA >= bottomB )
-    {
-        return false;
-    }
-
-    if( rightA <= leftB )
-    {
-        return false;
-    }
-
-    if( leftA >= rightB )
-    {
-        return false;
-    }
-
-    //If none of the sides from A are outside B
+//    if(topA <= bottomB)
+//        on_ground = false;
     return true;
 }
+
 bool player::touchesWall( SDL_Rect boxPlayer, tile tiles[] )
 {
     //Go through the tiles
@@ -208,6 +191,10 @@ void player::move(tile tiles[])
     if(velY < 0)
     {
         cnt_jump++;
+//        if(on_ground == true && velY < 0){
+//            cnt_jump = 0;
+//            velY *= -1;
+//        }
         if(cnt_jump >= PLAYER_MAX_JUMP)
         {
             cnt_jump = 0;
@@ -226,7 +213,19 @@ void player::move(tile tiles[])
         boxPlayer.y -= velY;
         on_ground = true;
     }
+    else
+        on_ground = false;
 
+    if(on_ground == true && velY < 0)
+        on_ground = false;
+
+    if(on_ground == false && velY >= 0){
+        if(velY == PLAYER_VEL)
+        velY = 0;
+        velY += 0.08;
+    }
+    if(on_ground && velY > 0)
+        velY = PLAYER_VEL;
     if(velX < 0)
     {
         flip = SDL_FLIP_HORIZONTAL;
@@ -274,6 +273,12 @@ bool player::isTakeHitByMonster()
 {
     return isTakeHit;
 }
+
+void player::setHP(){
+    if(hp < PLAYER_HEALTH - 1)
+        hp += 1;
+    std::cout << "cc" << std::endl;
+}
 void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[])
 {
     for(int i = 0; i < PLAYER_HEALTH; i++)
@@ -308,7 +313,7 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             }
             if(isJump)
             {
-                mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 24, boxPlayer.y - camera.y - 24,
+                mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 24, boxPlayer.y - camera.y - 30,
                                &mPlayerJump[frame/PLAYER_JUMP], 0, NULL, flip, PLAYER_WIDTH_JUMP, PLAYER_HEIGHT_JUMP);
                 frame++;
                 if(frame / PLAYER_JUMP >= PLAYER_JUMP)

@@ -32,6 +32,31 @@ commom::~commom(){
     }
     mTexture[MAP_TEXTURE] = NULL;
 }
+
+bool commom::checkCollision(SDL_Rect a, SDL_Rect b){
+    //The sides of the rectangles
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    //Calculate the sides of rect A
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    //Calculate the sides of rect B
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y;
+    bottomB = b.y + b.h;
+    if( bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB)
+    {
+        return false;
+    }
+    return true;
+}
 bool commom::checkInit(){
     if(!mWindow.init()){
         std::cout << "unable create window in game.h\n";
@@ -52,7 +77,7 @@ bool commom::checkLoadFile(){
         return false;
     }
 
-    mTexture[MAP_TEXTURE] = mWindow.loadFromFile("image//tiles - Copy.png");
+    mTexture[MAP_TEXTURE] = mWindow.loadFromFile("image//tile.png");
     if(mTexture[MAP_TEXTURE] == NULL){
         std::cout << "unable load image\n";
         return false;
@@ -94,21 +119,23 @@ bool commom::checkLoadFile(){
         std::cout << "unable load menu texture\n";
         return false;
     }
+    mTexture[BOSS_TEXTURE] = mWindow.loadFromFile("image//boss.png");
+    if(mTexture[BOSS_TEXTURE] == NULL){
+        std::cout << "unable load boss texture\n";
+        return false;
+    }
 
     return true;
 }
 void commom::createTilesClip(){
     int x = 0; int y = 0;
     for(int i = 0; i < TILES_CLIP; i++){
-//        if(i < TILES_CLIP / 2)
-//        std::cout << x << " " << y << "\n";
         mTilesClip[i] = {x, y, 48, 48};
         x += 48;
         if(x >= 480){
             x = 0;
             y += 48;
         }
-//        std::cout << x << " " << y << std::endl;
     }
 }
 
@@ -146,12 +173,15 @@ void commom::render(){
     mWindow.renderClear();
     setCamera();
 
-//    std::cout << camera.x << " " << camera.y << '\n';
     mMap.renderMap(mPlayer.getVelX(), mPlayer.getFlip(), mWindow, camera, mTexture, mtile, mTilesClip);
     mPlayer.move(mtile);
     for(int i = 0; i < TOTAL_MONSTER; i++){
         mMonster[i].move(mPlayer, mtile, posX_monster[i]);
         mMonster[i].render(mWindow, camera, mTexture, mPlayer);
+        if(checkCollision(mPlayer.getBox(), mMonster[i].getBoxBlood())){
+            std::cout << "not" << std::endl;
+            mPlayer.setHP();
+        }
         if(mMonster[i].getMonsterAttack()){
             check = true;
             break;
@@ -173,7 +203,7 @@ void commom::render(){
     if(check == true || check_ball == true)
         mPlayer.setIsTakeHit(check, check_ball);
     mPlayer.render(mWindow, camera, mTexture);
-
+    mWindow.renderBox(mPlayer.getBox());
     if(mPlayer.getIsDeath()){
         mMenu.render(mWindow, mTexture);
 

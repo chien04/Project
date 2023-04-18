@@ -115,3 +115,7 @@ void createWindow::renderClear(){
 void createWindow::renderPresent(){
     SDL_RenderPresent(gRenderer);
 }
+
+void createWindow::renderBox(SDL_Rect rect){
+    SDL_RenderDrawRect(gRenderer, &rect);
+}

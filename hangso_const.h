@@ -3,10 +3,10 @@
 
 const int TILE_WIDTH = 48;
 const int TILE_HEIGHT = 48;
-const int TOTAL_TILES = 100*20;
+const int TOTAL_TILES = 500*50;
 
-const int WIDTH_MAP = 100*48;
-const int HEIGHT_MAP = 20*48;
+const int WIDTH_MAP = 500*48;
+const int HEIGHT_MAP = 50*48;
 
 const int TILES_CLIP = 100;
 
@@ -35,6 +35,7 @@ enum textureID{
     HEALTH_TEXTURE,
     HP_ENEMY_TEXTURE,
     MENU_TEXTURE,
+    BOSS_TEXTURE,
     TOTAL_TEXTURE
 };
 
@@ -89,6 +90,13 @@ enum wizardId{
 
 const int BULLET_VEL = 3;
 
+
+const int BOSS_WIDTH = 150;
+const int BOSS_HEIGHT = 150*6/5;
+
+const int BOSS_VEL = 3;
+
+const int BOSS_IDLE = 7;
 const int RESTART_GAME_WIDTH = 500;
 const int RESTART_GAME_HEIGHT = 400;
 #endif // CONST_H

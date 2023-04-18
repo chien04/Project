@@ -34,6 +34,8 @@
 		</Compiler>
 		<Unit filename="base.cpp" />
 		<Unit filename="base.h" />
+		<Unit filename="boss.cpp" />
+		<Unit filename="boss.h" />
 		<Unit filename="game.cpp" />
 		<Unit filename="game.h" />
 		<Unit filename="hangso_const.h" />

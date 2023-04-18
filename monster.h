@@ -20,6 +20,8 @@ public:
 
     int getPosX();
     bool getMonsterAttack();
+//    bool checkBoxBlood(SDL_Rect boxPlayer);
+    SDL_Rect getBoxBlood();
 
 private:
     SDL_Rect boxMonster;
@@ -33,6 +35,8 @@ private:
     SDL_Rect monsterDeath[MONSTER_DEATH];
     SDL_Rect monsterKnockBack[MONSTER_KNOCKBACK];
     SDL_Rect monsterHP[MONSTER_HP];
+    SDL_Rect bloodClip;
+    SDL_Rect boxBlood;
     int frame[TOTAL_FRAME];
     bool on_ground;
     bool isIdle;
@@ -45,6 +49,8 @@ private:
     int hp;
     bool is_death;
     int cnt;
+
+    bool blood;
 
 };
 

@@ -2,54 +2,6 @@
 #include "monster.h"
 
 
-bool checkCollision( SDL_Rect a, SDL_Rect b )
-{
-    //The sides of the rectangles
-    int leftA, leftB;
-    int rightA, rightB;
-    int topA, topB;
-    int bottomA, bottomB;
-
-    //Calculate the sides of rect A
-    leftA = a.x;
-    rightA = a.x + a.w;
-    topA = a.y;
-    bottomA = a.y + a.h;
-
-    //Calculate the sides of rect B
-    leftB = b.x;
-    rightB = b.x + b.w;
-    topB = b.y;
-    bottomB = b.y + b.h;
-//    printf("%d %d %d %d\n", leftB, rightB, topB, bottomB);
-//    printf("%d %d %d %d\n", leftA, rightA, topA, bottomA);
-
-    //If any of the sides from A are outside of B
-    if( bottomA <= topB )
-    {
-        return false;
-    }
-
-    if( topA >= bottomB )
-    {
-        return false;
-    }
-
-    if( rightA <= leftB )
-    {
-        return false;
-    }
-
-    if( leftA >= rightB )
-    {
-        return false;
-    }
-
-    //If none of the sides from A are outside B
-    return true;
-}
-
-
 monster::monster(int x, int y)
 {
     velX = MONSTER_VEL_X;
@@ -70,8 +22,10 @@ monster::monster(int x, int y)
     attackPlayer = false;
     attackPlayerFlip = false;
     is_death = false;
+    blood = false;
     hp = 4;
     cnt = 120;
+    boxBlood = {0, 0, 48, 48};
 }
 
 void monster::createMonsterClip()
@@ -112,6 +66,8 @@ void monster::createMonsterClip()
         monsterHP[i] = {0 , sum, 128, 16};
         sum += 32;
     }
+    bloodClip = {0, 256, 160, 160};
+
 }
 
 bool monster::checkCollision( SDL_Rect a, SDL_Rect b )
@@ -133,31 +89,10 @@ bool monster::checkCollision( SDL_Rect a, SDL_Rect b )
     rightB = b.x + b.w;
     topB = b.y;
     bottomB = b.y + b.h;
-//    printf("%d %d %d %d\n", leftB, rightB, topB, bottomB);
-//    printf("%d %d %d %d\n", leftA, rightA, topA, bottomA);
-
-    //If any of the sides from A are outside of B
-    if( bottomA <= topB )
+    if( bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB)
     {
         return false;
     }
-
-    if( topA >= bottomB )
-    {
-        return false;
-    }
-
-    if( rightA <= leftB )
-    {
-        return false;
-    }
-
-    if( leftA >= rightB )
-    {
-        return false;
-    }
-
-    //If none of the sides from A are outside B
     return true;
 }
 bool monster::touchesWall( SDL_Rect boxMonster, tile tiles[] )
@@ -190,12 +125,27 @@ void monster::move(player mPlayer, tile tiles[], int pos_x)
             boxMonster.y -= velY;
         }
 
+    if(isHitting){
+        if(boxMonster.x > mPlayer.getPosX()){
+            boxMonster.x += 1;
+            if(touchesWall(boxMonster, tiles))
+                boxMonster.x -= 1;
+        }
+        else{
+            boxMonster.x -= 1;
+            if(touchesWall(boxMonster, tiles))
+                boxMonster.x += 1;
+        }
+
+    }
+
     if(checkCollision(boxMonster, mPlayer.getBox()))
     {
         isRunning = false;
         if(mPlayer.getIsttacking())
         {
             isHitting = true;
+
             isAttacking = false;
             isRunning = false;
             hp--;
@@ -241,6 +191,7 @@ void monster::move(player mPlayer, tile tiles[], int pos_x)
 
 
     }
+
     if(!checkCollision(boxMonster, mPlayer.getBox()))
     {
         if(!isRunning)
@@ -300,6 +251,8 @@ void monster::move(player mPlayer, tile tiles[], int pos_x)
         }
         if(!isIdle)
             boxMonster.x += velX;
+            if(touchesWall(boxMonster, tiles))
+                boxMonster.x -= velX;
     }
     if(!inZone){
         if(boxMonster.x > pos_x + 200 && boxMonster.x <= pos_x + 300){
@@ -312,13 +265,20 @@ void monster::move(player mPlayer, tile tiles[], int pos_x)
             flip = SDL_FLIP_NONE;
         }
     }
-    std::cout << boxMonster.x << std::endl;
 
 
 }
 
 void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mPlayer)
 {
+    boxBlood.x = boxMonster.x;
+    boxBlood.y = boxMonster.y+ 24;
+        if(blood){
+            mWindow.render(mTexture[HP_ENEMY_TEXTURE], boxMonster.x - camera.x, boxMonster.y - camera.y + 24,
+                           &bloodClip, 0, NULL, SDL_FLIP_NONE, 48, 48);
+        }
+        mWindow.renderBox(mPlayer.getBox());
+        mWindow.renderBox(boxBlood);
     if(is_death)
         return;
     if(hp > 0)
@@ -354,14 +314,7 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
         if(isHitting == true)
         {
             isIdle = false;
-            if(boxMonster.x > mPlayer.getPosX())
-            {
-                boxMonster.x += 1;
-            }
-            else
-            {
-                boxMonster.x -= 1;
-            }
+
             mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x, boxMonster.y - camera.y,
                            &monsterKnockBack[frame[FRAME_KNOCKBACK]/ (MONSTER_KNOCKBACK*50)], 0, NULL, flip, MONSTER_WIDTH, MONSTER_HEIGHT);
             frame[FRAME_KNOCKBACK]++;
@@ -395,14 +348,14 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
             for(int i = 0; i < MONSTER_HP;  i++){
                 if(i == hp)
                     mWindow.render(mTexture[HP_ENEMY_TEXTURE], boxMonster.x - camera.x + 35, boxMonster.y - camera.y - 10,
-                            &monsterHP[i], 0, NULL, flip, 48, 6);
+                            &monsterHP[i], 0, NULL, SDL_FLIP_NONE, 48, 6);
             }
         }
         else if(flip == SDL_FLIP_HORIZONTAL){
             for(int i = 0; i < MONSTER_HP;  i++){
                 if(i == hp)
                     mWindow.render(mTexture[HP_ENEMY_TEXTURE], boxMonster.x - camera.x + 10, boxMonster.y - camera.y - 10,
-                            &monsterHP[i], 0, NULL, flip, 48, 6);
+                            &monsterHP[i], 0, NULL, SDL_FLIP_NONE, 48, 6);
             }
         }
     }
@@ -415,6 +368,7 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
         {
             frame[FRAME_DEATH] = 0;
             is_death = true;
+            blood = true;
         }
 
     }
@@ -435,4 +389,22 @@ int monster::getPosX()
 
 bool monster::getMonsterAttack(){
     return attackPlayer;
+}
+
+//bool monster::checkBoxBlood(SDL_Rect boxPlayer){
+//    if(blood){
+//        if(checkCollision(boxBlood, boxPlayer)){
+////            std::cout << "chie" << std::endl;
+//            blood = false;
+//            return true;
+//        }
+//    }
+//    return false;
+//}
+
+SDL_Rect monster::getBoxBlood(){
+    if(blood)
+        return boxBlood;
+    else
+    return {0, 0, 0, 0};
 }

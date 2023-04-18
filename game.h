@@ -20,7 +20,7 @@ private:
     wizard mWizard[TOTAL_WIZARD];
     menu mMenu;
     SDL_Rect mTilesClip[256];
-
+    SDL_Rect bloodClip;
     SDL_Texture* mTexture[TOTAL_TEXTURE];
     bool on_ground;
     SDL_Rect camera;
@@ -31,7 +31,7 @@ private:
 public:
     commom();
     ~commom();
-
+    bool checkCollision(SDL_Rect a, SDL_Rect b);
     bool checkInit();
     bool checkLoadFile();
     void createTilesClip();
