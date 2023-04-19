@@ -20,31 +20,10 @@ bool ice_ball::checkCollision( SDL_Rect a, SDL_Rect b )
     rightB = b.x + b.w;
     topB = b.y;
     bottomB = b.y + b.h;
-//    printf("%d %d %d %d\n", leftB, rightB, topB, bottomB);
-//    printf("%d %d %d %d\n", leftA, rightA, topA, bottomA);
-
-    //If any of the sides from A are outside of B
-    if( bottomA <= topB )
+    if( bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB)
     {
         return false;
     }
-
-    if( topA >= bottomB )
-    {
-        return false;
-    }
-
-    if( rightA <= leftB )
-    {
-        return false;
-    }
-
-    if( leftA >= rightB )
-    {
-        return false;
-    }
-
-    //If none of the sides from A are outside B
     return true;
 }
 
@@ -117,5 +96,60 @@ SDL_Rect ice_ball::getBoxBall(){
 }
 
 bool ice_ball::getAttackPlayer(){
+    return attackPlayer;
+}
+
+
+fire_ball::fire_ball(){
+    boxBall = {0, 0, 32, 32};
+    boxBallClip = {0, 384, 80, 96};
+    initialPosX = 0;
+    isBan = true;
+    attackPlayer = false;
+}
+
+fire_ball::fire_ball(SDL_Rect box, SDL_RendererFlip flip){
+    if(flip == SDL_FLIP_NONE){
+        boxBall = {box.x + 48, box.y + 64, 32, 32};
+        initialPosX = boxBall.x;
+    }
+    else{
+        boxBall = {box.x - 48, box.y + 64, 32, 32};
+        initialPosX = boxBall.x;
+    }
+
+    boxBallClip = {0, 384, 80, 96};
+    isBan = true;
+    attackPlayer = false;
+}
+
+void fire_ball::move(SDL_RendererFlip flip, SDL_Rect boxPlayer){
+    if(flip == SDL_FLIP_NONE){
+        if(isBan) boxBall.x += BULLET_VEL;
+    }
+    if(flip == SDL_FLIP_HORIZONTAL){
+        if(isBan) boxBall.x -= BULLET_VEL;
+    }
+    if(abs(initialPosX - boxBall.x) > 500) isBan = false;
+    if(checkCollision(boxBall, boxPlayer)){
+        attackPlayer = true;
+        isBan = false;
+    }
+}
+void fire_ball::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]){
+    if(isBan) mWindow.render(mTexture[WIZARD_TEXTURE], boxBall.x - camera.x, boxBall.y - camera.y ,
+                   &boxBallClip, 0, NULL, SDL_FLIP_HORIZONTAL, 40, 48);
+}
+
+bool fire_ball::getBan()
+{
+    return isBan;
+}
+
+SDL_Rect fire_ball::getBoxBall(){
+    return boxBall;
+}
+
+bool fire_ball::getAttackPlayer(){
     return attackPlayer;
 }

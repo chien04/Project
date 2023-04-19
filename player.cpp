@@ -260,12 +260,19 @@ void player::move(tile tiles[])
     }
 
 }
-void player::setIsTakeHit(bool x, bool y)
+void player::setIsTakeHit(int damage)
 {
-    if(x == false && y == false)
-        isTakeHit = false;
-    else
+    if(isTakeHit){
+        if(damage == 0)
+            isTakeHit = true;
+    }
+    else{
+        if(damage == 0)
+            isTakeHit = false;
+    }
+    if(damage != 0)
         isTakeHit = true;
+    hp -= damage;
 
 }
 
@@ -277,7 +284,6 @@ bool player::isTakeHitByMonster()
 void player::setHP(){
     if(hp < PLAYER_HEALTH - 1)
         hp += 1;
-    std::cout << "cc" << std::endl;
 }
 void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[])
 {
@@ -371,7 +377,6 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                 {
                     frame_takehit = 0;
                     isTakeHit = false;
-                    hp--;
                 }
             }
         }

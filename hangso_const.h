@@ -97,6 +97,10 @@ const int BOSS_HEIGHT = 150*6/5;
 const int BOSS_VEL = 3;
 
 const int BOSS_IDLE = 7;
+const int BOSS_TAKEHIT = 5;
+const int BOSS_ATTACK1 = 17;
+const int BOSS_ATTACK2 = 13;
+const int BOSS_SKILL2 = 11;
 const int RESTART_GAME_WIDTH = 500;
 const int RESTART_GAME_HEIGHT = 400;
 #endif // CONST_H

@@ -269,6 +269,9 @@ void monster::move(player mPlayer, tile tiles[], int pos_x)
 
 }
 
+void monster::setBlood(){
+    blood = false;
+}
 void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mPlayer)
 {
     boxBlood.x = boxMonster.x;

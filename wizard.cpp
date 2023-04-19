@@ -171,15 +171,6 @@ void wizard::move(player mPlayer, tile tiles[], int pos_x)
         inZone = false;
         frame[ATTACK] = 0;
     }
-    if(boxWizard.x > mPlayer.getPosX())
-    {
-        flip = SDL_FLIP_HORIZONTAL;
-    }
-    else
-    {
-        flip = SDL_FLIP_NONE;
-    }
-
 }
 
 void wizard::setPosX(int posX)

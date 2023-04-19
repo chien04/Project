@@ -24,6 +24,7 @@ commom::commom(){
     }
     check = false;
     check_ball = false;
+    damage = 0;
 }
 
 commom::~commom(){
@@ -179,30 +180,29 @@ void commom::render(){
         mMonster[i].move(mPlayer, mtile, posX_monster[i]);
         mMonster[i].render(mWindow, camera, mTexture, mPlayer);
         if(checkCollision(mPlayer.getBox(), mMonster[i].getBoxBlood())){
-            std::cout << "not" << std::endl;
             mPlayer.setHP();
+            mMonster[i].setBlood();
         }
-        if(mMonster[i].getMonsterAttack()){
-            check = true;
-            break;
-        }
-        else
-            check = false;
+        if(mMonster[i].getMonsterAttack())
+            damage += 1;
+
     }
     for(int i = 0; i < TOTAL_WIZARD; i++){
         mWizard[i].setPosX(posX_wizard[i]);
         mWizard[i].move(mPlayer, mtile, posX_wizard[i]);
         mWizard[i].render(mWindow, camera, mTexture, mPlayer);
-        if(mWizard[i].getAttackPlayer()){
-            check_ball = true;
-            break;
-        }
-        else
-            check_ball = false;
+        if(mWizard[i].getAttackPlayer())
+            damage += 1;
+
     }
-    if(check == true || check_ball == true)
-        mPlayer.setIsTakeHit(check, check_ball);
+    mBoss.setPosX();
+    mBoss.move(mtile, mPlayer);
+    mBoss.render(mWindow, camera, mTexture, mPlayer);
+    if(mBoss.getAttackPlayer())
+        damage += 1;
+    mPlayer.setIsTakeHit(damage);
     mPlayer.render(mWindow, camera, mTexture);
+    damage = 0;
     mWindow.renderBox(mPlayer.getBox());
     if(mPlayer.getIsDeath()){
         mMenu.render(mWindow, mTexture);

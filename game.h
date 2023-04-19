@@ -8,6 +8,7 @@
 #include "player.h"
 #include "monster.h"
 #include "wizard.h"
+#include "boss.h"
 #include "menu.h"
 class commom{
 private:
@@ -18,6 +19,7 @@ private:
     player mPlayer;
     monster mMonster[TOTAL_MONSTER];
     wizard mWizard[TOTAL_WIZARD];
+    boss mBoss;
     menu mMenu;
     SDL_Rect mTilesClip[256];
     SDL_Rect bloodClip;
@@ -28,6 +30,7 @@ private:
     int posX_wizard[TOTAL_WIZARD];
     bool check;
     bool check_ball;
+    int damage;
 public:
     commom();
     ~commom();

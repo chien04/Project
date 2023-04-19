@@ -22,6 +22,7 @@ public:
     bool getMonsterAttack();
 //    bool checkBoxBlood(SDL_Rect boxPlayer);
     SDL_Rect getBoxBlood();
+    void setBlood();
 
 private:
     SDL_Rect boxMonster;

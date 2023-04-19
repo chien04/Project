@@ -24,7 +24,7 @@ public:
 
     int getPosX();
     bool getIsttacking();
-    void setIsTakeHit(bool x, bool y);
+    void setIsTakeHit(int damage);
     bool isTakeHitByMonster();
     bool getIsDeath();
     void setHP();
