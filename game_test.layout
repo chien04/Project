@@ -2,24 +2,9 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Release" />
-	<File name="game.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+	<File name="base.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5815" topLine="189" />
-		</Cursor>
-	</File>
-	<File name="wizard.h" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1150" topLine="28" />
-		</Cursor>
-	</File>
-	<File name="menu.cpp" open="1" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="365" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="591" topLine="5" />
+			<Cursor1 position="747" topLine="16" />
 		</Cursor>
 	</File>
 	<File name="monster.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
@@ -27,29 +12,19 @@
 			<Cursor1 position="241" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="menu.h" open="1" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="211" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="game.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="725" topLine="14" />
-		</Cursor>
-	</File>
-	<File name="player.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="621" topLine="14" />
-		</Cursor>
-	</File>
-	<File name="boss.cpp" open="1" top="1" tabpos="20" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7147" topLine="239" />
-		</Cursor>
-	</File>
 	<File name="hangso_const.h" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2178" topLine="88" />
+			<Cursor1 position="154" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="player.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9645" topLine="358" />
+		</Cursor>
+	</File>
+	<File name="monster.cpp" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4623" topLine="134" />
 		</Cursor>
 	</File>
 	<File name="base.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
@@ -57,34 +32,44 @@
 			<Cursor1 position="2751" topLine="59" />
 		</Cursor>
 	</File>
+	<File name="menu.h" open="1" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="211" topLine="0" />
+		</Cursor>
+	</File>
 	<File name="boss.h" open="1" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1221" topLine="34" />
+			<Cursor1 position="960" topLine="23" />
 		</Cursor>
 	</File>
 	<File name="ice_ball.cpp" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3629" topLine="117" />
+			<Cursor1 position="3458" topLine="68" />
 		</Cursor>
 	</File>
-	<File name="monster.cpp" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
+	<File name="main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3928" topLine="152" />
+			<Cursor1 position="591" topLine="5" />
+		</Cursor>
+	</File>
+	<File name="tile_map.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1049" topLine="30" />
+		</Cursor>
+	</File>
+	<File name="player.h" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="621" topLine="14" />
+		</Cursor>
+	</File>
+	<File name="game.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5672" topLine="190" />
 		</Cursor>
 	</File>
 	<File name="ice_ball.h" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="662" topLine="22" />
-		</Cursor>
-	</File>
-	<File name="player.cpp" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="211" topLine="5" />
-		</Cursor>
-	</File>
-	<File name="wizard.cpp" open="1" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7115" topLine="251" />
+			<Cursor1 position="662" topLine="21" />
 		</Cursor>
 	</File>
 	<File name="tile_map.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
@@ -92,14 +77,29 @@
 			<Cursor1 position="57" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="tile_map.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+	<File name="wizard.h" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1049" topLine="0" />
+			<Cursor1 position="1150" topLine="28" />
 		</Cursor>
 	</File>
-	<File name="base.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
+	<File name="game.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="747" topLine="16" />
+			<Cursor1 position="725" topLine="14" />
+		</Cursor>
+	</File>
+	<File name="boss.cpp" open="1" top="1" tabpos="20" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7394" topLine="258" />
+		</Cursor>
+	</File>
+	<File name="wizard.cpp" open="1" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7157" topLine="215" />
+		</Cursor>
+	</File>
+	<File name="menu.cpp" open="1" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="365" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

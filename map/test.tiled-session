@@ -8,15 +8,15 @@
     ],
     "fileStates": {
         "test.tmx": {
-            "scale": 0.5,
+            "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 5615,
-                "y": 1898
+                "x": 6074,
+                "y": 2345.333333333333
             }
         },
         "tiles - Copy - Copy.tsx": {
-            "scaleInDock": 0.75,
+            "scaleInDock": 0.33,
             "scaleInEditor": 1
         }
     },

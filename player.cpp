@@ -270,9 +270,10 @@ void player::setIsTakeHit(int damage)
         if(damage == 0)
             isTakeHit = false;
     }
-    if(damage != 0)
+    if(damage != 0){
         isTakeHit = true;
-    hp -= damage;
+//        hp -= damage;
+    }
 
 }
 
@@ -365,7 +366,6 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                 {
                     frame_takehit = 0;
                     isTakeHit = false;
-                    hp--;
                 }
             }
             else if(flip == SDL_FLIP_HORIZONTAL)

@@ -5,7 +5,7 @@ const int TILE_WIDTH = 48;
 const int TILE_HEIGHT = 48;
 const int TOTAL_TILES = 500*50;
 
-const int WIDTH_MAP = 500*48;
+const int WIDTH_MAP = 250*48;
 const int HEIGHT_MAP = 50*48;
 
 const int TILES_CLIP = 100;
@@ -97,6 +97,7 @@ const int BOSS_HEIGHT = 150*6/5;
 const int BOSS_VEL = 3;
 
 const int BOSS_IDLE = 7;
+const int BOSS_RUNNING = 8;
 const int BOSS_TAKEHIT = 5;
 const int BOSS_ATTACK1 = 17;
 const int BOSS_ATTACK2 = 13;

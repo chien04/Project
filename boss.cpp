@@ -2,16 +2,19 @@
 
 boss::boss()
 {
-    boxBoss = {0, 0, BOSS_WIDTH, BOSS_HEIGHT};
-    velX = 0;
+    boxBoss = {6240, 0, BOSS_WIDTH, BOSS_HEIGHT};
+    velX = BOSS_VEL;
     velY = 10;
     flip = SDL_FLIP_NONE;
     flip_ball = SDL_FLIP_NONE;
     frame_idle = 0;
+    frame_run = 0;
     frame_takehit = 0;
     frame_attack1 = 0;
     frame_attack2 = 0;
     frame_skill = 0;
+    random_posX = boxBoss.x;
+    random_posXcurrent = random_posX;
     ban = false;
     lightning = false;
     isIdle = false;
@@ -92,6 +95,11 @@ void boss::createClip()
         sum += 480;
     }
 
+    sum = 96;
+    for(int i = 0; i < BOSS_RUNNING; i++){
+        bossRun[i] = {sum, 1168, 256, 304};
+        sum += 480;
+    }
 
     sum = 112;
     for(int i = 0; i < BOSS_SKILL2; i++)
@@ -103,7 +111,7 @@ void boss::createClip()
 
 void boss::setPosX()
 {
-    posX = 100;
+    posX = boxBoss.x;
 }
 void boss::move(tile tiles[], player mPlayer)
 {
@@ -124,25 +132,64 @@ void boss::move(tile tiles[], player mPlayer)
                 hp = 0;
         }
     }
-    if(isAttacking)
-        return;
 
     if(boxBoss.x > mPlayer.getPosX())
         flip = SDL_FLIP_HORIZONTAL;
     else
         flip = SDL_FLIP_NONE;
 
-    SDL_Rect boxAttack = {posX - 500, boxBoss.y, posX + 700, BOSS_HEIGHT};
-    if(checkCollision(boxAttack, mPlayer.getBox()))
-    {
-//        std::cout << "ch" << std::endl;
-        isAttacking = true;
-        isIdle = false;
+    if(ban) {
+        if(!isAttacking){
+            isIdle = true;
+            return;
+        }
     }
-    if(!checkCollision(boxAttack, mPlayer.getBox()))
-    {
-        isIdle = true;
+    if(isAttacking)
+        return;
+
+
+    SDL_Rect boxAttack = {posX - 500, boxBoss.y, posX + 500, BOSS_HEIGHT};
+//    if(checkCollision(boxAttack, mPlayer.getBox()))
+//    {
+////        std::cout << "ch" << std::endl;
+//        isAttacking = true;
+//        isIdle = false;
+//    }
+
+    if(checkCollision(boxAttack, mPlayer.getBox())){
+        if(!isAttacking){
+            isRunning = true;
+            isIdle = false;
+        }
     }
+    if(isRunning){
+
+        if(boxBoss.x < random_posX){
+            flip = SDL_FLIP_NONE;
+            boxBoss.x += 1;
+        }
+        if(boxBoss.x > random_posX){
+            flip = SDL_FLIP_HORIZONTAL;
+            boxBoss.x -= 1;
+        }
+        if(boxBoss.x == random_posX){
+            setPosX();
+            std::cout << boxBoss.x << std::endl;
+            random_posXcurrent = random_posX;
+            random_posX = rand() % (6760 - 5720 + 1) + 5720;
+            isRunning = false;
+            isAttacking = true;
+
+        }
+    }
+    if(!isRunning){
+        if(!checkCollision(boxAttack, mPlayer.getBox()))
+        {
+            isIdle = true;
+            isAttacking = false;
+        }
+    }
+
 
 }
 
@@ -154,6 +201,15 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
     }
     if(hp > 0)
     {
+        if(isRunning)
+        {
+            mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
+                           &bossRun[frame_run / BOSS_RUNNING], 0, NULL, flip, BOSS_WIDTH, BOSS_HEIGHT);
+            frame_run++;
+            if(frame_run / BOSS_RUNNING >= BOSS_RUNNING){
+                frame_run = 0;
+            }
+        }
         if(isIdle)
         {
             mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
@@ -180,19 +236,23 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
             if(res == 0){
                 mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y + 12,
                            &bossAttack1[frame_attack1 / BOSS_ATTACK1], 0, NULL, flip, BOSS_WIDTH, BOSS_HEIGHT);
-                if(mBall.size() == 0)
-                {
-                    mBall.push_back(fire_ball(boxBoss, flip_ball));
+                if(frame_attack1 == 0){
+                    if(mBall.size() == 0)
+                    {
+//                    if(frame_attack1 == 0){
+                        mBall.push_back(fire_ball(boxBoss, flip_ball));
+//                        std::cout << " " << mBall[0].getBan() << std::endl;
+                    }
                 }
 
                 frame_attack1++;
-                if(frame_attack1/ BOSS_ATTACK1 == 11 )
+                if(frame_attack1 == 11 * BOSS_ATTACK1)
                 {
                     ban = true;
                 }
                 if(frame_attack1 / (BOSS_ATTACK1) >= BOSS_ATTACK1)
                 {
-                    res = rand() % 2;
+                    res = rand() % 1;
                     isAttacking = false;
                     frame_attack1 = 0;
                 }
@@ -205,7 +265,7 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
                     lightning = true;
                 if(frame_attack2 / BOSS_ATTACK2 >= BOSS_ATTACK2)
                 {
-                    res = rand() % 2;
+                    res = rand() % 1;
                     frame_attack2 = 0;
                     isAttacking = false;
                 }
@@ -235,16 +295,17 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
             else
                 attackPlayer = false;
 
+//            std::cout << ban << std::endl;
             if(lightning)
             {
                 if(frame_skill == 0){
-                    lightningPosX = mplayer.getPosX() - camera.x;
+                    lightningPosX = mplayer.getPosX();
                     lightningBox.x = mplayer.getPosX() - 12;
                     lightningBox.y = boxBoss.y - 32;
                     lightningBox.w = 128;
                     lightningBox.h = 256;
                 }
-                mWindow.render(mTexture[WIZARD_TEXTURE], lightningPosX - 12, boxBoss.y - camera.y - 32,
+                mWindow.render(mTexture[WIZARD_TEXTURE], lightningPosX - 12 - camera.x, boxBoss.y - camera.y - 32,
                                &bossSkill2[frame_skill / (BOSS_SKILL2 * 2)], 0, NULL, SDL_FLIP_NONE, 128, 256);
                 frame_skill++;
                 if(frame_skill == 88){

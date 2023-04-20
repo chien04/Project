@@ -112,10 +112,12 @@ fire_ball::fire_ball(SDL_Rect box, SDL_RendererFlip flip){
     if(flip == SDL_FLIP_NONE){
         boxBall = {box.x + 48, box.y + 64, 32, 32};
         initialPosX = boxBall.x;
+        std::cout << "NONE " << initialPosX << std::endl;
     }
     else{
         boxBall = {box.x - 48, box.y + 64, 32, 32};
         initialPosX = boxBall.x;
+        std::cout << "HOZIRENTIAL " << initialPosX << std::endl;
     }
 
     boxBallClip = {0, 384, 80, 96};
@@ -131,6 +133,7 @@ void fire_ball::move(SDL_RendererFlip flip, SDL_Rect boxPlayer){
         if(isBan) boxBall.x -= BULLET_VEL;
     }
     if(abs(initialPosX - boxBall.x) > 500) isBan = false;
+
     if(checkCollision(boxBall, boxPlayer)){
         attackPlayer = true;
         isBan = false;

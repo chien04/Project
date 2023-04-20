@@ -25,11 +25,15 @@ private:
     SDL_RendererFlip flip;
     SDL_RendererFlip flip_ball;
     SDL_Rect bossIdle[BOSS_IDLE];
+    SDL_Rect bossRun[BOSS_RUNNING];
     SDL_Rect bossTakeHit[BOSS_TAKEHIT];
     SDL_Rect bossAttack1[BOSS_ATTACK1];
     SDL_Rect bossAttack2[BOSS_ATTACK2];
     SDL_Rect bossSkill2[BOSS_SKILL2];
     int frame_idle;
+    int frame_run;
+    int random_posX;
+    int random_posXcurrent;
     int frame_takehit;
     int frame_attack1;
     int frame_attack2;
