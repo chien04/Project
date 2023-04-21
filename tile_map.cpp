@@ -60,46 +60,46 @@ bool gameMap::loadMap( tile tiles[]){
 }
 
 void gameMap::renderMap(int velX, SDL_RendererFlip flip, createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[],tile tiles[], SDL_Rect mTilesClip[]){
-    if(velX == 0){
-//            std::cout << play.getVelX() << std::endl;
-        mWindow.render(mTexture[BACK_TEXTURE], scrolling_back, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-        mWindow.render(mTexture[BACK_TEXTURE], scrolling_back + SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-        mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-        mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle + SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-    }
-    else {
-        if(flip == SDL_FLIP_NONE){
-            scrolling_back -= 0.75;
-            scrolling_middle -= 0.5;
-
-            if(scrolling_back < -SCREEN_WIDTH){
-                scrolling_back = 0;
-            }
-            if(scrolling_middle < -SCREEN_WIDTH){
-                scrolling_middle = 0;
-            }
-        }
-        mWindow.render(mTexture[BACK_TEXTURE], scrolling_back, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-        mWindow.render(mTexture[BACK_TEXTURE], scrolling_back + SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-        mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-        mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle + SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-        if(flip == SDL_FLIP_HORIZONTAL){
-            scrolling_back += 0.75;
-            scrolling_middle += 0.5;
-
-            if(scrolling_back > SCREEN_WIDTH){
-                scrolling_back = 0;
-            }
-            if(scrolling_middle > SCREEN_WIDTH){
-                scrolling_middle = 0;
-            }
-        }
-            mWindow.render(mTexture[BACK_TEXTURE], scrolling_back, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-            mWindow.render(mTexture[BACK_TEXTURE], scrolling_back - SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-            mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-            mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle - SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-    }
+//    if(velX == 0){
+////            std::cout << play.getVelX() << std::endl;
+//        mWindow.render(mTexture[BACK_TEXTURE], scrolling_back, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//        mWindow.render(mTexture[BACK_TEXTURE], scrolling_back + SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//        mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//        mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle + SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//    }
+//    else {
+//        if(flip == SDL_FLIP_NONE){
+//            scrolling_back -= 0.75;
+//            scrolling_middle -= 0.5;
+//
+//            if(scrolling_back < -SCREEN_WIDTH){
+//                scrolling_back = 0;
+//            }
+//            if(scrolling_middle < -SCREEN_WIDTH){
+//                scrolling_middle = 0;
+//            }
+//        }
+//        mWindow.render(mTexture[BACK_TEXTURE], scrolling_back, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//        mWindow.render(mTexture[BACK_TEXTURE], scrolling_back + SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//        mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//        mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle + SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//
+//        if(flip == SDL_FLIP_HORIZONTAL){
+//            scrolling_back += 0.75;
+//            scrolling_middle += 0.5;
+//
+//            if(scrolling_back > SCREEN_WIDTH){
+//                scrolling_back = 0;
+//            }
+//            if(scrolling_middle > SCREEN_WIDTH){
+//                scrolling_middle = 0;
+//            }
+//        }
+//            mWindow.render(mTexture[BACK_TEXTURE], scrolling_back, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//            mWindow.render(mTexture[BACK_TEXTURE], scrolling_back - SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//            mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//            mWindow.render(mTexture[MIDDLE_TEXTURE], scrolling_middle - SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+//    }
     for(int i = 0; i < TOTAL_TILES; i++){
         int x = tiles[i].getX_position();
         int y = tiles[i].getY_position();

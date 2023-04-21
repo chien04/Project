@@ -110,14 +110,14 @@ fire_ball::fire_ball(){
 
 fire_ball::fire_ball(SDL_Rect box, SDL_RendererFlip flip){
     if(flip == SDL_FLIP_NONE){
-        boxBall = {box.x + 48, box.y + 64, 32, 32};
+        boxBall = {box.x + 64, box.y + 80, 40, 48};
         initialPosX = boxBall.x;
-        std::cout << "NONE " << initialPosX << std::endl;
+//        std::cout << "NONE " << initialPosX << std::endl;
     }
-    else{
-        boxBall = {box.x - 48, box.y + 64, 32, 32};
+    if(flip == SDL_FLIP_HORIZONTAL){
+        boxBall = {box.x - 48, box.y + 80, 40, 48};
         initialPosX = boxBall.x;
-        std::cout << "HOZIRENTIAL " << initialPosX << std::endl;
+//        std::cout << "HOZIRENTIAL " << initialPosX << std::endl;
     }
 
     boxBallClip = {0, 384, 80, 96};
@@ -140,7 +140,8 @@ void fire_ball::move(SDL_RendererFlip flip, SDL_Rect boxPlayer){
     }
 }
 void fire_ball::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]){
-    if(isBan) mWindow.render(mTexture[WIZARD_TEXTURE], boxBall.x - camera.x, boxBall.y - camera.y ,
+    if(isBan)
+        mWindow.render(mTexture[WIZARD_TEXTURE], boxBall.x - camera.x, boxBall.y - camera.y + 32,
                    &boxBallClip, 0, NULL, SDL_FLIP_HORIZONTAL, 40, 48);
 }
 

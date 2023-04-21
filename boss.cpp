@@ -13,6 +13,7 @@ boss::boss()
     frame_attack1 = 0;
     frame_attack2 = 0;
     frame_skill = 0;
+    frame_death = 0;
     random_posX = boxBoss.x;
     random_posXcurrent = random_posX;
     ban = false;
@@ -23,7 +24,7 @@ boss::boss()
     attackPlayer = false;
     isTakeHit = false;
     isDeath = false;
-    hp = 6;
+    hp = 25;
     res = 0;
     lightningPosX = 0;
     lightningBox = {0, 0, 128, 256};
@@ -79,7 +80,7 @@ void boss::createClip()
     int sum = 32;
     for(int i = 0; i < BOSS_IDLE; i++)
     {
-        bossIdle[i] = {sum, 48, 276, 336};
+        bossIdle[i] = {sum, 48, 272, 336};
         sum += 960;
     }
     sum = 48;
@@ -91,7 +92,7 @@ void boss::createClip()
     sum = 80;
     for(int i = 0; i < BOSS_ATTACK2; i++)
     {
-        bossAttack2[i] = {sum, 1680, 352, 529};
+        bossAttack2[i] = {sum, 1680, 352, 528};
         sum += 480;
     }
 
@@ -107,6 +108,23 @@ void boss::createClip()
         bossSkill2[i] = {sum, 400, 64, 96};
         sum += 64;
     }
+
+    sum = 0;
+    for(int i = 0; i < BOSS_TAKEHIT; i++){
+        bossTakeHit[i] = {sum, 4208, 288, 336};
+        sum += 304;
+    }
+
+    sum = 0;
+    for(int i = BOSS_HP - 1; i >= 0; i--){
+        bossHP[i] = {0, sum, 400, 32};
+        sum += 48;
+    }
+    sum = 64;
+    for(int i = 0; i < BOSS_DEATH; i++){
+        bossDeath[i] = {sum, 4992, 288, 320};
+        sum += 480;
+    }
 }
 
 void boss::setPosX()
@@ -115,6 +133,8 @@ void boss::setPosX()
 }
 void boss::move(tile tiles[], player mPlayer)
 {
+    if(isDeath)
+        return;
     boxBoss.y += velY;
     if(boxBoss.y < 0 || boxBoss.y + BOSS_HEIGHT > HEIGHT_MAP || touchesWall(boxBoss, tiles))
     {
@@ -127,34 +147,28 @@ void boss::move(tile tiles[], player mPlayer)
             isTakeHit = true;
             isAttacking = false;
             isIdle = false;
-            hp--;
-            if(hp < 0)
-                hp = 0;
+            isRunning = false;
         }
     }
 
-    if(boxBoss.x > mPlayer.getPosX())
-        flip = SDL_FLIP_HORIZONTAL;
-    else
-        flip = SDL_FLIP_NONE;
-
+    if(isTakeHit)
+        return;
     if(ban) {
         if(!isAttacking){
             isIdle = true;
             return;
         }
     }
-    if(isAttacking)
+    if(isAttacking){
+        if(boxBoss.x > mPlayer.getPosX())
+            flip = SDL_FLIP_HORIZONTAL;
+        else
+            flip = SDL_FLIP_NONE;
         return;
+    }
 
 
-    SDL_Rect boxAttack = {posX - 500, boxBoss.y, posX + 500, BOSS_HEIGHT};
-//    if(checkCollision(boxAttack, mPlayer.getBox()))
-//    {
-////        std::cout << "ch" << std::endl;
-//        isAttacking = true;
-//        isIdle = false;
-//    }
+    SDL_Rect boxAttack = {posX - 500, boxBoss.y, posX + 500, BOSS_HEIGHT*10};
 
     if(checkCollision(boxAttack, mPlayer.getBox())){
         if(!isAttacking){
@@ -166,17 +180,17 @@ void boss::move(tile tiles[], player mPlayer)
 
         if(boxBoss.x < random_posX){
             flip = SDL_FLIP_NONE;
-            boxBoss.x += 1;
+            boxBoss.x += velX;
         }
         if(boxBoss.x > random_posX){
             flip = SDL_FLIP_HORIZONTAL;
-            boxBoss.x -= 1;
+            boxBoss.x -= velX;
         }
         if(boxBoss.x == random_posX){
             setPosX();
-            std::cout << boxBoss.x << std::endl;
-            random_posXcurrent = random_posX;
+//            std::cout << boxBoss.x << " " << random_posX << std::endl;
             random_posX = rand() % (6760 - 5720 + 1) + 5720;
+            random_posX = random_posX - random_posX % velX + boxBoss.x % velX;
             isRunning = false;
             isAttacking = true;
 
@@ -195,16 +209,23 @@ void boss::move(tile tiles[], player mPlayer)
 
 void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer)
 {
+    if(isDeath)
+        return;
     if(!ban)
     {
         flip_ball = flip;
+    }
+    for(int i = 0; i < BOSS_HP; i++){
+        if(i == hp)
+            mWindow.render(mTexture[BOSS_HP_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
+                           &bossHP[i], 0, NULL, SDL_FLIP_NONE, 300, 20);
     }
     if(hp > 0)
     {
         if(isRunning)
         {
             mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
-                           &bossRun[frame_run / BOSS_RUNNING], 0, NULL, flip, BOSS_WIDTH, BOSS_HEIGHT);
+                           &bossRun[frame_run / BOSS_RUNNING], 0, NULL, flip, BOSS_WIDTH*16/17, BOSS_HEIGHT*19/21);
             frame_run++;
             if(frame_run / BOSS_RUNNING >= BOSS_RUNNING){
                 frame_run = 0;
@@ -223,19 +244,26 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
         if(isTakeHit)
         {
             mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
-                           &bossTakeHit[frame_takehit / BOSS_TAKEHIT], 0, NULL, flip, BOSS_WIDTH, BOSS_HEIGHT);
-            frame_takehit = 0;
-            if(frame_takehit / BOSS_TAKEHIT >= BOSS_TAKEHIT)
+                           &bossTakeHit[frame_takehit / (BOSS_TAKEHIT * 4)], 0, NULL, flip, BOSS_WIDTH*(18/17), BOSS_HEIGHT);
+            frame_takehit++;
+            if(frame_takehit / (BOSS_TAKEHIT * 4) >= BOSS_TAKEHIT)
             {
+                hp--;
+                if(hp < 0)
+                    hp = 0;
                 frame_takehit = 0;
                 isTakeHit = false;
+                boxBoss.x = random_posX;
+                frame_attack1 = 0;
+                frame_attack2 = 0;
+                mBall.clear();
             }
         }
         if(isAttacking)
         {
             if(res == 0){
                 mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y + 12,
-                           &bossAttack1[frame_attack1 / BOSS_ATTACK1], 0, NULL, flip, BOSS_WIDTH, BOSS_HEIGHT);
+                           &bossAttack1[frame_attack1 / BOSS_ATTACK1], 0, NULL, flip, BOSS_WIDTH *(20/17), BOSS_HEIGHT);
                 if(frame_attack1 == 0){
                     if(mBall.size() == 0)
                     {
@@ -252,20 +280,20 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
                 }
                 if(frame_attack1 / (BOSS_ATTACK1) >= BOSS_ATTACK1)
                 {
-                    res = rand() % 1;
+                    res = rand() % 2;
                     isAttacking = false;
                     frame_attack1 = 0;
                 }
             }
             if(res == 1){
-                mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
-                               &bossAttack2[frame_attack2 / BOSS_ATTACK2], 0, NULL, flip, BOSS_WIDTH, BOSS_HEIGHT);
+                mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y - 120,
+                               &bossAttack2[frame_attack2 / BOSS_ATTACK2], 0, NULL, flip, BOSS_WIDTH*22/17, BOSS_HEIGHT*11/7);
                 frame_attack2++;
                 if(frame_attack2 / BOSS_ATTACK2 == 9)
                     lightning = true;
                 if(frame_attack2 / BOSS_ATTACK2 >= BOSS_ATTACK2)
                 {
-                    res = rand() % 1;
+                    res = rand() % 2;
                     frame_attack2 = 0;
                     isAttacking = false;
                 }
@@ -305,7 +333,7 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
                     lightningBox.w = 128;
                     lightningBox.h = 256;
                 }
-                mWindow.render(mTexture[WIZARD_TEXTURE], lightningPosX - 12 - camera.x, boxBoss.y - camera.y - 32,
+                mWindow.render(mTexture[WIZARD_TEXTURE], lightningPosX - 12 - camera.x, boxBoss.y - camera.y,
                                &bossSkill2[frame_skill / (BOSS_SKILL2 * 2)], 0, NULL, SDL_FLIP_NONE, 128, 256);
                 frame_skill++;
                 if(frame_skill == 88){
@@ -324,6 +352,16 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
 
 
     }
+    if(hp == 0){
+         mWindow.render(mTexture[WIZARD_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
+                               &bossDeath[frame_death / (BOSS_DEATH * 4)], 0, NULL, flip, BOSS_WIDTH * 18/17, BOSS_HEIGHT * 20/21);
+        frame_death++;
+        if(frame_death / (BOSS_DEATH * 4) >= BOSS_DEATH){
+            frame_death = 0;
+            isDeath = true;
+        }
+    }
+    std::cout << isTakeHit << std::endl;
 }
 
 bool boss::getAttackPlayer(){

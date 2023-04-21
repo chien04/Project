@@ -36,6 +36,7 @@ enum textureID{
     HP_ENEMY_TEXTURE,
     MENU_TEXTURE,
     BOSS_TEXTURE,
+    BOSS_HP_TEXTURE,
     TOTAL_TEXTURE
 };
 
@@ -91,17 +92,18 @@ enum wizardId{
 const int BULLET_VEL = 3;
 
 
-const int BOSS_WIDTH = 150;
-const int BOSS_HEIGHT = 150*6/5;
+const int BOSS_WIDTH = 170;
+const int BOSS_HEIGHT = 210;
 
-const int BOSS_VEL = 3;
-
+const int BOSS_VEL = 2;
+const int BOSS_HP = 26;
 const int BOSS_IDLE = 7;
 const int BOSS_RUNNING = 8;
 const int BOSS_TAKEHIT = 5;
 const int BOSS_ATTACK1 = 17;
 const int BOSS_ATTACK2 = 13;
 const int BOSS_SKILL2 = 11;
+const int BOSS_DEATH = 9;
 const int RESTART_GAME_WIDTH = 500;
 const int RESTART_GAME_HEIGHT = 400;
 #endif // CONST_H
