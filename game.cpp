@@ -7,23 +7,67 @@ commom::commom(){
     createTilesClip();
     camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 
-    mMonster[0] = monster(500, 0);
-    mMonster[1] = monster(700, 0);
-    mMonster[2] = monster(1000, 0);
-    posX_monster[0] = mMonster[0].getPosX();
-    posX_monster[1] = mMonster[1].getPosX();
-    posX_monster[2] = mMonster[2].getPosX();
+    mMonster.push_back(monster(2016, 1269));
+    mMonster.push_back(monster(2160, 1269));
+    mMonster.push_back(monster(2832, 1269));
+    mMonster.push_back(monster(3792, 1221));
+    mMonster.push_back(monster(4320, 1221));
+    mMonster.push_back(monster(5184, 1509));
+    mMonster.push_back(monster(5760, 1509));
+    mMonster.push_back(monster(6144, 1221));
+    mMonster.push_back(monster(6624, 1221));
+    mMonster.push_back(monster(6960, 1221));
+    mMonster.push_back(monster(6672, 693));
+    mMonster.push_back(monster(7632, 981));
+    mMonster.push_back(monster(8112, 981));
+    mMonster.push_back(monster(8352, 1365));
+    mMonster.push_back(monster(8256, 1605));
+    mMonster.push_back(monster(8880, 1269));
+    mMonster.push_back(monster(9504, 1269));
+    mMonster.push_back(monster(9696, 1269));
+    mMonster.push_back(monster(10416, 1793));
+    mMonster.push_back(monster(10944, 1653));
+    mMonster.push_back(monster(11136, 981));
+    mMonster.push_back(monster(12672, 1413));
+    mMonster.push_back(monster(11856, 693));
+    mMonster.push_back(monster(12768, 1701));
+    mMonster.push_back(monster(13728, 837));
+    mMonster.push_back(monster(13488, 1605));
+    mMonster.push_back(monster(13632, 1605));
+    mMonster.push_back(monster(13824, 1605));
+    mMonster.push_back(monster(14256, 1509));
+    mMonster.push_back(monster(15840, 1221));
+    mMonster.push_back(monster(11760, 2037));
+    mMonster.push_back(monster(12288, 2133));
 
 
-    mWizard[0] = wizard(500, 0);
-    mWizard[1] = wizard(1400, 0);
-    mWizard[2] = wizard(1800, 0);
 
-    for(int i = 0; i < TOTAL_WIZARD; i++){
-        posX_wizard[i] = mWizard[i].getPosX();
-    }
-    check = false;
-    check_ball = false;
+
+    mWizard.push_back(wizard(2592, 1208));
+    mWizard.push_back(wizard(3120, 1120));
+    mWizard.push_back(wizard(3600, 1120));
+    mWizard.push_back(wizard(4560, 1120));
+    mWizard.push_back(wizard(5520, 1408));
+    mWizard.push_back(wizard(5568, 928));
+    mWizard.push_back(wizard(7200, 448));
+    mWizard.push_back(wizard(7776, 496));
+    mWizard.push_back(wizard(9072, 1120));
+    mWizard.push_back(wizard(8160, 1504));
+    mWizard.push_back(wizard(10128, 1264));
+    mWizard.push_back(wizard(10464, 1264));
+    mWizard.push_back(wizard(10848, 1312));
+    mWizard.push_back(wizard(10080, 1804));
+    mWizard.push_back(wizard(11040, 1984));
+    mWizard.push_back(wizard(11520, 1936));
+    mWizard.push_back(wizard(12384, 1312));
+    mWizard.push_back(wizard(11472, 832));
+    mWizard.push_back(wizard(13824, 832));
+    mWizard.push_back(wizard(14976, 1648));
+    mWizard.push_back(wizard(15216, 1648));
+    mWizard.push_back(wizard(16086, 1168));
+
+
+
     damage = 0;
 }
 
@@ -67,17 +111,12 @@ bool commom::checkInit(){
 }
 
 bool commom::checkLoadFile(){
-    mTexture[BACK_TEXTURE] = mWindow.loadFromFile("image//back.png");
-    if(mTexture[BACK_TEXTURE] == NULL){
-        std::cout << "unable load backtexture\n";
-        return false;
-    }
-    mTexture[MIDDLE_TEXTURE] = mWindow.loadFromFile("image//middle.png");
-    if(mTexture[MIDDLE_TEXTURE] == NULL){
-        std::cout << "unable load backtexture\n";
-        return false;
-    }
 
+    mTexture[BACKGROUND_TEXTURE] = mWindow.loadFromFile("image//background.png");
+    if(mTexture[BACKGROUND_TEXTURE] == NULL){
+        std::cout << "unable load background image\n";
+        return false;
+    }
     mTexture[MAP_TEXTURE] = mWindow.loadFromFile("image//tile.png");
     if(mTexture[MAP_TEXTURE] == NULL){
         std::cout << "unable load image\n";
@@ -87,12 +126,6 @@ bool commom::checkLoadFile(){
 
     if(mTexture[PLAYER_TEXTURE] == NULL){
         std::cout << "unable load player_texture\n";
-        return false;
-    }
-    mTexture[EFFECT_TEXTURE] = mWindow.loadFromFile("image//effect.png");
-
-    if(mTexture[EFFECT_TEXTURE] == NULL){
-        std::cout << "unable load effect_texture\n";
         return false;
     }
     mTexture[MONSTER_TEXTURE] = mWindow.loadFromFile("image//monster.png");
@@ -148,13 +181,13 @@ void commom::createTilesClip(){
 void commom::handlePlayer(SDL_Event &e){
     mPlayer.handle(e);
     if(mPlayer.getIsDeath())
-        mMenu.handle(e);
+        mReload.handle(e);
 }
 
 void commom::setCamera(){
     SDL_Rect cam = mPlayer.getBox();
     camera.x = (cam.x + PLAYER_WIDTH/2) - SCREEN_WIDTH/2;
-    camera.y = (cam.y + PLAYER_HEIGHT/2) - SCREEN_HEIGHT/2;
+    camera.y = (cam.y + PLAYER_HEIGHT/2) - SCREEN_HEIGHT*2/3;
     if(camera.x < 0){
         camera.x = 0;
     }
@@ -181,8 +214,9 @@ void commom::render(){
 
     mMap.renderMap(mPlayer.getVelX(), mPlayer.getFlip(), mWindow, camera, mTexture, mtile, mTilesClip);
     mPlayer.move(mtile);
-    for(int i = 0; i < TOTAL_MONSTER; i++){
-        mMonster[i].move(mPlayer, mtile, posX_monster[i]);
+    for(int i = 0; i < mMonster.size(); i++){
+//        mMonster[i].setPosX()
+        mMonster[i].move(mPlayer, mtile);
         mMonster[i].render(mWindow, camera, mTexture, mPlayer);
         if(checkCollision(mPlayer.getBox(), mMonster[i].getBoxBlood())){
             mPlayer.setHP();
@@ -192,9 +226,9 @@ void commom::render(){
             damage += 1;
 
     }
-    for(int i = 0; i < TOTAL_WIZARD; i++){
-        mWizard[i].setPosX(posX_wizard[i]);
-        mWizard[i].move(mPlayer, mtile, posX_wizard[i]);
+    for(int i = 0; i < mWizard.size(); i++){
+        mWizard[i].setPosX();
+        mWizard[i].move(mPlayer, mtile);
         mWizard[i].render(mWindow, camera, mTexture, mPlayer);
         if(mWizard[i].getAttackPlayer())
             damage += 1;
@@ -210,21 +244,12 @@ void commom::render(){
     damage = 0;
     mWindow.renderBox(mPlayer.getBox());
     if(mPlayer.getIsDeath()){
-        mMenu.render(mWindow, mTexture);
+        mReload.render(mWindow, mTexture);
 
-        if(mMenu.getRestart()){
+        if(mReload.getRestart()){
             mPlayer = player();
-            mMonster[0] = monster(500, 0);
-            mMonster[1] = monster(700, 0);
-            mMonster[2] = monster(1000, 0);
-            posX_monster[0] = mMonster[0].getPosX();
-            posX_monster[1] = mMonster[1].getPosX();
-            posX_monster[2] = mMonster[2].getPosX();
 
-            mWizard[0] = wizard(500, 0);
-            mWizard[1] = wizard(1400, 0);
-            mWizard[2] = wizard(1800, 0);
-            mMenu = menu();
+            mReload = reload();
         }
     }
 

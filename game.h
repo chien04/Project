@@ -17,20 +17,19 @@ private:
     tile mtile[TOTAL_TILES];
     gameMap mMap;
     player mPlayer;
-    monster mMonster[TOTAL_MONSTER];
-    wizard mWizard[TOTAL_WIZARD];
+//    monster mMonster[TOTAL_MONSTER];
+//    wizard mWizard[TOTAL_WIZARD];
     boss mBoss;
-    menu mMenu;
+    reload mReload;
     SDL_Rect mTilesClip[256];
     SDL_Rect bloodClip;
     SDL_Texture* mTexture[TOTAL_TEXTURE];
     bool on_ground;
     SDL_Rect camera;
-    int posX_monster[TOTAL_MONSTER];
-    int posX_wizard[TOTAL_WIZARD];
-    bool check;
     bool check_ball;
     int damage;
+    std::vector<monster> mMonster;
+    std::vector<wizard> mWizard;
 public:
     commom();
     ~commom();

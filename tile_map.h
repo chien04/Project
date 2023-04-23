@@ -28,7 +28,7 @@ public:
 private:
     int x_coordinate;
     int y_coordinate;
-    double scrolling_back;
+    double scrolling;
     double scrolling_middle;
 };
 

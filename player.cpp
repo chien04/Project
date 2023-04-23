@@ -7,7 +7,7 @@
 player::player()
 {
     cnt_jump = 0;
-    boxPlayer.x = 0;
+    boxPlayer.x = 50;
     boxPlayer.y = 0;
     boxPlayer.w = PLAYER_WIDTH;
     boxPlayer.h = PLAYER_HEIGHT;
@@ -48,7 +48,7 @@ void player::createPlayerClip()
     sum = 0;
     for(int i = 0; i < PLAYER_JUMP; i++)
     {
-        mPlayerJump[i] = {sum, 288, 64, 67};
+        mPlayerJump[i] = {sum, 288, 64, 64};
         sum += 64;
     }
     sum = 0;
@@ -167,10 +167,15 @@ bool player::checkCollision( SDL_Rect a, SDL_Rect b )
 bool player::touchesWall( SDL_Rect boxPlayer, tile tiles[] )
 {
     //Go through the tiles
+    std::set<int> mySet;
+    for(int i = 0; i < 30; i++){
+        mySet.insert(i);
+    }
+    mySet.insert(-1);
     for( int i = 0; i < TOTAL_TILES; ++i )
     {
         //If the tile is a wall type tile
-        if(tiles[ i ].getTileType() != -1)
+        if(!mySet.count(tiles[ i ].getTileType()))
         {
             //If the collision boxPlayer touches the wall tile
             if( checkCollision( boxPlayer, tiles[ i ].getBox() ) )
@@ -258,6 +263,7 @@ void player::move(tile tiles[])
         isRunning = false;
         isJump = false;
     }
+    std::cout << boxPlayer.x << std::endl;
 
 }
 void player::setIsTakeHit(int damage)
@@ -321,7 +327,7 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             if(isJump)
             {
                 mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 24, boxPlayer.y - camera.y - 30,
-                               &mPlayerJump[frame/PLAYER_JUMP], 0, NULL, flip, PLAYER_WIDTH_JUMP, PLAYER_HEIGHT_JUMP);
+                               &mPlayerJump[frame/PLAYER_JUMP], 0, NULL, flip, PLAYER_WIDTH * 2, PLAYER_HEIGHT*4/3);
                 frame++;
                 if(frame / PLAYER_JUMP >= PLAYER_JUMP)
                 {
@@ -332,13 +338,13 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             {
                 if(flip == SDL_FLIP_HORIZONTAL)
                 {
-                    mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 48, boxPlayer.y - camera.y - 48,
-                                   &mPlayerAttack[frame_attack/PLAYER_ATTACK], 0, NULL, flip, PLAYER_WIDTH_ATTACK, PLAYER_HEIGHT_ATTACK);
+                    mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 48, boxPlayer.y - camera.y - 40,
+                                   &mPlayerAttack[frame_attack/PLAYER_ATTACK], 0, NULL, flip, PLAYER_WIDTH*3, PLAYER_HEIGHT*5/3);
                 }
                 else if(flip == SDL_FLIP_NONE)
                 {
-                    mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 64, boxPlayer.y - camera.y - 48,
-                                   &mPlayerAttack[frame_attack/PLAYER_ATTACK], 0, NULL, flip, PLAYER_WIDTH_ATTACK, PLAYER_HEIGHT_ATTACK);
+                    mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 64, boxPlayer.y - camera.y - 40,
+                                   &mPlayerAttack[frame_attack/PLAYER_ATTACK], 0, NULL, flip, PLAYER_WIDTH*3, PLAYER_HEIGHT*5/3);
                 }
                 if(frame_attack == 16)
                 {
@@ -359,7 +365,7 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
         {
             if(flip == SDL_FLIP_NONE)
             {
-                mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 204, boxPlayer.y - camera.y - 128,
+                mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 160, boxPlayer.y - camera.y - 100,
                                &mPlayerTakeHit[frame_takehit/(PLAYER_TAKEHIT*3)], 0, NULL, flip, PLAYER_WIDTH*9, PLAYER_HEIGHT*10/3);
                 frame_takehit++;
                 if(frame_takehit / (PLAYER_TAKEHIT*3) >= PLAYER_TAKEHIT)
@@ -370,7 +376,7 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             }
             else if(flip == SDL_FLIP_HORIZONTAL)
             {
-                mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 308, boxPlayer.y - camera.y - 128,
+                mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 246, boxPlayer.y - camera.y - 100,
                                &mPlayerTakeHit[frame_takehit/(PLAYER_TAKEHIT*3)], 0, NULL, flip, PLAYER_WIDTH*9, PLAYER_HEIGHT*10/3);
                 frame_takehit++;
                 if(frame_takehit / (PLAYER_TAKEHIT*3) >= PLAYER_TAKEHIT)

@@ -4,8 +4,10 @@
 
 monster::monster(int x, int y)
 {
+
     velX = MONSTER_VEL_X;
     velY = MONSTER_VEL_Y;
+    pos_x = x;
     flip = SDL_FLIP_NONE;
     createMonsterClip();
     for(int i = 0; i < TOTAL_FRAME; i++)
@@ -98,10 +100,15 @@ bool monster::checkCollision( SDL_Rect a, SDL_Rect b )
 bool monster::touchesWall( SDL_Rect boxMonster, tile tiles[] )
 {
     //Go through the tiles
-    for( int i = 0; i < TOTAL_TILES; ++i )
+    std::set<int> mySet;
+    mySet.insert(-1);
+    for(int i = 0; i < 30; i++){
+        mySet.insert(i);
+    }
+    for( int i = 0; i < TOTAL_TILES; i++ )
     {
         //If the tile is a wall type tile
-        if(tiles[ i ].getTileType() != -1)
+        if(!mySet.count(tiles[ i ].getTileType()))
         {
             //If the collision box touches the wall tile
             if( checkCollision( boxMonster, tiles[ i ].getBox() ) )
@@ -115,7 +122,10 @@ bool monster::touchesWall( SDL_Rect boxMonster, tile tiles[] )
     return false;
 }
 
-void monster::move(player mPlayer, tile tiles[], int pos_x)
+//void monster::setPosX(int x){
+//    posx =
+//}
+void monster::move(player mPlayer, tile tiles[])
 {
     if(is_death)
         return;
@@ -200,7 +210,7 @@ void monster::move(player mPlayer, tile tiles[], int pos_x)
         isRunning = true;
         if(isRunning)
             isIdle = false;
-        SDL_Rect chaSingBox = {pos_x - 300, boxMonster.y, pos_x + 600, MONSTER_HEIGHT};
+        SDL_Rect chaSingBox = {pos_x - 250, boxMonster.y, 500, MONSTER_HEIGHT};
         if(checkCollision(chaSingBox, mPlayer.getBox())){
             inZone = true;
             if(boxMonster.x > mPlayer.getPosX())
@@ -223,25 +233,25 @@ void monster::move(player mPlayer, tile tiles[], int pos_x)
                     flip = SDL_FLIP_NONE;
                 }
             }
-            if(boxMonster.x >= pos_x + 300)
+            if(boxMonster.x >= pos_x + 250)
             {
-                    boxMonster.x = pos_x + 300;
+                    boxMonster.x = pos_x + 250;
             }
-            if(boxMonster.x <= pos_x - 300)
+            if(boxMonster.x <= pos_x - 250)
             {
-                    boxMonster.x = pos_x - 300;
+                    boxMonster.x = pos_x - 250;
             }
         }
         else{
             inZone = false;
-            if(boxMonster.x >= pos_x + 200)
+            if(boxMonster.x >= pos_x + 90)
             {
 
                 velX = -1*MONSTER_VEL_X;
                 flip = SDL_FLIP_HORIZONTAL;
 
             }
-            if(boxMonster.x <= pos_x - 200)
+            if(boxMonster.x <= pos_x - 90)
             {
 
                 velX = 1 * MONSTER_VEL_X;
@@ -255,16 +265,17 @@ void monster::move(player mPlayer, tile tiles[], int pos_x)
                 boxMonster.x -= velX;
     }
     if(!inZone){
-        if(boxMonster.x > pos_x + 200 && boxMonster.x <= pos_x + 300){
+        if(boxMonster.x > pos_x + 90 && boxMonster.x <= pos_x + 250){
             boxMonster.x -= 1;
 
             flip == SDL_FLIP_HORIZONTAL;
         }
-        if(boxMonster.x >= pos_x - 300 && boxMonster.x < pos_x - 200){
+        if(boxMonster.x >= pos_x - 250 && boxMonster.x < pos_x - 90){
             boxMonster.x += 1;
             flip = SDL_FLIP_NONE;
         }
     }
+//    std::cout << pos_x << " " << boxMonster.x << " " << inZone << std::endl;
 
 
 }
@@ -300,10 +311,10 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
         {
             isIdle = false;
             if(flip == SDL_FLIP_NONE)
-            mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x, boxMonster.y - camera.y - 32,
+            mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x, boxMonster.y - camera.y - 24,
                            &monsterAttack[frame[FRAME_ATTACK]/(MONSTER_ATTACK*3)], 0, NULL, flip, (double)(MONSTER_WIDTH*5)/3, (double)(MONSTER_HEIGHT)*4/3);
             else
-                mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x - 48, boxMonster.y - camera.y - 32,
+                mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x - 48, boxMonster.y - camera.y - 24,
                            &monsterAttack[frame[FRAME_ATTACK]/(MONSTER_ATTACK*3)], 0, NULL, flip, (double)(MONSTER_WIDTH*5)/3, (double)(MONSTER_HEIGHT)*4/3);
             frame[FRAME_ATTACK]++;
 

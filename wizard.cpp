@@ -6,6 +6,7 @@ wizard::wizard(int x, int y)
     velX = 0;
     velY = MONSTER_VEL_Y;
 
+    pos_x = x;
     flip = SDL_FLIP_NONE;
     flip_ball = SDL_FLIP_NONE;
     createWizardClip();
@@ -108,10 +109,15 @@ bool wizard::checkCollision( SDL_Rect a, SDL_Rect b )
 bool wizard::touchesWall( SDL_Rect boxWizard, tile tiles[] )
 {
     //Go through the tiles
+    std::set<int> mySet;
+    mySet.insert(-1);
+    for(int i = 0; i < 30; i++){
+        mySet.insert(i);
+    }
     for( int i = 0; i < TOTAL_TILES; ++i )
     {
         //If the tile is a wall type tile
-        if(tiles[ i ].getTileType() != -1)
+        if(!mySet.count(tiles[ i ].getTileType()))
         {
             //If the collision box touches the wall tile
             if( checkCollision( boxWizard, tiles[ i ].getBox() ) )
@@ -125,7 +131,7 @@ bool wizard::touchesWall( SDL_Rect boxWizard, tile tiles[] )
     return false;
 }
 
-void wizard::move(player mPlayer, tile tiles[], int pos_x)
+void wizard::move(player mPlayer, tile tiles[])
 {
     if(isDeath)
         return;
@@ -173,10 +179,10 @@ void wizard::move(player mPlayer, tile tiles[], int pos_x)
     }
 }
 
-void wizard::setPosX(int posX)
+void wizard::setPosX()
 {
     if(isHitting)
-        posX = boxWizard.x - 32;
+        pos_x = boxWizard.x - 32;
 }
 void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer)
 {

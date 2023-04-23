@@ -3,37 +3,39 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "nit.tmx",
     "expandedProjectPaths": [
     ],
     "fileStates": {
-        "test.tmx": {
-            "scale": 0.75,
+        "nit.tmx": {
+            "scale": 0.125,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 6071.333333333333,
-                "y": 2341.333333333333
+                "x": 7020,
+                "y": 768
             }
         },
-        "tiles - Copy - Copy.tsx": {
-            "scaleInDock": 0.33,
+        "tile.tsx": {
+            "scaleInDock": 1,
             "scaleInEditor": 1
         }
     },
     "last.exportedFilePath": "D:/code/game_test/map",
     "last.imagePath": "D:/code/game_test/image",
-    "map.height": 50,
+    "map.height": 30,
     "map.lastUsedExportFilter": "CSV files (*.csv)",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 48,
     "map.tileWidth": 48,
-    "map.width": 500,
+    "map.width": 300,
     "openFiles": [
+        "nit.tmx",
+        "tile.tsx"
     ],
-    "project": "test.tiled-project",
+    "project": "offical.tiled-project",
     "recentFiles": [
-        "tiles - Copy - Copy.tsx",
-        "test.tmx"
+        "tile.tsx",
+        "nit.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

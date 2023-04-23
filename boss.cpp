@@ -361,7 +361,6 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
             isDeath = true;
         }
     }
-    std::cout << isTakeHit << std::endl;
 }
 
 bool boss::getAttackPlayer(){

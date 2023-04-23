@@ -3,36 +3,43 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "nit.tmx",
     "expandedProjectPaths": [
     ],
     "fileStates": {
-        "map.tmx": {
-            "scale": 0.33,
+        ":/automap-tiles.tsx": {
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        },
+        "nit.tmx": {
+            "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 2107.575757575758,
-                "y": 151.5151515151515
+                "x": 10641.5,
+                "y": 1322
             }
         },
-        "tiles - Copy.tsx": {
-            "scaleInDock": 0.25,
+        "tile.tsx": {
+            "scaleInDock": 0.33,
             "scaleInEditor": 1
         }
     },
     "last.exportedFilePath": "D:/code/game_test/map",
     "last.imagePath": "D:/code/game_test/image",
+    "map.height": 50,
     "map.lastUsedExportFilter": "CSV files (*.csv)",
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 48,
     "map.tileWidth": 48,
-    "map.width": 100,
+    "map.width": 500,
     "openFiles": [
+        "nit.tmx"
     ],
-    "project": "map.tiled-project",
+    "project": "nit.tiled-project",
     "recentFiles": [
-        "tiles - Copy.tsx",
-        "map.tmx"
+        "nit.tmx",
+        ":/automap-tiles.tsx",
+        "tile.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

@@ -9,13 +9,13 @@
 
 class monster{
 public:
-    monster(int x = 0, int y = 0);
+    monster(int x, int y);
     void createMonsterClip();
 
     bool checkCollision(SDL_Rect a, SDL_Rect b);
 
     bool touchesWall(SDL_Rect boxMonster, tile tiles[]);
-    void move(player mPlayer, tile tiles[], int pos_x);
+    void move(player mPlayer, tile tiles[]);
     void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mPlayer);
 
     int getPosX();
@@ -27,7 +27,7 @@ public:
 private:
     SDL_Rect boxMonster;
     double velX, velY;
-
+    int pos_x;
     SDL_RendererFlip flip;
 
     SDL_Rect monsterIdle[MONSTER_IDLE];

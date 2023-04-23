@@ -1,6 +1,7 @@
 #ifndef BASE_H_
 #define BASE_H_
 
+#include <set>
 #include <iostream>
 #include <SDL.h>
 #include <SDL_image.h>

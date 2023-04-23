@@ -14,9 +14,9 @@ public:
     bool checkCollision(SDL_Rect a, SDL_Rect b);
     bool touchesWall(SDL_Rect boxArcher, tile tiles[]);
 
-    void move(player mPlayer, tile tiles[], int pos_x);
+    void move(player mPlayer, tile tiles[]);
     void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer);
-    void setPosX(int posX);
+    void setPosX();
     int getPosX();
     int getPosY();
     SDL_Rect getBoxWizard();
@@ -27,6 +27,7 @@ private:
     SDL_Rect boxWizard;
 
     int velX, velY;
+    int pos_x;
     SDL_RendererFlip flip;
     SDL_RendererFlip flip_ball;
     std::vector <ice_ball> mBall;

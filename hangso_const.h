@@ -3,9 +3,9 @@
 
 const int TILE_WIDTH = 48;
 const int TILE_HEIGHT = 48;
-const int TOTAL_TILES = 500*50;
+const int TOTAL_TILES = 380*50;
 
-const int WIDTH_MAP = 250*48;
+const int WIDTH_MAP = 380*48;
 const int HEIGHT_MAP = 50*48;
 
 const int TILES_CLIP = 100;
@@ -13,8 +13,8 @@ const int TILES_CLIP = 100;
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 640;
 
-const int PLAYER_WIDTH = 64;
-const int PLAYER_HEIGHT = 96;
+const int PLAYER_WIDTH = 50;
+const int PLAYER_HEIGHT = 75;
 
 const int PLAYER_WIDTH_ATTACK = 192;
 const int PLAYER_HEIGHT_ATTACK = 160;
@@ -25,11 +25,9 @@ const int PLAYER_MAX_JUMP = 70;
 const int PLAYER_VEL = 3;
 
 enum textureID{
-    MIDDLE_TEXTURE,
-    BACK_TEXTURE,
+    BACKGROUND_TEXTURE,
     MAP_TEXTURE,
     PLAYER_TEXTURE,
-    EFFECT_TEXTURE,
     MONSTER_TEXTURE,
     WIZARD_TEXTURE,
     HEALTH_TEXTURE,
@@ -49,8 +47,8 @@ const int PLAYER_DEATH = 8;
 const int PLAYER_HEALTH = 6;
 const int  EFFECT_CLIP = 60;
 
-const int MONSTER_WIDTH = 80;
-const int MONSTER_HEIGHT = 96;
+const int MONSTER_WIDTH = 60;
+const int MONSTER_HEIGHT = 72;
 
 
 const int MONSTER_VEL_X = 1;
@@ -72,8 +70,8 @@ const int FRAME_DEATH = 4;
 const int MONSTER_HP = 5;
 const int TOTAL_MONSTER = 3;
 
-const int WIZARD_WIDTH = 64;
-const int WIZARD_HEIGHT = 96;
+const int WIZARD_WIDTH = 60;
+const int WIZARD_HEIGHT = 75;
 const int TOTAL_WIZARD = 3;
 
 const int WIZARD_IDLE = 13;
