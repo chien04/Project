@@ -7,7 +7,7 @@
 player::player()
 {
     cnt_jump = 0;
-    boxPlayer.x = 50;
+    boxPlayer.x = 17000;
     boxPlayer.y = 0;
     boxPlayer.w = PLAYER_WIDTH;
     boxPlayer.h = PLAYER_HEIGHT;
@@ -263,7 +263,6 @@ void player::move(tile tiles[])
         isRunning = false;
         isJump = false;
     }
-    std::cout << boxPlayer.x << std::endl;
 
 }
 void player::setIsTakeHit(int damage)
@@ -278,7 +277,7 @@ void player::setIsTakeHit(int damage)
     }
     if(damage != 0){
         isTakeHit = true;
-//        hp -= damage;
+        hp -= damage;
     }
 
 }
@@ -294,6 +293,8 @@ void player::setHP(){
 }
 void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[])
 {
+    SDL_Rect bp = {boxPlayer.x - camera.x , boxPlayer.y - camera.y, PLAYER_WIDTH, PLAYER_HEIGHT};
+    mWindow.renderBox(bp);
     for(int i = 0; i < PLAYER_HEALTH; i++)
     {
         if(i == hp)

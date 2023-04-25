@@ -11,11 +11,14 @@ public:
     void render(createWindow mWindow, SDL_Texture* mTexture[]);
 
 private:
-//    int PLAY = 0;
-//    int QUIT = 1;
-//    int TOTAL_BUTTON = 2;
-//    SDL_Rect buttonClip[TOTAL_BUTTON];
-//    SDL_Rect button[TOTAL_BUTTON];
+    enum menuButton{
+        PLAY,
+        TOTAl_BUTTON
+    };
+    SDL_Rect buttonBox[TOTAl_BUTTON];
+    SDL_Rect button[TOTAL_BUTTON];
+    SDL_Rect buttonClip[TOTAl_BUTTON][2];
+    bool mouseOver[TOTAl_BUTTON];
 
 
 

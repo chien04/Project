@@ -6,6 +6,8 @@
 #include "tile_map.h"
 #include "player.h"
 #include "ice_ball.h"
+#include "monster.h"
+#include "wizard.h"
 class boss{
 public:
     boss();
@@ -17,6 +19,8 @@ public:
     void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mPlayer);
     void setPosX();
     bool getAttackPlayer();
+    void setTotal_damage();
+    int getTotal_damage();
 
 private:
     SDL_Rect boxBoss;
@@ -35,7 +39,7 @@ private:
     int frame_idle;
     int frame_run;
     int random_posX;
-    int random_posXcurrent;
+    int random_enemy;
     int frame_takehit;
     int frame_attack1;
     int frame_attack2;
@@ -54,7 +58,10 @@ private:
     int res;
     int lightningPosX;
     SDL_Rect lightningBox;
+    std::vector<monster> mMonster;
+    std::vector<wizard> mWizard;
+    int cnt;
+    int total_damage;
 
 };
-
 #endif // BOSS_H

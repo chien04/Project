@@ -7,9 +7,10 @@
 	"base.h"
 	"game.h"
 
-1682229018 d:\code\game_test\base.h
+1682312643 d:\code\game_test\base.h
 	<set>
 	<iostream>
+	<ctime>
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_ttf.h>
@@ -34,13 +35,13 @@
 	"base.h"
 	"hangso_const.h"
 
-1682256507 source:d:\code\game_test\tile_map.cpp
+1682429388 source:d:\code\game_test\tile_map.cpp
 	"tile_map.h"
 	"base.h"
 	<fstream>
 	"player.h"
 
-1682264932 d:\code\game_test\game.h
+1682412657 d:\code\game_test\game.h
 	"base.h"
 	"tile_map.h"
 	"base.h"
@@ -51,10 +52,10 @@
 	"boss.h"
 	"menu.h"
 
-1682263987 source:d:\code\game_test\game.cpp
+1682415171 source:d:\code\game_test\game.cpp
 	"game.h"
 
-1682264898 source:d:\code\game_test\player.cpp
+1682431184 source:d:\code\game_test\player.cpp
 	"player.h"
 	"game.h"
 	"hangso_const.h"
@@ -62,38 +63,38 @@
 	<stdlib.h>
 	"monster.h"
 
-1682258437 d:\code\game_test\hangso_const.h
+1682429337 d:\code\game_test\hangso_const.h
 
 1681922292 d:\code\game_test\player.h
 	"base.h"
 	"tile_map.h"
 
-1682262014 d:\code\game_test\monster.h
+1682413805 d:\code\game_test\monster.h
 	<vector>
 	"base.h"
 	"tile_map.h"
 	"player.h"
 	"hangso_const.h"
 
-1682265830 source:d:\code\game_test\monster.cpp
+1682413837 source:d:\code\game_test\monster.cpp
 	<vector>
 	"monster.h"
 
-1681909897 d:\code\game_test\ice_ball.h
+1682320895 d:\code\game_test\ice_ball.h
 	"base.h"
 	"tile_map.h"
 
-1682084617 source:d:\code\game_test\ice_ball.cpp
+1682414652 source:d:\code\game_test\ice_ball.cpp
 	"ice_ball.h"
 
-1682263966 d:\code\game_test\wizard.h
+1682414345 d:\code\game_test\wizard.h
 	<vector>
 	"base.h"
 	"ice_ball.h"
 	"tile_map.h"
 	"player.h"
 
-1682263956 source:d:\code\game_test\wizard.cpp
+1682431573 source:d:\code\game_test\wizard.cpp
 	"wizard.h"
 
 1682134876 source:d:\code\game_test\menu.cpp
@@ -102,13 +103,15 @@
 1682219949 d:\code\game_test\menu.h
 	"base.h"
 
-1682262382 source:d:\code\game_test\boss.cpp
+1682431963 source:d:\code\game_test\boss.cpp
 	"boss.h"
 
-1682086948 d:\code\game_test\boss.h
+1682415064 d:\code\game_test\boss.h
 	<vector>
 	"base.h"
 	"tile_map.h"
 	"player.h"
 	"ice_ball.h"
+	"monster.h"
+	"wizard.h"
 

@@ -235,10 +235,13 @@ void commom::render(){
 
     }
     mBoss.setPosX();
+    mBoss.setTotal_damage();
+
     mBoss.move(mtile, mPlayer);
     mBoss.render(mWindow, camera, mTexture, mPlayer);
-    if(mBoss.getAttackPlayer())
-        damage += 1;
+//    if(mBoss.getAttackPlayer())
+//        damage += 1;
+        damage += mBoss.getTotal_damage();
     mPlayer.setIsTakeHit(damage);
     mPlayer.render(mWindow, camera, mTexture);
     damage = 0;

@@ -1,5 +1,49 @@
 #include "menu.h"
 
+menu::menu(){
+
+    buttonBox[0] = {(SCREEN_WIDTH - BUTTON_WIDTH) / 2, (SCREEN_HEIGHT - BUTTON_HEIGHT) / 2, BUTTON_WIDTH, BUTTON_HEIGHT};
+    for(int i = 0; i < TOTAl_BUTTON, i++){
+        buttonClip[i][0] = {0, 1696, 368, 176};
+        buttonClip[i][1] = {368, 1296, 368, 176};
+        mouseOver[i] = 0;
+    }
+
+}
+
+
+void menu::handle(SDL_Event &e){
+    if(e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN){
+        for(int i = 0; i < TOTAl_BUTTON; i++){
+            mouseOver[i] = 0;
+        }
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        for(int i = 0; i < TOTAl_BUTTON; i++){
+            bool inside = 0;
+            if(buttonBox[0].x < x && x < buttonBox[0].x + BUTTON_WIDTH && buttonBox.y < y && y < buttonBox + BUTTON_HEIGHT){
+                inside = 1;
+            }
+            if(inside){
+                switch(e.type){
+                    case SDL_MOUSEBUTTONDOWN:
+
+                    break;
+                    case SDL_MOUSEMOTION:
+                        mouseOver[i] = 1;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+}
+
+void menu::render(createWindow mWindow, SDL_Texture* mTexture[]){
+
+}
+
 reload::reload(){
     posX = (SCREEN_WIDTH - RESTART_GAME_WIDTH) / 2;
     posY = (SCREEN_HEIGHT - RESTART_GAME_HEIGHT) / 2;

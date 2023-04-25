@@ -12,15 +12,15 @@
             "scaleInEditor": 1
         },
         "nit.tmx": {
-            "scale": 1,
+            "scale": 0.33,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 10641.5,
-                "y": 1322
+                "x": 4031.8181818181815,
+                "y": 1090.909090909091
             }
         },
         "tile.tsx": {
-            "scaleInDock": 0.33,
+            "scaleInDock": 1.5,
             "scaleInEditor": 1
         }
     },

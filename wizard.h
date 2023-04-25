@@ -23,6 +23,7 @@ public:
     bool getBan();
     SDL_RendererFlip getFlip();
     bool getAttackPlayer();
+    bool getDeath();
 private:
     SDL_Rect boxWizard;
 

@@ -55,11 +55,11 @@ ice_ball::ice_ball(){
 
 ice_ball::ice_ball(SDL_Rect box, SDL_RendererFlip flip){
     if(flip == SDL_FLIP_NONE){
-        boxBall = {box.x + 48, box.y + 64, 32, 32};
+        boxBall = {box.x + 48, box.y + 48, 32, 32};
         initialPosX = boxBall.x;
     }
     else{
-        boxBall = {box.x - 48, box.y + 64, 32, 32};
+        boxBall = {box.x - 48, box.y + 48, 32, 32};
         initialPosX = boxBall.x;
     }
 
@@ -76,13 +76,17 @@ void ice_ball::move(SDL_RendererFlip flip, SDL_Rect boxPlayer){
         if(isBan) boxBall.x -= BULLET_VEL;
     }
     if(abs(initialPosX - boxBall.x) > 500) isBan = false;
-    if(checkCollision(boxBall, boxPlayer)){
-        attackPlayer = true;
-        isBan = false;
+        if(checkCollision(boxBall, boxPlayer)){
+            attackPlayer = true;
+             isBan = false;
     }
 }
+void ice_ball::setAttackPlayer(){
+    attackPlayer = false;
+}
 void ice_ball::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]){
-    if(isBan) mWindow.render(mTexture[WIZARD_TEXTURE], boxBall.x - camera.x, boxBall.y - camera.y - 20,
+    if(!attackPlayer)
+     mWindow.render(mTexture[WIZARD_TEXTURE], boxBall.x - camera.x, boxBall.y - camera.y - 20,
                    &boxBallClip, 0, NULL, SDL_FLIP_HORIZONTAL, 32, 32);
 }
 
@@ -110,12 +114,12 @@ fire_ball::fire_ball(){
 
 fire_ball::fire_ball(SDL_Rect box, SDL_RendererFlip flip){
     if(flip == SDL_FLIP_NONE){
-        boxBall = {box.x + 64, box.y + 80, 40, 48};
+        boxBall = {box.x + 64, box.y + 100, 40, 48};
         initialPosX = boxBall.x;
 //        std::cout << "NONE " << initialPosX << std::endl;
     }
     if(flip == SDL_FLIP_HORIZONTAL){
-        boxBall = {box.x - 48, box.y + 80, 40, 48};
+        boxBall = {box.x - 48, box.y + 100, 40, 48};
         initialPosX = boxBall.x;
 //        std::cout << "HOZIRENTIAL " << initialPosX << std::endl;
     }

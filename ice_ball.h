@@ -14,6 +14,7 @@ public:
     void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]);
     bool getBan();
     bool getAttackPlayer();
+    void setAttackPlayer();
     SDL_Rect getBoxBall();
 
 private:

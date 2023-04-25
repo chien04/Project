@@ -102,6 +102,11 @@ const int BOSS_ATTACK1 = 17;
 const int BOSS_ATTACK2 = 13;
 const int BOSS_SKILL2 = 11;
 const int BOSS_DEATH = 9;
+
+const int BUTTON_WIDTH = 300;
+const int BUTTON_HEIGHT = 100;
+
 const int RESTART_GAME_WIDTH = 500;
 const int RESTART_GAME_HEIGHT = 400;
+
 #endif // CONST_H

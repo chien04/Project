@@ -3,6 +3,7 @@
 
 #include <set>
 #include <iostream>
+#include <ctime>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>

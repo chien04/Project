@@ -17,8 +17,6 @@ private:
     tile mtile[TOTAL_TILES];
     gameMap mMap;
     player mPlayer;
-//    monster mMonster[TOTAL_MONSTER];
-//    wizard mWizard[TOTAL_WIZARD];
     boss mBoss;
     reload mReload;
     SDL_Rect mTilesClip[256];

@@ -175,7 +175,7 @@ void wizard::move(player mPlayer, tile tiles[])
     else
     {
         inZone = false;
-        frame[ATTACK] = 0;
+//        frame[ATTACK] = 0;
     }
 }
 
@@ -192,7 +192,7 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
         flip_ball = flip;
     if(hp > 0)
     {
-        if(inZone == false || (cnt < 91 && inZone == true))
+        if(inZone == false || (cnt < 120 && inZone == true))
         {
             mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x, boxWizard.y - camera.y,
                            &wizardIdle[frame[IDLE]/WIZARD_IDLE], 0, NULL, flip, WIZARD_WIDTH, WIZARD_HEIGHT);
@@ -227,7 +227,7 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                 }
             }
         }
-        if(inZone == true && cnt >= 91 && isHitting == false)
+        if(inZone == true && cnt >= 120 && isHitting == false)
         {
 
             if(isAttacking)
@@ -238,7 +238,7 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                 else if(flip == SDL_FLIP_HORIZONTAL)
                     mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x - 64, boxWizard.y - camera.y,
                                    &wizardAttack[frame[ATTACK]/(WIZARD_ATTACK*2)], 0, NULL, flip, WIZARD_WIDTH*5/2, WIZARD_HEIGHT);
-                if(mBall.size() == 0)
+                if(mBall.size() == 0 && frame[ATTACK] == 0)
                 {
                     mBall.push_back(ice_ball(boxWizard, flip_ball));
                 }
@@ -246,7 +246,8 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                 frame[ATTACK]++;
                 if(frame[ATTACK]/(WIZARD_ATTACK*2) == 7 )
                 {
-                    ban = true;
+                    if(mBall.size() != 0)
+                        ban = true;
                 }
                 if(frame[ATTACK] / (WIZARD_ATTACK*2) >= WIZARD_ATTACK)
                 {
@@ -271,11 +272,11 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                     mBall.erase(mBall.begin() + i);
                     ban = false;
                 }
+//                mBall[i].setAttackPlayer();
                 if(mBall[i].getAttackPlayer())
                     attackPlayer = true;
                 else
                     attackPlayer = false;
-
             }
         }
         else
@@ -339,4 +340,8 @@ SDL_Rect wizard::getBoxWizard()
 bool wizard::getAttackPlayer()
 {
     return attackPlayer;
+}
+
+bool wizard::getDeath(){
+    return isDeath;
 }

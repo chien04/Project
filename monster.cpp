@@ -422,3 +422,7 @@ SDL_Rect monster::getBoxBlood(){
     else
     return {0, 0, 0, 0};
 }
+
+bool monster::getDeath(){
+    return is_death;
+}
