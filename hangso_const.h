@@ -103,9 +103,14 @@ const int BOSS_ATTACK2 = 13;
 const int BOSS_SKILL2 = 11;
 const int BOSS_DEATH = 9;
 
-const int BUTTON_WIDTH = 300;
+const int BUTTON_WIDTH = 200;
 const int BUTTON_HEIGHT = 100;
 
+enum states{
+    PLAY_STATE,
+    QUIT_STATE,
+    TOTAL_STATE
+};
 const int RESTART_GAME_WIDTH = 500;
 const int RESTART_GAME_HEIGHT = 400;
 

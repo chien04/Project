@@ -277,7 +277,7 @@ void player::setIsTakeHit(int damage)
     }
     if(damage != 0){
         isTakeHit = true;
-        hp -= damage;
+//        hp -= damage;
     }
 
 }

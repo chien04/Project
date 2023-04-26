@@ -18,6 +18,8 @@ private:
     gameMap mMap;
     player mPlayer;
     boss mBoss;
+    menu mMenu;
+    int gameState;
     reload mReload;
     SDL_Rect mTilesClip[256];
     SDL_Rect bloodClip;
@@ -28,6 +30,9 @@ private:
     int damage;
     std::vector<monster> mMonster;
     std::vector<wizard> mWizard;
+
+    bool is_menu;
+    bool is_play;
 public:
     commom();
     ~commom();
@@ -38,9 +43,10 @@ public:
     void handlePlayer(SDL_Event &e);
 
     void setCamera();
-
+    void setEnemy();
     void render();
 
+    int getGameState();
     void endGame();
 };
 

@@ -7,18 +7,21 @@ class menu{
 public:
     menu();
 
-    void handle(SDL_Event &e);
+    void handle(SDL_Event &e, int &state);
     void render(createWindow mWindow, SDL_Texture* mTexture[]);
 
 private:
     enum menuButton{
         PLAY,
-        TOTAl_BUTTON
+        GUIDE,
+        QUIT,
+        TOTAL_BUTTON
     };
-    SDL_Rect buttonBox[TOTAl_BUTTON];
+    SDL_Rect backgroundClip;
+    SDL_Rect buttonBox[TOTAL_BUTTON];
     SDL_Rect button[TOTAL_BUTTON];
-    SDL_Rect buttonClip[TOTAl_BUTTON][2];
-    bool mouseOver[TOTAl_BUTTON];
+    SDL_Rect buttonClip[TOTAL_BUTTON][2];
+    bool mouseOver[TOTAL_BUTTON];
 
 
 

@@ -23,6 +23,8 @@ int main(int argc, char* args[])
 
                     }
                     fix.handlePlayer(e);
+                    if(fix.getGameState() == QUIT_STATE)
+                        quit = true;
 
                 }
                 fix.render();

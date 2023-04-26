@@ -30,7 +30,8 @@ boss::boss()
     lightningBox = {0, 0, 128, 256};
     createClip();
     cnt = 0;
-
+    mMonster.clear();
+    mWizard.clear();
 }
 
 bool boss::checkCollision(SDL_Rect a, SDL_Rect b)
@@ -185,9 +186,7 @@ void boss::move(tile tiles[], player mPlayer)
     SDL_Rect boxAttack = {posX - 500, boxBoss.y, 1000, BOSS_HEIGHT};
 
     if(checkCollision(boxAttack, mPlayer.getBox())){
-        std::cout << "ccc ";
         if(!isAttacking){
-            std::cout << "cc\n";
             isRunning = true;
             isIdle = false;
         }
@@ -361,6 +360,7 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
                 if(frame_skill == 88){
                     if(checkCollision(lightningBox, mplayer.getBox())){
                         attackPlayer = true;
+                        total_damage++;
                     }
                 }
                 else

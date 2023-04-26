@@ -117,5 +117,6 @@ void createWindow::renderPresent(){
 }
 
 void createWindow::renderBox(SDL_Rect rect){
+    SDL_SetRenderDrawColor(gRenderer, 100, 100, 100, 100);
     SDL_RenderDrawRect(gRenderer, &rect);
 }
