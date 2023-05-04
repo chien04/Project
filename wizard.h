@@ -12,6 +12,7 @@ public:
     void createWizardClip();
 
     bool checkCollision(SDL_Rect a, SDL_Rect b);
+    bool checkCollisionTrap(SDL_Rect a, SDL_Rect b);
     bool touchesWall(SDL_Rect boxArcher, tile tiles[]);
 
     void move(player mPlayer, tile tiles[]);

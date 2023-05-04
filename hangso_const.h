@@ -23,11 +23,12 @@ const int PLAYER_WIDTH_JUMP = 128;
 const int PLAYER_HEIGHT_JUMP = 128;
 const int PLAYER_MAX_JUMP = 70;
 const int PLAYER_VEL = 3;
-
+const int ATTACK_SKILL = 9;
 enum textureID{
     BACKGROUND_TEXTURE,
     MAP_TEXTURE,
     PLAYER_TEXTURE,
+    SKILL_TEXTURE,
     MONSTER_TEXTURE,
     WIZARD_TEXTURE,
     HEALTH_TEXTURE,
@@ -45,6 +46,7 @@ const int PLAYER_ATTACK = 8;
 const int PLAYER_TAKEHIT = 3;
 const int PLAYER_DEATH = 8;
 const int PLAYER_HEALTH = 6;
+const int PLAYER_EXP = 7;
 const int  EFFECT_CLIP = 60;
 
 const int MONSTER_WIDTH = 60;

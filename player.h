@@ -8,11 +8,11 @@ public:
     player();
 
     void createPlayerClip();
-    void createEffectTexture();
+//    void createEffectTexture();
 
     void handle(SDL_Event &e);
     bool checkCollision(SDL_Rect a, SDL_Rect b);
-
+    bool checkCollisionTrap(SDL_Rect a, SDL_Rect b);
     bool touchesWall( SDL_Rect  boxPlayer, tile tiles[] );
     void move(tile tiles[]);
 
@@ -28,7 +28,8 @@ public:
     bool isTakeHitByMonster();
     bool getIsDeath();
     void setHP();
-
+    bool getAttackMonsterByShot();
+    SDL_Rect getBoxShot();
 private:
     int cnt_jump;
     SDL_Rect boxPlayer;
@@ -38,6 +39,8 @@ private:
     int frame_attack;
     int frame_takehit;
     int frame_death;
+    int frame_skill;
+    int frame_player_attack_skill;
     bool on_ground;
     bool isIdle;
     bool isRunning;
@@ -53,9 +56,19 @@ private:
     SDL_Rect mPlayerTakeHit[PLAYER_TAKEHIT];
     SDL_Rect mPlayerDeath[PLAYER_DEATH];
     SDL_Rect mPlayeHeath[PLAYER_HEALTH];
-    SDL_Rect mEffectClip[EFFECT_CLIP];
-
+    SDL_Rect mPlayerExp[PLAYER_EXP];
+    SDL_Rect mplayerAttackSkill[PLAYER_ATTACK];
+    SDL_Rect mAttackSkill[ATTACK_SKILL];
+    SDL_Rect boxShot;
+    SDL_Rect boxCam;
     int hp;
+    int exp;
+    bool attackPlayer;
+    bool attackSkill;
+    bool isShot;
+    bool attackMonsterByShot;
+    int cnt_trap;
+
 };
 
 

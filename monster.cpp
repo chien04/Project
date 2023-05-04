@@ -97,6 +97,31 @@ bool monster::checkCollision( SDL_Rect a, SDL_Rect b )
     }
     return true;
 }
+
+bool monster::checkCollisionTrap(SDL_Rect a, SDL_Rect b)
+{
+    //The sides of the rectangles
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y + b.h/2;
+    bottomB = b.y + b.h;
+
+    if( bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB)
+    {
+        return false;
+    }
+    return true;
+}
 bool monster::touchesWall( SDL_Rect boxMonster, tile tiles[] )
 {
     //Go through the tiles
@@ -107,6 +132,11 @@ bool monster::touchesWall( SDL_Rect boxMonster, tile tiles[] )
     }
     for( int i = 0; i < TOTAL_TILES; i++ )
     {
+        if(tiles[i].getTileType() == 12 || tiles[i].getTileType() == 13){
+            if(checkCollisionTrap(boxMonster, tiles[i].getBox())){
+                hp = 0;
+            }
+        }
         //If the tile is a wall type tile
         if(!mySet.count(tiles[ i ].getTileType()))
         {
@@ -134,7 +164,11 @@ void monster::move(player mPlayer, tile tiles[])
         {
             boxMonster.y -= velY;
         }
+    if(checkCollision(boxMonster, mPlayer.getBoxShot())){
+        if(mPlayer.getAttackMonsterByShot())
+            hp = 0;
 
+    }
     if(isHitting){
         if(boxMonster.x > mPlayer.getPosX()){
             boxMonster.x += 1;
@@ -259,7 +293,6 @@ void monster::move(player mPlayer, tile tiles[])
             }
 
         }
-        if(!isIdle)
             boxMonster.x += velX;
             if(touchesWall(boxMonster, tiles))
                 boxMonster.x -= velX;
@@ -267,11 +300,14 @@ void monster::move(player mPlayer, tile tiles[])
     if(!inZone){
         if(boxMonster.x > pos_x + 90 && boxMonster.x <= pos_x + 250){
             boxMonster.x -= 1;
-
+            if(touchesWall(boxMonster, tiles))
+                boxMonster.x += 1;
             flip == SDL_FLIP_HORIZONTAL;
         }
         if(boxMonster.x >= pos_x - 250 && boxMonster.x < pos_x - 90){
             boxMonster.x += 1;
+            if(touchesWall(boxMonster, tiles))
+                 boxMonster.x -= 1;
             flip = SDL_FLIP_NONE;
         }
     }
@@ -393,7 +429,6 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
     }
     if(isRunning)
         cnt = 120;
-
 }
 
 int monster::getPosX()

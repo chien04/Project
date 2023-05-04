@@ -78,34 +78,38 @@ bool wizard::checkCollision( SDL_Rect a, SDL_Rect b )
     rightB = b.x + b.w;
     topB = b.y;
     bottomB = b.y + b.h;
-//    printf("%d %d %d %d\n", leftB, rightB, topB, bottomB);
-//    printf("%d %d %d %d\n", leftA, rightA, topA, bottomA);
-
-    //If any of the sides from A are outside of B
-    if( bottomA <= topB )
+    if( bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB)
     {
         return false;
     }
-
-    if( topA >= bottomB )
-    {
-        return false;
-    }
-
-    if( rightA <= leftB )
-    {
-        return false;
-    }
-
-    if( leftA >= rightB )
-    {
-        return false;
-    }
-
     //If none of the sides from A are outside B
     return true;
 }
 
+bool wizard::checkCollisionTrap(SDL_Rect a, SDL_Rect b)
+{
+    //The sides of the rectangles
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    leftA = a.x;
+    rightA = a.x + a.w;
+    topA = a.y;
+    bottomA = a.y + a.h;
+
+    leftB = b.x;
+    rightB = b.x + b.w;
+    topB = b.y + b.h/2;
+    bottomB = b.y + b.h;
+
+    if( bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB)
+    {
+        return false;
+    }
+    return true;
+}
 bool wizard::touchesWall( SDL_Rect boxWizard, tile tiles[] )
 {
     //Go through the tiles
@@ -116,6 +120,11 @@ bool wizard::touchesWall( SDL_Rect boxWizard, tile tiles[] )
     }
     for( int i = 0; i < TOTAL_TILES; ++i )
     {
+        if(tiles[i].getTileType() == 12 || tiles[i].getTileType() == 13){
+            if(checkCollisionTrap(boxWizard, tiles[i].getBox())){
+                hp = 0;
+            }
+        }
         //If the tile is a wall type tile
         if(!mySet.count(tiles[ i ].getTileType()))
         {
@@ -140,6 +149,24 @@ void wizard::move(player mPlayer, tile tiles[])
     {
         boxWizard.y -= velY;
     }
+    if(checkCollision(boxWizard, mPlayer.getBoxShot())){
+        if(mPlayer.getAttackMonsterByShot())
+            hp = 0;
+    }
+    if(isHitting){
+        if(boxWizard.x > mPlayer.getPosX()){
+            boxWizard.x += 1;
+            if(touchesWall(boxWizard, tiles))
+                boxWizard.x -= 1;
+        }
+        else{
+            boxWizard.x -= 1;
+            if(touchesWall(boxWizard, tiles))
+                boxWizard.x += 1;
+        }
+
+    }
+
     if(checkCollision(mPlayer.getBox(), boxWizard))
     {
         if(mPlayer.getIsttacking())
@@ -205,16 +232,6 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
         {
             if(isHitting)
             {
-                if(boxWizard.x > mplayer.getPosX())
-                {
-                    if(frame[TAKE_HIT] == 20)
-                        boxWizard.x += 50;
-                }
-                else
-                {
-                    if(frame[TAKE_HIT] == 20)
-                        boxWizard.x -= 50;
-                }
                 mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x - 32, boxWizard.y - camera.y,
                                &wizardTakeHit[frame[TAKE_HIT]/(WIZARD_TAKE_HIT*5)], 0, NULL, flip, WIZARD_WIDTH*3/2, WIZARD_HEIGHT);
                 frame[TAKE_HIT]++;

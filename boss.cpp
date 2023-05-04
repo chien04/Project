@@ -153,6 +153,15 @@ void boss::move(tile tiles[], player mPlayer)
     {
         boxBoss.y -= velY;
     }
+    if(checkCollision(boxBoss, mPlayer.getBoxShot())){
+        if(mPlayer.getAttackMonsterByShot()){
+            isTakeHit = true;
+            isAttacking = false;
+            isIdle = false;
+            isRunning = false;
+            hp -= 4;
+        }
+    }
     if(checkCollision(boxBoss, mPlayer.getBox()))
     {
         if(mPlayer.getIsttacking())
@@ -161,6 +170,7 @@ void boss::move(tile tiles[], player mPlayer)
             isAttacking = false;
             isIdle = false;
             isRunning = false;
+            hp--;
         }
     }
 
@@ -266,7 +276,6 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
             frame_takehit++;
             if(frame_takehit / (BOSS_TAKEHIT * 4) >= BOSS_TAKEHIT)
             {
-                hp--;
                 if(hp < 0)
                     hp = 0;
                 frame_takehit = 0;

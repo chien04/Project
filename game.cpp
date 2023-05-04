@@ -100,7 +100,12 @@ bool commom::checkLoadFile(){
         return false;
     }
     mTexture[BOSS_HP_TEXTURE] = mWindow.loadFromFile("image//bosshp.png");
-    if(mTexture[BOSS_TEXTURE] == NULL){
+    if(mTexture[BOSS_HP_TEXTURE] == NULL){
+        std::cout << "unable load boss hp texture\n";
+        return false;
+    }
+    mTexture[SKILL_TEXTURE] = mWindow.loadFromFile("image//skill.png");
+    if(mTexture[SKILL_TEXTURE] == NULL){
         std::cout << "unable load boss hp texture\n";
         return false;
     }

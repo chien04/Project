@@ -10,6 +10,7 @@ tile::tile(int x_position, int y_position, int tile_type){
     mBoxTile.w = TILE_WIDTH;
     mBoxTile.h = TILE_HEIGHT;
     mType = tile_type;
+
 }
 
 int tile::getTileType(){
