@@ -359,7 +359,7 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
     }
     if(isDeath)
         return;
-    if(hp > 0)
+    if(hp > 0 )
     {
         if(!isTakeHit)
         {
