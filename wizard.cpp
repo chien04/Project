@@ -18,6 +18,7 @@ wizard::wizard(int x, int y)
     inZone = false;
     isAttacking = false;
     isHitting = false;
+    take_hit = false;
     attackPlayer = false;
     isDeath = false;
     boxWizard = {x, y, WIZARD_WIDTH, WIZARD_HEIGHT};
@@ -153,6 +154,7 @@ void wizard::move(player mPlayer, tile tiles[])
         if(mPlayer.getAttackMonsterByShot())
             hp = 0;
     }
+
     if(isHitting){
         if(boxWizard.x > mPlayer.getPosX()){
             boxWizard.x += 1;
@@ -166,12 +168,13 @@ void wizard::move(player mPlayer, tile tiles[])
         }
 
     }
-
+    take_hit = false;
     if(checkCollision(mPlayer.getBox(), boxWizard))
     {
         if(mPlayer.getIsttacking())
         {
             isHitting = true;
+            take_hit = true;
             isAttacking = false;
             hp--;
             if(hp < 0)
@@ -352,6 +355,10 @@ bool wizard::getBan()
 SDL_Rect wizard::getBoxWizard()
 {
     return boxWizard;
+}
+
+bool wizard::getIsTakeHit(){
+    return take_hit;
 }
 
 bool wizard::getAttackPlayer()

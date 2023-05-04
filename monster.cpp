@@ -2,9 +2,9 @@
 #include "monster.h"
 
 
-monster::monster(int x, int y)
+monster::monster(int x, int y, bool haveBlood)
 {
-
+    have_blood = haveBlood;
     velX = MONSTER_VEL_X;
     velY = MONSTER_VEL_Y;
     pos_x = x;
@@ -21,6 +21,7 @@ monster::monster(int x, int y)
     inZone = false;
     isAttacking = false;
     isHitting = false;
+    take_hit = false;
     attackPlayer = false;
     attackPlayerFlip = false;
     is_death = false;
@@ -182,14 +183,14 @@ void monster::move(player mPlayer, tile tiles[])
         }
 
     }
-
+    take_hit = false;
     if(checkCollision(boxMonster, mPlayer.getBox()))
     {
         isRunning = false;
         if(mPlayer.getIsttacking())
         {
             isHitting = true;
-
+            take_hit = true;
             isAttacking = false;
             isRunning = false;
             hp--;
@@ -411,14 +412,20 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
     }
     if(hp == 0)
     {
+        isHitting = false;
         mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x, boxMonster.y - camera.y,
                        &monsterDeath[frame[FRAME_DEATH] / (MONSTER_DEATH * 20)], 0, NULL, flip, MONSTER_WIDTH*4/3, MONSTER_HEIGHT - 16);
         frame[FRAME_DEATH]++;
         if(frame[FRAME_DEATH] / (MONSTER_DEATH* 20) >= MONSTER_DEATH)
         {
             frame[FRAME_DEATH] = 0;
+
             is_death = true;
-            blood = true;
+            if(have_blood){
+                std::cout << have_blood << std::endl;
+
+                blood = true;
+            }
         }
 
     }
@@ -440,17 +447,9 @@ bool monster::getMonsterAttack(){
     return attackPlayer;
 }
 
-//bool monster::checkBoxBlood(SDL_Rect boxPlayer){
-//    if(blood){
-//        if(checkCollision(boxBlood, boxPlayer)){
-////            std::cout << "chie" << std::endl;
-//            blood = false;
-//            return true;
-//        }
-//    }
-//    return false;
-//}
-
+bool monster::getIsTakeHit(){
+    return take_hit;
+}
 SDL_Rect monster::getBoxBlood(){
     if(blood)
         return boxBlood;

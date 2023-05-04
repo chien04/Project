@@ -28,6 +28,7 @@ public:
     bool isTakeHitByMonster();
     bool getIsDeath();
     void setHP();
+    void setExp();
     bool getAttackMonsterByShot();
     SDL_Rect getBoxShot();
 private:

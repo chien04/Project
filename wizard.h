@@ -24,6 +24,7 @@ public:
     bool getBan();
     SDL_RendererFlip getFlip();
     bool getAttackPlayer();
+    bool getIsTakeHit();
     bool getDeath();
 private:
     SDL_Rect boxWizard;
@@ -42,6 +43,7 @@ private:
     bool inZone;
     bool isAttacking;
     bool isHitting;
+    bool take_hit;
     bool attackPlayer;
     bool isDeath;
     bool ban;

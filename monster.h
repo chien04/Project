@@ -9,7 +9,7 @@
 
 class monster{
 public:
-    monster(int x, int y);
+    monster(int x, int y, bool haveBlood);
     void createMonsterClip();
 
     bool checkCollision(SDL_Rect a, SDL_Rect b);
@@ -20,6 +20,7 @@ public:
 
     int getPosX();
     bool getMonsterAttack();
+    bool getIsTakeHit();
 //    bool checkBoxBlood(SDL_Rect boxPlayer);
     SDL_Rect getBoxBlood();
     void setBlood();
@@ -48,10 +49,11 @@ private:
     bool attackPlayer;
     bool attackPlayerFlip;
     bool isHitting;
+    bool take_hit;
     int hp;
     bool is_death;
     int cnt;
-
+    bool have_blood;
     bool blood;
 
 

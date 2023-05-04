@@ -5,11 +5,13 @@ commom::commom(){
     gameState = -1;
     is_menu = true;
     is_play = false;
+    cnt = 0;
     mTexture[MAP_TEXTURE] = NULL;
     mMap.loadMap(mtile);
     createTilesClip();
     camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     damage = 0;
+    random_enemy = 0;
 }
 
 commom::~commom(){
@@ -127,38 +129,38 @@ void commom::createTilesClip(){
 void commom::setEnemy(){
     mMonster.clear();
     mWizard.clear();
-    mMonster.push_back(monster(2016, 1269));
-    mMonster.push_back(monster(2160, 1269));
-    mMonster.push_back(monster(2832, 1269));
-    mMonster.push_back(monster(3792, 1221));
-    mMonster.push_back(monster(4320, 1221));
-    mMonster.push_back(monster(5184, 1509));
-    mMonster.push_back(monster(5760, 1509));
-    mMonster.push_back(monster(6144, 1221));
-    mMonster.push_back(monster(6624, 1221));
-    mMonster.push_back(monster(6960, 1221));
-    mMonster.push_back(monster(6672, 693));
-    mMonster.push_back(monster(7632, 981));
-    mMonster.push_back(monster(8112, 981));
-    mMonster.push_back(monster(8352, 1365));
-    mMonster.push_back(monster(8256, 1605));
-    mMonster.push_back(monster(8880, 1269));
-    mMonster.push_back(monster(9504, 1269));
-    mMonster.push_back(monster(9696, 1269));
-    mMonster.push_back(monster(10416, 1793));
-    mMonster.push_back(monster(10944, 1653));
-    mMonster.push_back(monster(11136, 981));
-    mMonster.push_back(monster(12672, 1413));
-    mMonster.push_back(monster(11856, 693));
-    mMonster.push_back(monster(12768, 1701));
-    mMonster.push_back(monster(13728, 837));
-    mMonster.push_back(monster(13488, 1605));
-    mMonster.push_back(monster(13632, 1605));
-    mMonster.push_back(monster(13824, 1605));
-    mMonster.push_back(monster(14256, 1509));
-    mMonster.push_back(monster(15840, 1221));
-    mMonster.push_back(monster(11760, 2037));
-    mMonster.push_back(monster(12288, 2133));
+    mMonster.push_back(monster(2016, 1269, 0));
+    mMonster.push_back(monster(2160, 1269, 0));
+    mMonster.push_back(monster(2832, 1269, 0));
+    mMonster.push_back(monster(3792, 1221, 0));
+    mMonster.push_back(monster(4320, 1221, 0));
+    mMonster.push_back(monster(5184, 1509, 1));
+    mMonster.push_back(monster(5760, 1509, 0));
+    mMonster.push_back(monster(6144, 1221, 0));
+    mMonster.push_back(monster(6624, 1221, 0));
+    mMonster.push_back(monster(6960, 1221, 1));
+    mMonster.push_back(monster(6672, 693, 0));
+    mMonster.push_back(monster(7632, 981, 0));
+    mMonster.push_back(monster(8112, 981, 0));
+    mMonster.push_back(monster(8352, 1365, 0));
+    mMonster.push_back(monster(8256, 1605, 1));
+    mMonster.push_back(monster(8880, 1269, 0));
+    mMonster.push_back(monster(9504, 1269, 0));
+    mMonster.push_back(monster(9696, 1269, 1));
+    mMonster.push_back(monster(10416, 1793, 0));
+    mMonster.push_back(monster(10944, 1653, 0));
+    mMonster.push_back(monster(11136, 981, 1));
+    mMonster.push_back(monster(12672, 1413, 0));
+    mMonster.push_back(monster(11856, 693, 0));
+    mMonster.push_back(monster(12768, 1701, 0));
+    mMonster.push_back(monster(13728, 837, 1));
+    mMonster.push_back(monster(13488, 1605, 0));
+    mMonster.push_back(monster(13632, 1605, 0));
+    mMonster.push_back(monster(13824, 1605, 0));
+    mMonster.push_back(monster(14256, 1509, 0));
+    mMonster.push_back(monster(15840, 1221, 1));
+    mMonster.push_back(monster(11760, 2037, 0));
+    mMonster.push_back(monster(12288, 2133, 1));
 
 
 
@@ -236,6 +238,15 @@ void commom::render(){
         mMenu.render(mWindow, mTexture);
     }
     if(is_play){
+        if(mBoss.getCnt()){
+            random_enemy = rand() % 2;
+                if(random_enemy == 0)
+                    mMonster.push_back(monster(mBoss.getPosX(), 0, 1));
+                if(random_enemy == 1)
+                    mWizard.push_back(wizard(mBoss.getPosX() , 0));
+            mBoss.setCnt();
+        }
+
         mMap.renderMap(mPlayer.getVelX(), mPlayer.getFlip(), mWindow, camera, mTexture, mtile, mTilesClip);
         mPlayer.move(mtile);
         for(int i = 0; i < mMonster.size(); i++){
@@ -245,10 +256,13 @@ void commom::render(){
             if(checkCollision(mPlayer.getBox(), mMonster[i].getBoxBlood())){
                 mPlayer.setHP();
                 mMonster[i].setBlood();
+                mMonster.erase(mMonster.begin() + i);
             }
             if(mMonster[i].getMonsterAttack())
                 damage += 1;
-
+            if(mMonster[i].getIsTakeHit()){
+                cnt++;
+            }
         }
         for(int i = 0; i < mWizard.size(); i++){
             mWizard[i].setPosX();
@@ -256,14 +270,24 @@ void commom::render(){
             mWizard[i].render(mWindow, camera, mTexture, mPlayer);
             if(mWizard[i].getAttackPlayer())
                 damage += 1;
-
+            if(mWizard[i].getIsTakeHit())
+                cnt++;
+            if(mWizard[i].getDeath())
+                mWizard.erase(mWizard.begin() + i);
         }
         mBoss.setPosX();
         mBoss.setTotal_damage();
-
         mBoss.move(mtile, mPlayer);
         mBoss.render(mWindow, camera, mTexture, mPlayer);
-            damage += mBoss.getTotal_damage();
+        damage += mBoss.getTotal_damage();
+
+        if(mBoss.getIsTakeHit())
+            cnt++;
+        if(cnt == 3)
+            mPlayer.setExp();
+        if(cnt >= 3)
+            cnt = 0;
+
         mPlayer.setIsTakeHit(damage);
         mPlayer.render(mWindow, camera, mTexture);
         damage = 0;

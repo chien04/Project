@@ -21,7 +21,10 @@ public:
     bool getAttackPlayer();
     void setTotal_damage();
     int getTotal_damage();
-
+    bool getIsTakeHit();
+    void setCnt();
+    bool getCnt();
+    int getPosX();
 private:
     SDL_Rect boxBoss;
     int velX, velY;
@@ -39,7 +42,6 @@ private:
     int frame_idle;
     int frame_run;
     int random_posX;
-    int random_enemy;
     int frame_takehit;
     int frame_attack1;
     int frame_attack2;
@@ -53,6 +55,7 @@ private:
     bool isAttacking;
     bool attackPlayer;
     bool isTakeHit;
+    bool take_hit;
     bool isDeath;
     int hp;
     int res;

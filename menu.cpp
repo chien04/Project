@@ -57,10 +57,13 @@ void menu::render(createWindow mWindow, SDL_Texture* mTexture[]){
 }
 
 reload::reload(){
-    posX = (SCREEN_WIDTH - RESTART_GAME_WIDTH) / 2;
-    posY = (SCREEN_HEIGHT - RESTART_GAME_HEIGHT) / 2;
-    restartClip = {0, 0, 960, 880};
+    backgroundClip = {0, 0, 960, 880};
     restart = false;
+    for(int i = 0; i < TOTAL_BUTTON; i++){
+        buttonBox[i] = {(SCREEN_WIDTH - RESTART_GAME_WIDTH) / 2 + RESTART_GAME_WIDTH / 4 - 100 / 2,
+                         (SCREEN_HEIGHT - RESTART_GAME_HEIGHT) / 2 + RESTART_GAME_HEIGHT /4 - 100 /2 , 100, 100};
+    }
+    }
 }
 
 void reload::handle(SDL_Event &e){

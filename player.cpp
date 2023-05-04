@@ -31,7 +31,7 @@ player::player()
     createPlayerClip();
 //    createEffectTexture();
     hp = 5;
-    exp = 0;
+    exp = 6;
     attackPlayer = false;
     attackSkill = false;
     isShot = false;
@@ -95,7 +95,7 @@ void player::createPlayerClip()
         sum += 96;
     }
     sum = 1408;
-    for(int i = 0; i < PLAYER_EXP; i++){
+    for(int i = PLAYER_EXP - 1; i >= 0; i--){
         mPlayerExp[i] = {0, sum, 384, 64};
         sum += 80;
     }
@@ -130,7 +130,7 @@ void player::handle(SDL_Event& e)
             }
             break;
         case SDLK_w:
-            if(!attackSkill && !attackSkill)
+            if(!attackSkill && !attackSkill && exp == 6)
                 attackSkill = true;
             break;
         }
@@ -316,14 +316,14 @@ void player::setIsTakeHit(int damage)
 {
     if(!isTakeHit){
         if(attackPlayer && cnt_trap == 120) {
-            hp -= 1;
+//            hp -= 1;
             isTakeHit = true;
             attackPlayer = false;
             cnt_trap = 0;
         }
         if(damage != 0){
             isTakeHit = true;
-            hp -= damage;
+//            hp -= damage;
         }
     }
 
@@ -337,6 +337,11 @@ bool player::isTakeHitByMonster()
 void player::setHP(){
     if(hp < PLAYER_HEALTH - 1)
         hp += 1;
+}
+
+void player::setExp(){
+    if(exp < PLAYER_EXP - 1)
+        exp += 1;
 }
 void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[])
 {
@@ -432,6 +437,7 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                 if(frame_player_attack_skill / (PLAYER_ATTACK*2) >= PLAYER_ATTACK){
                     frame_player_attack_skill = 0;
                     attackSkill = false;
+                    exp = 0;
                 }
                 if(frame_player_attack_skill == 80){
                     isShot = true;

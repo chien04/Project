@@ -28,11 +28,14 @@ private:
     SDL_Rect camera;
     bool check_ball;
     int damage;
+    int cnt;
+    int random_enemy;
     std::vector<monster> mMonster;
     std::vector<wizard> mWizard;
 
     bool is_menu;
     bool is_play;
+
 public:
     commom();
     ~commom();

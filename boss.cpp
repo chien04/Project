@@ -15,7 +15,6 @@ boss::boss()
     frame_skill = 0;
     frame_death = 0;
     random_posX = boxBoss.x;
-    random_enemy = 0;
     ban = false;
     lightning = false;
     isIdle = false;
@@ -23,6 +22,7 @@ boss::boss()
     isAttacking = false;
     attackPlayer = false;
     isTakeHit = false;
+    take_hit = false;
     isDeath = false;
     hp = 25;
     res = 0;
@@ -142,17 +142,13 @@ void boss::move(tile tiles[], player mPlayer)
 {
     if(isDeath)
         return;
-    for(int i = 0; i < mMonster.size(); i++)
-        mMonster[i].move(mPlayer, tiles);
-    for(int i = 0; i < mWizard.size(); i++)
-        mWizard[i].move(mPlayer, tiles);
-
 //    std::cout << mMonster.size() << " " << mWizard.size() << std::endl;
     boxBoss.y += velY;
     if(boxBoss.y < 0 || boxBoss.y + BOSS_HEIGHT > HEIGHT_MAP || touchesWall(boxBoss, tiles))
     {
         boxBoss.y -= velY;
     }
+    take_hit = false;
     if(checkCollision(boxBoss, mPlayer.getBoxShot())){
         if(mPlayer.getAttackMonsterByShot()){
             isTakeHit = true;
@@ -167,6 +163,7 @@ void boss::move(tile tiles[], player mPlayer)
         if(mPlayer.getIsttacking())
         {
             isTakeHit = true;
+            take_hit = true;
             isAttacking = false;
             isIdle = false;
             isRunning = false;
@@ -213,6 +210,7 @@ void boss::move(tile tiles[], player mPlayer)
         }
         if(boxBoss.x == random_posX){
             cnt++;
+
             setPosX();
             random_posX = rand() % (17588- 16588 + 1) + 16588;
             random_posX = random_posX - (random_posX % velX) + (boxBoss.x % velX);
@@ -380,31 +378,6 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
                     lightning = false;
                 }
             }
-
-        if(cnt == 3){
-            random_enemy = rand() % 2;
-            if(random_enemy == 0)
-                mMonster.push_back(monster(boxBoss.x, 0));
-            if(random_enemy == 1)
-                mWizard.push_back(wizard(boxBoss.x , 0));
-            cnt = 0;
-        }
-        for(int i = 0; i < mMonster.size(); i++){
-            mMonster[i].render(mWindow, camera, mTexture, mplayer);
-            if(mMonster[i].getMonsterAttack())
-                total_damage++;
-            if(mMonster[i].getDeath())
-                mMonster.erase(mMonster.begin() + i);
-        }
-        for(int i = 0; i < mWizard.size(); i++){
-            mWizard[i].render(mWindow, camera, mTexture, mplayer);
-            if(mWizard[i].getAttackPlayer())
-                total_damage++;
-            if(mWizard[i].getDeath())
-                mWizard.erase(mWizard.begin() + i);
-        }
-
-
     }
     if(hp == 0){
          mWindow.render(mTexture[WIZARD_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
@@ -417,10 +390,25 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
     }
 }
 
+void boss::setCnt(){
+    cnt = 0;
+}
+
+bool boss::getCnt(){
+    if(cnt == 3)
+        return true;
+    return false;
+}
+bool boss::getIsTakeHit(){
+    return take_hit;
+}
 bool boss::getAttackPlayer(){
     return attackPlayer;
 }
 
+int boss::getPosX(){
+    return boxBoss.x;
+}
 int boss::getTotal_damage(){
     return total_damage;
 }
