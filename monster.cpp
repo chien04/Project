@@ -160,6 +160,8 @@ void monster::move(player mPlayer, tile tiles[])
 {
     if(is_death)
         return;
+    if(mPlayer.getPause())
+        return;
     boxMonster.y += velY;
         if(touchesWall(boxMonster, tiles))
         {
@@ -320,7 +322,7 @@ void monster::move(player mPlayer, tile tiles[])
 void monster::setBlood(){
     blood = false;
 }
-void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mPlayer)
+void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mPlayer, Mix_Chunk *gameSound[])
 {
     boxBlood.x = boxMonster.x;
     boxBlood.y = boxMonster.y+ 24;
@@ -338,7 +340,8 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
         {
             mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x, boxMonster.y - camera.y,
                            &monsterRun[frame[FRAME_RUN]/(MONSTER_RUN)], 0, NULL, flip, MONSTER_WIDTH, MONSTER_HEIGHT);
-            frame[FRAME_RUN]++;
+            if(!mPlayer.getPause())
+                frame[FRAME_RUN]++;
             if(frame[FRAME_RUN]/( MONSTER_RUN) >=  MONSTER_RUN)
             {
                 frame[FRAME_RUN] = 0;
@@ -353,7 +356,10 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
             else
                 mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x - 48, boxMonster.y - camera.y - 24,
                            &monsterAttack[frame[FRAME_ATTACK]/(MONSTER_ATTACK*3)], 0, NULL, flip, (double)(MONSTER_WIDTH*5)/3, (double)(MONSTER_HEIGHT)*4/3);
-            frame[FRAME_ATTACK]++;
+//            if(frame[FRAME_ATTACK] == 0)
+//                Mix_PlayChannel(-1, gameSound[MONSTER_ATTACKSOUND], 0);
+            if(!mPlayer.getPause())
+                frame[FRAME_ATTACK]++;
 
             if(frame[FRAME_ATTACK] / (MONSTER_ATTACK * 3) >= MONSTER_ATTACK)
             {
@@ -365,10 +371,12 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
         if(isHitting == true)
         {
             isIdle = false;
-
             mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x, boxMonster.y - camera.y,
                            &monsterKnockBack[frame[FRAME_KNOCKBACK]/ (MONSTER_KNOCKBACK*50)], 0, NULL, flip, MONSTER_WIDTH, MONSTER_HEIGHT);
-            frame[FRAME_KNOCKBACK]++;
+//            if(frame[FRAME_KNOCKBACK] == 0)
+//                Mix_PlayChannel(-1, gameSound[MONSTER_TAKEHITSOUND], 0);
+            if(!mPlayer.getPause())
+                frame[FRAME_KNOCKBACK]++;
             if(frame[FRAME_KNOCKBACK] / (MONSTER_KNOCKBACK*50) >= MONSTER_KNOCKBACK)
             {
                 frame[FRAME_KNOCKBACK] = 0;
@@ -386,7 +394,8 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
         {
             mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x, boxMonster.y - camera.y,
                            &monsterIdle[frame[FRAME_IDLE] / (MONSTER_IDLE*16)], 0, NULL, flip, MONSTER_WIDTH, MONSTER_HEIGHT);
-            frame[FRAME_IDLE]++;
+            if(!mPlayer.getPause())
+                frame[FRAME_IDLE]++;
             if(frame[FRAME_IDLE] / (MONSTER_IDLE*16) >= MONSTER_IDLE)
             {
                 frame[FRAME_IDLE] = 0;
@@ -415,7 +424,10 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
         isHitting = false;
         mWindow.render(mTexture[MONSTER_TEXTURE], boxMonster.x - camera.x, boxMonster.y - camera.y,
                        &monsterDeath[frame[FRAME_DEATH] / (MONSTER_DEATH * 20)], 0, NULL, flip, MONSTER_WIDTH*4/3, MONSTER_HEIGHT - 16);
-        frame[FRAME_DEATH]++;
+        if(frame[FRAME_DEATH] == 0)
+            Mix_PlayChannel(-1, gameSound[MONSTER_DEATHSOUND], 0);
+        if(!mPlayer.getPause())
+            frame[FRAME_DEATH]++;
         if(frame[FRAME_DEATH] / (MONSTER_DEATH* 20) >= MONSTER_DEATH)
         {
             frame[FRAME_DEATH] = 0;

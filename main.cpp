@@ -13,6 +13,8 @@ int main(int argc, char* args[])
         if(!fix.checkLoadFile()){
             std::cout << "load file is error\n";
         }
+        if(!fix.checkLoadSound())
+            std::cout << "load sound is error\n";
         else{
             bool quit = false;
             SDL_Event e;

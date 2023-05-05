@@ -142,7 +142,8 @@ void boss::move(tile tiles[], player mPlayer)
 {
     if(isDeath)
         return;
-//    std::cout << mMonster.size() << " " << mWizard.size() << std::endl;
+    if(mPlayer.getPause())
+        return;
     boxBoss.y += velY;
     if(boxBoss.y < 0 || boxBoss.y + BOSS_HEIGHT > HEIGHT_MAP || touchesWall(boxBoss, tiles))
     {
@@ -173,14 +174,6 @@ void boss::move(tile tiles[], player mPlayer)
 
     if(isTakeHit)
         return;
-//    if(ban) {
-//        std::cout << "k ";
-//        if(!isAttacking){
-//            std::cout << "kkk\n";
-//            isIdle = true;
-//            return;
-//        }
-//    }
     if(isAttacking){
         if(boxBoss.x > mPlayer.getPosX())
             flip = SDL_FLIP_HORIZONTAL;
@@ -216,7 +209,6 @@ void boss::move(tile tiles[], player mPlayer)
             random_posX = random_posX - (random_posX % velX) + (boxBoss.x % velX);
             isRunning = false;
             isAttacking = true;
-            std::cout << boxBoss.x << " " << random_posX << std::endl;
 
         }
     }
@@ -231,7 +223,7 @@ void boss::move(tile tiles[], player mPlayer)
 
 }
 
-void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer)
+void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer, Mix_Chunk *gameSound[])
 {
     SDL_Rect ba = {posX - 500 - camera.x , boxBoss.y - camera.y, 1000, BOSS_HEIGHT};
     mWindow.renderBox(ba);
@@ -252,7 +244,8 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
         {
             mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
                            &bossRun[frame_run / BOSS_RUNNING], 0, NULL, flip, BOSS_WIDTH*16/17, BOSS_HEIGHT*19/21);
-            frame_run++;
+            if(!mplayer.getPause())
+                frame_run++;
             if(frame_run / BOSS_RUNNING >= BOSS_RUNNING){
                 frame_run = 0;
             }
@@ -261,7 +254,8 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
         {
             mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
                            &bossIdle[frame_idle / BOSS_IDLE], 0, NULL, flip, BOSS_WIDTH, BOSS_HEIGHT);
-            frame_idle++;
+            if(!mplayer.getPause())
+                frame_idle++;
             if(frame_idle / BOSS_IDLE >= BOSS_IDLE)
             {
                 frame_idle = 0;
@@ -271,7 +265,8 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
         {
             mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
                            &bossTakeHit[frame_takehit / (BOSS_TAKEHIT * 4)], 0, NULL, flip, BOSS_WIDTH*(18/17), BOSS_HEIGHT);
-            frame_takehit++;
+            if(!mplayer.getPause())
+                frame_takehit++;
             if(frame_takehit / (BOSS_TAKEHIT * 4) >= BOSS_TAKEHIT)
             {
                 if(hp < 0)
@@ -292,17 +287,19 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
                 if(frame_attack1 == 0){
                     if(mBall.size() == 0)
                     {
-//                    if(frame_attack1 == 0){
                         mBall.push_back(fire_ball(boxBoss, flip_ball));
-//                        std::cout << " " << mBall[0].getBan() << std::endl;
                     }
                 }
 
-                frame_attack1++;
+                if(!mplayer.getPause())
+                    frame_attack1++;
                 if(frame_attack1 == 11 * BOSS_ATTACK1)
                 {
-                    if(mBall.size() != 0)
+                    if(mBall.size() != 0){
                         ban = true;
+                        Mix_PlayChannel(-1, gameSound[BOSS_FIRESOUND], 0);
+                    }
+
                 }
                 if(frame_attack1 / (BOSS_ATTACK1) >= BOSS_ATTACK1)
                 {
@@ -314,9 +311,12 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
             if(res == 1){
                 mWindow.render(mTexture[BOSS_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y - 120,
                                &bossAttack2[frame_attack2 / BOSS_ATTACK2], 0, NULL, flip, BOSS_WIDTH*22/17, BOSS_HEIGHT*11/7);
-                frame_attack2++;
-                if(frame_attack2 / BOSS_ATTACK2 == 9)
+                if(!mplayer.getPause())
+                    frame_attack2++;
+                if(frame_attack2 == 9 * BOSS_ATTACK2){
                     lightning = true;
+                    Mix_PlayChannel(-1, gameSound[BOSS_LIGHTNINGSOUND], 0);
+                }
                 if(frame_attack2 / BOSS_ATTACK2 >= BOSS_ATTACK2)
                 {
                     res = rand() % 2;
@@ -351,7 +351,6 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
             else
                 attackPlayer = false;
 
-//            std::cout << ban << std::endl;
             if(lightning)
             {
                 if(frame_skill == 0){
@@ -363,7 +362,8 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
                 }
                 mWindow.render(mTexture[WIZARD_TEXTURE], lightningPosX - 12 - camera.x, boxBoss.y - camera.y,
                                &bossSkill2[frame_skill / (BOSS_SKILL2 * 2)], 0, NULL, SDL_FLIP_NONE, 128, 256);
-                frame_skill++;
+                if(!mplayer.getPause())
+                    frame_skill++;
                 if(frame_skill == 88){
                     if(checkCollision(lightningBox, mplayer.getBox())){
                         attackPlayer = true;
@@ -382,7 +382,10 @@ void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]
     if(hp == 0){
          mWindow.render(mTexture[WIZARD_TEXTURE], boxBoss.x - camera.x, boxBoss.y - camera.y,
                                &bossDeath[frame_death / (BOSS_DEATH * 4)], 0, NULL, flip, BOSS_WIDTH * 18/17, BOSS_HEIGHT * 20/21);
-        frame_death++;
+        if(frame_death == 0)
+            Mix_PlayChannel(-1, gameSound[BOSS_DEATHSOUND], 0);
+        if(!mplayer.getPause())
+            frame_death++;
         if(frame_death / (BOSS_DEATH * 4) >= BOSS_DEATH){
             frame_death = 0;
             isDeath = true;

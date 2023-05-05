@@ -145,6 +145,8 @@ void wizard::move(player mPlayer, tile tiles[])
 {
     if(isDeath)
         return;
+    if(mPlayer.getPause())
+        return;
     boxWizard.y += velY;
     if(touchesWall(boxWizard, tiles))
     {
@@ -197,7 +199,8 @@ void wizard::move(player mPlayer, tile tiles[])
             flip = SDL_FLIP_NONE;
         }
     }
-    if(abs(mPlayer.getPosX() - pos_x) < 350)
+    SDL_Rect boxchasing = {pos_x - 350, boxWizard.y, 700, boxWizard.h * 2};
+    if(checkCollision(mPlayer.getBox(), boxchasing))
     {
         inZone = true;
         isAttacking = true;
@@ -214,7 +217,7 @@ void wizard::setPosX()
     if(isHitting)
         pos_x = boxWizard.x - 32;
 }
-void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer)
+void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer, Mix_Chunk *gameSound[])
 {
     if(isDeath)
         return;
@@ -227,7 +230,8 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x, boxWizard.y - camera.y,
                            &wizardIdle[frame[IDLE]/WIZARD_IDLE], 0, NULL, flip, WIZARD_WIDTH, WIZARD_HEIGHT);
 
-            frame[IDLE]++;
+            if(!mplayer.getPause())
+                frame[IDLE]++;
             if(frame[IDLE] / WIZARD_IDLE >= WIZARD_IDLE)
                 frame[IDLE] = 0;
         }
@@ -237,9 +241,11 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             {
                 mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x - 32, boxWizard.y - camera.y,
                                &wizardTakeHit[frame[TAKE_HIT]/(WIZARD_TAKE_HIT*5)], 0, NULL, flip, WIZARD_WIDTH*3/2, WIZARD_HEIGHT);
-                frame[TAKE_HIT]++;
+                if(!mplayer.getPause())
+                    frame[TAKE_HIT]++;
                 if(frame[TAKE_HIT] / (WIZARD_TAKE_HIT*5) >= WIZARD_TAKE_HIT)
                 {
+//                    Mix_PlayChannel(-1, gameSound[WIZARD_TAKEHITSOUND], 0);
                     frame[TAKE_HIT] = 0;
                     isHitting = false;
                     isAttacking = true;
@@ -263,11 +269,14 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                     mBall.push_back(ice_ball(boxWizard, flip_ball));
                 }
 
-                frame[ATTACK]++;
-                if(frame[ATTACK]/(WIZARD_ATTACK*2) == 7 )
+                if(!mplayer.getPause())
+                    frame[ATTACK]++;
+                if(frame[ATTACK] == 7*(WIZARD_ATTACK*2) )
                 {
-                    if(mBall.size() != 0)
+                    if(mBall.size() != 0){
+//                        Mix_PlayChannel(-1, gameSound[WIZARD_ATTACKSOUND], 0);
                         ban = true;
+                    }
                 }
                 if(frame[ATTACK] / (WIZARD_ATTACK*2) >= WIZARD_ATTACK)
                 {
@@ -301,7 +310,8 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
         }
         else
             attackPlayer = false;
-        cnt++;
+        if(!mplayer.getPause())
+            cnt++;
 
         if(flip == SDL_FLIP_NONE)
         {
@@ -328,7 +338,10 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
     {
         mWindow.render(mTexture[WIZARD_TEXTURE], boxWizard.x - camera.x - 32, boxWizard.y - camera.y,
                        &wizardDeath[frame[DEATH]/(WIZARD_DEATH*2)], 0, NULL, flip, WIZARD_WIDTH*5/2, WIZARD_HEIGHT);
-        frame[DEATH]++;
+        if(frame[DEATH] == 0)
+            Mix_PlayChannel(-1, gameSound[WIZARD_DEATHSOUND], 0);
+        if(!mplayer.getPause())
+            frame[DEATH]++;
         if(frame[DEATH] / (WIZARD_DEATH*2) >= WIZARD_DEATH)
         {
             frame[DEATH] = 0;

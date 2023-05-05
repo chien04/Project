@@ -39,6 +39,9 @@ player::player()
     SDL_Rect boxShot = {0, 0, 640, 64};
     SDL_Rect boxCam = {0, 0, 640, 64};
 
+    isPause = false;
+    boxPause = {SCREEN_WIDTH - 120, 20 , 100, 100};
+    boxPauseClip = {496, 976, 208, 208};
 }
 
 void player::createPlayerClip()
@@ -101,8 +104,9 @@ void player::createPlayerClip()
     }
 }
 
-void player::handle(SDL_Event& e)
+void player::handle(SDL_Event& e, Mix_Chunk *gameSound[])
 {
+
     if(isDeath)
         return;
     if(e.type == SDL_KEYDOWN && e.key.repeat == 0)
@@ -121,12 +125,14 @@ void player::handle(SDL_Event& e)
                 velY = -PLAYER_VEL;
                 on_ground = false;
                 cnt_jump = 0;
+                Mix_PlayChannel(-1, gameSound[PLAYER_JUMPSOUND], 0);
             }
             break;
         case SDLK_a:
             if(attacking == false && attackSkill == false)
             {
                 attacking = true;
+                Mix_PlayChannel(-1, gameSound[PLAYER_ATTACKSOUND], 0);
             }
             break;
         case SDLK_w:
@@ -145,6 +151,24 @@ void player::handle(SDL_Event& e)
         case SDLK_LEFT:
             velX += PLAYER_VEL;
             break;
+        }
+    }
+    if(e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEMOTION){
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        bool inside = false;
+        if(boxPause.x < x && x < boxPause.x + boxPause.w && boxPause.y < y && y < boxPause.y + boxPause.h){
+            inside = true;
+        }
+        if(inside){
+            switch(e.type){
+                case SDL_MOUSEBUTTONDOWN:
+                    isPause = true;
+                    Mix_PlayChannel(-1, gameSound[PRESS_BUTTON], 0);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
@@ -233,6 +257,8 @@ void player::move(tile tiles[])
 {
     if(isDeath)
         return;
+    if(isPause)
+        return;
     if(velY < 0)
     {
         cnt_jump++;
@@ -316,14 +342,14 @@ void player::setIsTakeHit(int damage)
 {
     if(!isTakeHit){
         if(attackPlayer && cnt_trap == 120) {
-//            hp -= 1;
+            hp -= 1;
             isTakeHit = true;
             attackPlayer = false;
             cnt_trap = 0;
         }
         if(damage != 0){
             isTakeHit = true;
-//            hp -= damage;
+            hp -= damage;
         }
     }
 
@@ -343,7 +369,7 @@ void player::setExp(){
     if(exp < PLAYER_EXP - 1)
         exp += 1;
 }
-void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[])
+void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], Mix_Chunk *gameSound[])
 {
     cnt_trap++;
     if(cnt_trap >= 120)
@@ -362,6 +388,7 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             mWindow.render(mTexture[HEALTH_TEXTURE], 50, 100, &mPlayerExp[i], 0, NULL, SDL_FLIP_NONE, 180, 30);
         }
     }
+    mWindow.render(mTexture[MENU_TEXTURE], boxPause.x, boxPause.y, &boxPauseClip, 0, NULL, SDL_FLIP_NONE, 100, 100);
     if(isDeath)
         return;
     if(hp > 0)
@@ -372,7 +399,8 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             {
                 mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x, boxPlayer.y - camera.y,
                                &mPlayerIdle[frame/(PLAYER_IDLE*4)], 0, NULL, flip, PLAYER_WIDTH, PLAYER_HEIGHT);
-                frame++;
+                if(!isPause)
+                    frame++;
                 if(frame / (PLAYER_IDLE*4) >= PLAYER_IDLE)
                     frame = 0;
             }
@@ -380,7 +408,10 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             {
                 mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x, boxPlayer.y - camera.y,
                                &mPlayerRun[frame/PLAYER_RUN], 0, NULL, flip, PLAYER_WIDTH, PLAYER_HEIGHT);
-                frame++;
+                if(frame == 0)
+                    Mix_PlayChannel(-1, gameSound[PLAYER_RUNSOUND], 0);
+                if(!isPause)
+                    frame++;
                 if(frame / PLAYER_RUN >= PLAYER_RUN)
                 {
                     frame = 0;
@@ -390,7 +421,8 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             {
                 mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 24, boxPlayer.y - camera.y - 30,
                                &mPlayerJump[frame/PLAYER_JUMP], 0, NULL, flip, PLAYER_WIDTH * 2, PLAYER_HEIGHT*4/3);
-                frame++;
+                if(!isPause)
+                    frame++;
                 if(frame / PLAYER_JUMP >= PLAYER_JUMP)
                 {
                     frame = 0;
@@ -414,8 +446,8 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                 }
                 else
                     attackMonster = false;
-
-                frame_attack++;
+                if(!isPause)
+                    frame_attack++;
                 if(frame_attack / PLAYER_ATTACK >= PLAYER_ATTACK)
                 {
                     frame_attack = 0;
@@ -433,6 +465,9 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                     mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 64, boxPlayer.y - camera.y - 40,
                                    &mplayerAttackSkill[frame_player_attack_skill/(PLAYER_ATTACK*2)], 0, NULL, flip, PLAYER_WIDTH*3, PLAYER_HEIGHT*5/3);
                 }
+                if(frame_player_attack_skill == 80)
+                    Mix_PlayChannel(-1, gameSound[PLAYER_ATTACKSKILLSOUND], 0);
+                if(!isPause)
                 frame_player_attack_skill++;
                 if(frame_player_attack_skill / (PLAYER_ATTACK*2) >= PLAYER_ATTACK){
                     frame_player_attack_skill = 0;
@@ -445,25 +480,25 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             }
             if(isShot){
                 if(flip == SDL_FLIP_NONE){
-                    mWindow.render(mTexture[SKILL_TEXTURE], boxPlayer.x - camera.x - 96, boxPlayer.y - camera.y,
-                                &mAttackSkill[frame_skill/ATTACK_SKILL], 0, NULL, flip, 1000, 64);
-                    boxShot.x = boxPlayer.x - 48 + boxPlayer.w*2 + 7;
+                    mWindow.render(mTexture[SKILL_TEXTURE], boxPlayer.x - camera.x - 96, boxPlayer.y - camera.y - 16,
+                                &mAttackSkill[frame_skill/ATTACK_SKILL], 0, NULL, flip, 1000, 80);
+                    boxShot.x = boxPlayer.x - 48 + boxPlayer.w*2 + 20;
                     boxShot.y = boxPlayer.y;
                     boxShot.w = 800;
                     boxShot.h = 50;
-                    boxCam.x = boxPlayer.x - camera.x - 48 + boxPlayer.w *2 + 7;
+                    boxCam.x = boxPlayer.x - camera.x - 48 + boxPlayer.w *2 + 20;
                     boxCam.y = boxPlayer.y - camera.y;
                     boxCam.w = 800;
                     boxCam.h = 50;
                 }
                 if(flip == SDL_FLIP_HORIZONTAL){
-                    mWindow.render(mTexture[SKILL_TEXTURE], boxPlayer.x - camera.x - 856, boxPlayer.y - camera.y,
-                                &mAttackSkill[frame_skill/ATTACK_SKILL], 0, NULL, flip, 1000, 64);
-                    boxShot.x = boxPlayer.x - 808 + 7;
+                    mWindow.render(mTexture[SKILL_TEXTURE], boxPlayer.x - camera.x - 856, boxPlayer.y - camera.y - 16,
+                                &mAttackSkill[frame_skill/ATTACK_SKILL], 0, NULL, flip, 1000, 80);
+                    boxShot.x = boxPlayer.x - 808 + 20;
                     boxShot.y = boxPlayer.y;
                     boxShot.w = 800;
                     boxShot.h = 50;
-                    boxCam.x = boxPlayer.x - 808 - camera.x+ 7;
+                    boxCam.x = boxPlayer.x - 808 - camera.x+ 20;
                     boxCam.y = boxPlayer.y - camera.y;
                     boxCam.w = 800;
                     boxCam.h = 50;
@@ -473,7 +508,8 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                     attackMonsterByShot = true;
                 else
                     attackMonsterByShot = false;
-                frame_skill++;
+                if(!isPause)
+                    frame_skill++;
                 if(frame_skill / ATTACK_SKILL >= ATTACK_SKILL){
                     frame_skill = 0;
                     isShot = false;
@@ -488,34 +524,30 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             frame_skill = 0;
             isShot = false;
             if(flip == SDL_FLIP_NONE)
-            {
                 mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 160, boxPlayer.y - camera.y - 100,
-                               &mPlayerTakeHit[frame_takehit/(PLAYER_TAKEHIT*3)], 0, NULL, flip, PLAYER_WIDTH*9, PLAYER_HEIGHT*10/3);
-                frame_takehit++;
-                if(frame_takehit / (PLAYER_TAKEHIT*3) >= PLAYER_TAKEHIT)
-                {
-                    frame_takehit = 0;
-                    isTakeHit = false;
-                }
-            }
-            else if(flip == SDL_FLIP_HORIZONTAL)
-            {
+                               &mPlayerTakeHit[frame_takehit/(PLAYER_TAKEHIT*5)], 0, NULL, flip, PLAYER_WIDTH*9, PLAYER_HEIGHT*10/3);
+            if(flip == SDL_FLIP_HORIZONTAL)
                 mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x - 246, boxPlayer.y - camera.y - 100,
                                &mPlayerTakeHit[frame_takehit/(PLAYER_TAKEHIT*5)], 0, NULL, flip, PLAYER_WIDTH*9, PLAYER_HEIGHT*10/3);
-                frame_takehit++;
+                if(frame_takehit == 0)
+                    Mix_PlayChannel(-1, gameSound[PLAYER_DAMAGESOUND], 0);
+                if(!isPause)
+                    frame_takehit++;
                 if(frame_takehit / (PLAYER_TAKEHIT*5) >= PLAYER_TAKEHIT)
                 {
                     frame_takehit = 0;
                     isTakeHit = false;
                 }
-            }
         }
     }
     if(hp <= 0)
     {
         mWindow.render(mTexture[PLAYER_TEXTURE], boxPlayer.x - camera.x, boxPlayer.y - camera.y,
                        &mPlayerDeath[frame_death/(PLAYER_DEATH*2)], 0, NULL, flip, PLAYER_WIDTH*2, PLAYER_HEIGHT*4/3);
-        frame_death++;
+        if(frame_death == 0)
+            Mix_PlayChannel(-1, gameSound[PLAYER_DEATHSOUND], 0);
+        if(!isPause)
+            frame_death++;
         if(frame_death / (PLAYER_DEATH*2) >= PLAYER_DEATH)
         {
             frame_death = 0;
@@ -550,6 +582,13 @@ bool player::getIsttacking()
 SDL_Rect player::getBox()
 {
     return boxPlayer;
+}
+
+void player::setPause(){
+    isPause = false;
+}
+bool player::getPause(){
+    return isPause;
 }
 
 bool player::getAttackMonsterByShot(){

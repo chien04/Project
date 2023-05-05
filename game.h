@@ -19,8 +19,11 @@ private:
     player mPlayer;
     boss mBoss;
     menu mMenu;
-    int gameState;
+    int gameStateMenu;
+    int gameStateReload;
+    int gameStatePause;
     reload mReload;
+    pause mPause;
     SDL_Rect mTilesClip[256];
     SDL_Rect bloodClip;
     SDL_Texture* mTexture[TOTAL_TEXTURE];
@@ -35,6 +38,12 @@ private:
 
     bool is_menu;
     bool is_play;
+    bool restart;
+    Mix_Chunk *gameSound[TOTAL_SOUND];
+    Mix_Music *gameMusic[TOTAL_MUSIC];
+    bool tmp1;
+    bool tmp2;
+
 
 public:
     commom();
@@ -42,6 +51,7 @@ public:
     bool checkCollision(SDL_Rect a, SDL_Rect b);
     bool checkInit();
     bool checkLoadFile();
+    bool checkLoadSound();
     void createTilesClip();
     void handlePlayer(SDL_Event &e);
 

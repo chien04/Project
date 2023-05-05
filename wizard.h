@@ -16,7 +16,7 @@ public:
     bool touchesWall(SDL_Rect boxArcher, tile tiles[]);
 
     void move(player mPlayer, tile tiles[]);
-    void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer);
+    void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer, Mix_Chunk *gameSound[]);
     void setPosX();
     int getPosX();
     int getPosY();

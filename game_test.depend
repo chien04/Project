@@ -1,19 +1,20 @@
 # depslib dependency file v1.0
-1682521862 source:d:\code\game_test\main.cpp
+1683278186 source:d:\code\game_test\main.cpp
 	"game.h"
 	"player.h"
 
-1682504500 source:d:\code\game_test\base.cpp
+1683276712 source:d:\code\game_test\base.cpp
 	"base.h"
 	"game.h"
 
-1682312643 d:\code\game_test\base.h
+1683276061 d:\code\game_test\base.h
 	<set>
 	<iostream>
 	<ctime>
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_ttf.h>
+	<SDL_mixer.h>
 	<SDL_mixer.h>
 	<string>
 	"hangso_const.h"
@@ -41,7 +42,7 @@
 	<fstream>
 	"player.h"
 
-1683215910 d:\code\game_test\game.h
+1683304338 d:\code\game_test\game.h
 	"base.h"
 	"tile_map.h"
 	"base.h"
@@ -52,10 +53,10 @@
 	"boss.h"
 	"menu.h"
 
-1683217045 source:d:\code\game_test\game.cpp
+1683304469 source:d:\code\game_test\game.cpp
 	"game.h"
 
-1683212839 source:d:\code\game_test\player.cpp
+1683297880 source:d:\code\game_test\player.cpp
 	"player.h"
 	"game.h"
 	"hangso_const.h"
@@ -63,20 +64,20 @@
 	<stdlib.h>
 	"monster.h"
 
-1683193548 d:\code\game_test\hangso_const.h
+1683305800 d:\code\game_test\hangso_const.h
 
-1683212400 d:\code\game_test\player.h
+1683294958 d:\code\game_test\player.h
 	"base.h"
 	"tile_map.h"
 
-1683214864 d:\code\game_test\monster.h
+1683297360 d:\code\game_test\monster.h
 	<vector>
 	"base.h"
 	"tile_map.h"
 	"player.h"
 	"hangso_const.h"
 
-1683216826 source:d:\code\game_test\monster.cpp
+1683297725 source:d:\code\game_test\monster.cpp
 	<vector>
 	"monster.h"
 
@@ -87,26 +88,26 @@
 1682414652 source:d:\code\game_test\ice_ball.cpp
 	"ice_ball.h"
 
-1683214024 d:\code\game_test\wizard.h
+1683279946 d:\code\game_test\wizard.h
 	<vector>
 	"base.h"
 	"ice_ball.h"
 	"tile_map.h"
 	"player.h"
 
-1683214147 source:d:\code\game_test\wizard.cpp
+1683305018 source:d:\code\game_test\wizard.cpp
 	"wizard.h"
 
-1682521509 source:d:\code\game_test\menu.cpp
+1683278638 source:d:\code\game_test\menu.cpp
 	"menu.h"
 
-1682506117 d:\code\game_test\menu.h
+1683278531 d:\code\game_test\menu.h
 	"base.h"
 
-1683216439 source:d:\code\game_test\boss.cpp
+1683302474 source:d:\code\game_test\boss.cpp
 	"boss.h"
 
-1683216311 d:\code\game_test\boss.h
+1683301556 d:\code\game_test\boss.h
 	<vector>
 	"base.h"
 	"tile_map.h"

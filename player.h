@@ -10,13 +10,13 @@ public:
     void createPlayerClip();
 //    void createEffectTexture();
 
-    void handle(SDL_Event &e);
+    void handle(SDL_Event &e, Mix_Chunk *gameSound[]);
     bool checkCollision(SDL_Rect a, SDL_Rect b);
     bool checkCollisionTrap(SDL_Rect a, SDL_Rect b);
     bool touchesWall( SDL_Rect  boxPlayer, tile tiles[] );
     void move(tile tiles[]);
 
-    void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]);
+    void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], Mix_Chunk *gameSound[]);
     SDL_Rect getBox();
     int getVelX();
     SDL_RendererFlip getFlip();
@@ -31,6 +31,8 @@ public:
     void setExp();
     bool getAttackMonsterByShot();
     SDL_Rect getBoxShot();
+    void setPause();
+    bool getPause();
 private:
     int cnt_jump;
     SDL_Rect boxPlayer;
@@ -69,6 +71,9 @@ private:
     bool isShot;
     bool attackMonsterByShot;
     int cnt_trap;
+    bool isPause;
+    SDL_Rect boxPause;
+    SDL_Rect boxPauseClip;
 
 };
 

@@ -16,7 +16,7 @@ public:
     bool checkCollision(SDL_Rect a, SDL_Rect b);
     bool touchesWall(SDL_Rect boxBoss, tile tiles[]);
     void move(tile tiles[], player boxPlayer);
-    void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mPlayer);
+    void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mPlayer, Mix_Chunk *gameSound[]);
     void setPosX();
     bool getAttackPlayer();
     void setTotal_damage();

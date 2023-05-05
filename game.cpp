@@ -2,9 +2,12 @@
 
 commom::commom(){
 
-    gameState = -1;
+    gameStateMenu = -1;
+    gameStateReload = -1;
+    gameStatePause = -1;
     is_menu = true;
     is_play = false;
+    restart = false;
     cnt = 0;
     mTexture[MAP_TEXTURE] = NULL;
     mMap.loadMap(mtile);
@@ -12,6 +15,8 @@ commom::commom(){
     camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     damage = 0;
     random_enemy = 0;
+    tmp1 = false;
+    tmp2 = false;
 }
 
 commom::~commom(){
@@ -114,6 +119,110 @@ bool commom::checkLoadFile(){
 
     return true;
 }
+
+bool commom::checkLoadSound(){
+    gameSound[PRESS_BUTTON] = Mix_LoadWAV("sound//press_button.wav");
+    if(gameSound[PRESS_BUTTON] == NULL){
+        std::cout << "load sound press button is fail";
+        return false;
+    }
+    gameSound[WIZARD_ATTACKSOUND] = Mix_LoadWAV("sound//wizard_attack.wav");
+    if(gameSound[WIZARD_ATTACKSOUND] == NULL){
+        std::cout << "load sound wizard attack sound is fail";
+        return false;
+    }
+    gameSound[WIZARD_TAKEHITSOUND] = Mix_LoadWAV("sound//takehit.wav");
+    if(gameSound[WIZARD_TAKEHITSOUND] == NULL){
+        std::cout << "load sound wizard takehit sound is fail";
+        return false;
+    }
+    gameSound[WIZARD_DEATHSOUND] = Mix_LoadWAV("sound//wizard_death.wav");
+    if(gameSound[WIZARD_DEATHSOUND] == NULL){
+        std::cout << "load sound wizard death sound is fail";
+        return false;
+    }
+    gameSound[PLAYER_ATTACKSOUND] = Mix_LoadWAV("sound//playerattack.wav");
+    if(gameSound[PLAYER_ATTACKSOUND] == NULL){
+        std::cout << "load sound playear attack sound is fail";
+        return false;
+    }
+    gameSound[PLAYER_RUNSOUND] = Mix_LoadWAV("sound//playerrun.wav");
+    if(gameSound[PLAYER_RUNSOUND] == NULL){
+        std::cout << "load sound player run sound is fail";
+        return false;
+    }
+    gameSound[PLAYER_ATTACKMISSSOUND] = Mix_LoadWAV("sound//playerattackmiss.wav");
+    if(gameSound[PLAYER_ATTACKMISSSOUND] == NULL){
+        std::cout << "load sound player attack miss sound is fail";
+        return false;
+    }
+    gameSound[PLAYER_JUMPSOUND] = Mix_LoadWAV("sound//playerjump.wav");
+    if(gameSound[PLAYER_JUMPSOUND] == NULL){
+        std::cout << "load sound player jump sound is fail";
+        return false;
+    }
+    gameSound[PLAYER_DAMAGESOUND] = Mix_LoadWAV("sound//playerdamage.wav");
+    if(gameSound[PLAYER_DAMAGESOUND] == NULL){
+        std::cout << "load sound player damage sound is fail";
+        return false;
+    }
+    gameSound[PLAYER_DEATHSOUND] = Mix_LoadWAV("sound//playerdeath.wav");
+    if(gameSound[PLAYER_DEATHSOUND] == NULL){
+        std::cout << "load sound player death sound is fail";
+        return false;
+    }
+    gameSound[PLAYER_ATTACKSKILLSOUND] = Mix_LoadWAV("sound//playerattackskill.wav");
+    if(gameSound[PLAYER_ATTACKSKILLSOUND] == NULL){
+        std::cout << "load sound player attack skill sound is fail";
+        return false;
+    }
+    gameSound[MONSTER_ATTACKSOUND] = Mix_LoadWAV("sound//monsterattack.wav");
+    if(gameSound[MONSTER_ATTACKSOUND] == NULL){
+        std::cout << "load sound monster attack sound is fail";
+        return false;
+    }
+    gameSound[MONSTER_TAKEHITSOUND] = Mix_LoadWAV("sound//monstertakehit.wav");
+    if(gameSound[MONSTER_TAKEHITSOUND] == NULL){
+        std::cout << "load sound player attack skill sound is fail";
+        return false;
+    }
+    gameSound[MONSTER_DEATHSOUND] = Mix_LoadWAV("sound//monsterdeath.wav");
+    if(gameSound[MONSTER_DEATHSOUND] == NULL){
+        std::cout << "load sound player attack skill sound is fail";
+        return false;
+    }
+    gameSound[BOSS_LIGHTNINGSOUND] = Mix_LoadWAV("sound//lightning.wav");
+    if(gameSound[BOSS_LIGHTNINGSOUND] == NULL){
+        std::cout << "load sound boss lightning sound is fail";
+        return false;
+    }
+    gameSound[BOSS_FIRESOUND] = Mix_LoadWAV("sound//bossattackfire.wav");
+    if(gameSound[BOSS_FIRESOUND] == NULL){
+        std::cout << "load sound boss attack fire sound is fail";
+        return false;
+    }
+    gameSound[BOSS_DEATHSOUND] = Mix_LoadWAV("sound//bossdeath.wav");
+    if(gameSound[BOSS_DEATHSOUND] == NULL){
+        std::cout << "load sound boss death sound is fail";
+        return false;
+    }
+    gameSound[PLAYER_HEALINGSOUND] = Mix_LoadWAV("sound//playerhealing.wav");
+    if(gameSound[PLAYER_HEALINGSOUND] == NULL){
+        std::cout << "load sound player healing sound is fail";
+        return false;
+    }
+    gameMusic[MUSIC_HOME] = Mix_LoadMUS("music//musichome.wav");
+    if(gameMusic[MUSIC_HOME] == NULL){
+        std::cout << "load music home is fail";
+        return false;
+    }
+    gameMusic[MUSIC_BATTLE] = Mix_LoadMUS("music//musicbattle.wav");
+    if(gameMusic[MUSIC_BATTLE] == NULL){
+        std::cout << "load music home is fail";
+        return false;
+    }
+    return true;
+}
 void commom::createTilesClip(){
     int x = 0; int y = 0;
     for(int i = 0; i < TILES_CLIP; i++){
@@ -191,19 +300,62 @@ void commom::setEnemy(){
     mBoss = boss();
 }
 void commom::handlePlayer(SDL_Event &e){
-    mMenu.handle(e, gameState);
-        if(gameState == PLAY_STATE){
-            is_play = true;
-            is_menu = false;
-            setEnemy();
-            gameState = -1;
-        }
-    if(is_play){
-
-        mPlayer.handle(e);
+    if(is_menu){
+        if(tmp1 == false)
+            Mix_PlayMusic(gameMusic[MUSIC_HOME], -1);
+        tmp1 = true;
+        mMenu.handle(e, gameStateMenu, gameSound);
+            if(gameStateMenu == PLAY_STATE){
+                Mix_HaltMusic();
+                is_play = true;
+                tmp2 = false;
+                is_menu = false;
+                setEnemy();
+                gameStateMenu = -1;
+            }
     }
-    if(mPlayer.getIsDeath())
-        mReload.handle(e);
+    if(is_play){
+        if(tmp2 == false)
+            Mix_PlayMusic(gameMusic[MUSIC_BATTLE], -1);
+        tmp2 = true;
+        mPlayer.handle(e, gameSound);
+    }
+    if(mPlayer.getPause()){
+        mPause.handle(e, gameStatePause, gameSound);
+        if(gameStatePause == CONTINUTE_STATE){
+            mPlayer.setPause();
+            gameStatePause = -1;
+        }
+        if(gameStatePause == RELOAD_STATEPAUSE){
+            restart = true;
+            gameStatePause = -1;
+            mPlayer.setPause();
+        }
+        if(gameStatePause == MENU_STATEPAUSE){
+            Mix_HaltMusic();
+            is_menu = true;
+            tmp1 = false;
+            is_play = false;
+            restart = false;
+            gameStatePause = -1;
+            mPlayer.setPause();
+        }
+    }
+    if(mPlayer.getIsDeath()){
+        mReload.handle(e, gameStateReload, gameSound);
+        if(gameStateReload == RELOAD_STATE){
+            restart = true;
+            gameStateReload = -1;
+        }
+        if(gameStateReload == MENU_STATE){
+            is_menu = true;
+            is_play = false;
+            restart = false;
+            gameStateReload = -1;
+        }
+
+    }
+
 }
 
 void commom::setCamera(){
@@ -237,6 +389,7 @@ void commom::render(){
     {
         mMenu.render(mWindow, mTexture);
     }
+//    std::cout << is_play << std::endl;
     if(is_play){
         if(mBoss.getCnt()){
             random_enemy = rand() % 2;
@@ -252,8 +405,9 @@ void commom::render(){
         for(int i = 0; i < mMonster.size(); i++){
     //        mMonster[i].setPosX()
             mMonster[i].move(mPlayer, mtile);
-            mMonster[i].render(mWindow, camera, mTexture, mPlayer);
+            mMonster[i].render(mWindow, camera, mTexture, mPlayer, gameSound);
             if(checkCollision(mPlayer.getBox(), mMonster[i].getBoxBlood())){
+                Mix_PlayChannel(-1, gameSound[PLAYER_HEALINGSOUND], 0);
                 mPlayer.setHP();
                 mMonster[i].setBlood();
                 mMonster.erase(mMonster.begin() + i);
@@ -267,7 +421,7 @@ void commom::render(){
         for(int i = 0; i < mWizard.size(); i++){
             mWizard[i].setPosX();
             mWizard[i].move(mPlayer, mtile);
-            mWizard[i].render(mWindow, camera, mTexture, mPlayer);
+            mWizard[i].render(mWindow, camera, mTexture, mPlayer, gameSound);
             if(mWizard[i].getAttackPlayer())
                 damage += 1;
             if(mWizard[i].getIsTakeHit())
@@ -278,7 +432,7 @@ void commom::render(){
         mBoss.setPosX();
         mBoss.setTotal_damage();
         mBoss.move(mtile, mPlayer);
-        mBoss.render(mWindow, camera, mTexture, mPlayer);
+        mBoss.render(mWindow, camera, mTexture, mPlayer, gameSound);
         damage += mBoss.getTotal_damage();
 
         if(mBoss.getIsTakeHit())
@@ -289,17 +443,22 @@ void commom::render(){
             cnt = 0;
 
         mPlayer.setIsTakeHit(damage);
-        mPlayer.render(mWindow, camera, mTexture);
+        mPlayer.render(mWindow, camera, mTexture, gameSound);
         damage = 0;
         mWindow.renderBox(mPlayer.getBox());
         if(mPlayer.getIsDeath()){
+//            std::cout << 1 << std::endl;
             mReload.render(mWindow, mTexture);
-
-            if(mReload.getRestart()){
+        }
+            if(restart){
+//                    std::cout << 1;
                 mPlayer = player();
                 setEnemy();
                 mReload = reload();
+                restart = false;
             }
+        if(mPlayer.getPause()){
+            mPause.render(mWindow, mTexture);
         }
     }
 
@@ -308,7 +467,7 @@ void commom::render(){
 }
 
 int commom::getGameState(){
-    return gameState;
+    return gameStateMenu;
 }
 
 void commom::endGame(){

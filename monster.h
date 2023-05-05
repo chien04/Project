@@ -16,7 +16,7 @@ public:
     bool checkCollisionTrap(SDL_Rect a, SDL_Rect b);
     bool touchesWall(SDL_Rect boxMonster, tile tiles[]);
     void move(player mPlayer, tile tiles[]);
-    void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mPlayer);
+    void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mPlayer, Mix_Chunk *gameSound[]);
 
     int getPosX();
     bool getMonsterAttack();

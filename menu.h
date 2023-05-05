@@ -7,7 +7,7 @@ class menu{
 public:
     menu();
 
-    void handle(SDL_Event &e, int &state);
+    void handle(SDL_Event &e, int &stateMenu, Mix_Chunk *gameSound[]);
     void render(createWindow mWindow, SDL_Texture* mTexture[]);
 
 private:
@@ -31,20 +31,37 @@ class reload{
 public:
     reload();
 
-    void handle(SDL_Event &e);
+    void handle(SDL_Event &e, int& stateReload, Mix_Chunk *gameSound[]);
     void render(createWindow mWindow, SDL_Texture* mTexture[]);
     bool getRestart();
 private:
     enum again{
         RELOAD,
         MENU,
-        TOTAL_BUTTON
+        TOTAL_BUTTONRELOAD
     };
     SDL_Rect backgroundClip;
-    SDL_Rect buttonBox[TOTAL_BUTTON];
-    SDL_Rect buttonClip[TOTAL_BUTTON][2];
-    bool mouseOver[TOTAL_BUTTON];
+    SDL_Rect buttonBox[TOTAL_BUTTONRELOAD];
+    SDL_Rect buttonClip[TOTAL_BUTTONRELOAD][2];
+    bool mouseOver[TOTAL_BUTTONRELOAD];
     bool restart;
 };
 
+class pause{
+public:
+    pause();
+    void handle(SDL_Event &e, int& statePause, Mix_Chunk *gameSound[]);
+    void render(createWindow mWindow, SDL_Texture* mTexture[]);
+private:
+    enum pauseGame{
+        RESTART,
+        MENU,
+        CONTINUTE,
+        TOTAL_BUTTONPAUSE
+    };
+    SDL_Rect backgroundClip;
+    SDL_Rect buttonBox[TOTAL_BUTTONPAUSE];
+    SDL_Rect buttonClip[TOTAL_BUTTONPAUSE][2];
+    bool mouseOver[TOTAL_BUTTONPAUSE];
+};
 #endif // MENU_H
