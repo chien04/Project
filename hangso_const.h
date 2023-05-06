@@ -34,6 +34,7 @@ enum textureID{
     HEALTH_TEXTURE,
     HP_ENEMY_TEXTURE,
     MENU_TEXTURE,
+    GUIDE_TEXTURE,
     BOSS_TEXTURE,
     BOSS_HP_TEXTURE,
     TOTAL_TEXTURE
@@ -48,7 +49,8 @@ const int PLAYER_DEATH = 8;
 const int PLAYER_HEALTH = 6;
 const int PLAYER_EXP = 7;
 const int  EFFECT_CLIP = 60;
-
+const int TOTAL_ITEM = 2;
+const int TOTAL_CHEST = 5;
 const int MONSTER_WIDTH = 60;
 const int MONSTER_HEIGHT = 72;
 
@@ -110,6 +112,7 @@ const int BUTTON_HEIGHT = 100;
 
 enum statesMenu{
     PLAY_STATE,
+    GUIDE_STATE,
     QUIT_STATE,
     TOTAL_STATE
 };
@@ -125,9 +128,11 @@ enum statePause{
     CONTINUTE_STATE,
     TOTAL_STATEPAUSE
 };
-const int RESTART_GAME_WIDTH = 600;
+const int RESTART_GAME_WIDTH = 500;
 const int RESTART_GAME_HEIGHT = 400;
 
+const int WINGAME_WIDTH = 600;
+const int WINGAME_HEIGHT = 400;
 enum music{
     MUSIC_HOME,
     MUSIC_BATTLE,
@@ -160,4 +165,7 @@ enum sound{
 
     TOTAL_SOUND
 };
+
+const int SCREEN_FPS = 120;
+const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 #endif // CONST_H

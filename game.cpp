@@ -1,12 +1,17 @@
 #include "game.h"
 
-commom::commom(){
-
+common::common(){
+    for(int i = 0; i < 1005; i++){
+        dd[i] = 0;
+    }
     gameStateMenu = -1;
+    gameStateGuide = -1;
     gameStateReload = -1;
     gameStatePause = -1;
+    gameStateWin = -1;
     is_menu = true;
     is_play = false;
+    is_guide = false;
     restart = false;
     cnt = 0;
     mTexture[MAP_TEXTURE] = NULL;
@@ -17,16 +22,17 @@ commom::commom(){
     random_enemy = 0;
     tmp1 = false;
     tmp2 = false;
+    score = 0;
 }
 
-commom::~commom(){
+common::~common(){
     if(mTexture[MAP_TEXTURE] == NULL){
         SDL_DestroyTexture(mTexture[MAP_TEXTURE]);
     }
     mTexture[MAP_TEXTURE] = NULL;
 }
 
-bool commom::checkCollision(SDL_Rect a, SDL_Rect b){
+bool common::checkCollision(SDL_Rect a, SDL_Rect b){
     //The sides of the rectangles
     int leftA, leftB;
     int rightA, rightB;
@@ -50,7 +56,7 @@ bool commom::checkCollision(SDL_Rect a, SDL_Rect b){
     }
     return true;
 }
-bool commom::checkInit(){
+bool common::checkInit(){
     if(!mWindow.init()){
         std::cout << "unable create window in game.h\n";
         return false;
@@ -58,7 +64,7 @@ bool commom::checkInit(){
     return true;
 }
 
-bool commom::checkLoadFile(){
+bool common::checkLoadFile(){
 
     mTexture[BACKGROUND_TEXTURE] = mWindow.loadFromFile("image//background.png");
     if(mTexture[BACKGROUND_TEXTURE] == NULL){
@@ -116,11 +122,16 @@ bool commom::checkLoadFile(){
         std::cout << "unable load boss hp texture\n";
         return false;
     }
+    mTexture[GUIDE_TEXTURE] = mWindow.loadFromFile("image//guide.png");
+    if(mTexture[GUIDE_TEXTURE] == NULL){
+        std::cout << "unable load guide texture\n";
+        return false;
+    }
 
     return true;
 }
 
-bool commom::checkLoadSound(){
+bool common::checkLoadSound(){
     gameSound[PRESS_BUTTON] = Mix_LoadWAV("sound//press_button.wav");
     if(gameSound[PRESS_BUTTON] == NULL){
         std::cout << "load sound press button is fail";
@@ -223,7 +234,7 @@ bool commom::checkLoadSound(){
     }
     return true;
 }
-void commom::createTilesClip(){
+void common::createTilesClip(){
     int x = 0; int y = 0;
     for(int i = 0; i < TILES_CLIP; i++){
         mTilesClip[i] = {x, y, 48, 48};
@@ -235,7 +246,7 @@ void commom::createTilesClip(){
     }
 }
 
-void commom::setEnemy(){
+void common::setEnemy(){
     mMonster.clear();
     mWizard.clear();
     mMonster.push_back(monster(2016, 1269, 0));
@@ -299,8 +310,9 @@ void commom::setEnemy(){
     mPlayer = player();
     mBoss = boss();
 }
-void commom::handlePlayer(SDL_Event &e){
+void common::handlePlayer(SDL_Event &e){
     if(is_menu){
+        score = 0;
         if(tmp1 == false)
             Mix_PlayMusic(gameMusic[MUSIC_HOME], -1);
         tmp1 = true;
@@ -313,6 +325,19 @@ void commom::handlePlayer(SDL_Event &e){
                 setEnemy();
                 gameStateMenu = -1;
             }
+            if(gameStateMenu == GUIDE_STATE){
+                is_guide = true;
+                is_menu = false;
+                gameStateMenu = -1;
+            }
+    }
+    if(is_guide){
+        mGuide.handle(e, gameStateGuide, gameSound);
+        if(gameStateGuide == MENU_STATE){
+            is_menu = true;
+            is_guide = false;
+            gameStateGuide = -1;
+        }
     }
     if(is_play){
         if(tmp2 == false)
@@ -353,12 +378,23 @@ void commom::handlePlayer(SDL_Event &e){
             restart = false;
             gameStateReload = -1;
         }
-
     }
-
+    if(mBoss.getDeath()){
+        mWon.handle(e, gameStateWin, gameSound);
+        if(gameStateWin == RELOAD_STATE){
+            restart = true;
+            gameStateWin = -1;
+        }
+        if(gameStateWin == MENU_STATE){
+            is_menu = true;
+            is_play = false;
+            restart = false;
+            gameStateWin = -1;
+        }
+    }
 }
 
-void commom::setCamera(){
+void common::setCamera(){
     SDL_Rect cam = mPlayer.getBox();
     camera.x = (cam.x + PLAYER_WIDTH/2) - SCREEN_WIDTH/2;
     camera.y = (cam.y + PLAYER_HEIGHT/2) - SCREEN_HEIGHT*2/3;
@@ -377,11 +413,31 @@ void commom::setCamera(){
 
 }
 
+bool common::checkLoadFont(){
+    mFont = TTF_OpenFont("font//PressStart2P-Regular.ttf", 24);
+    if(mFont == NULL){
+        std::cout << "font is fail";
+        return false;
+    }
+    return true;
+}
+void common::renderScore(){
+    SDL_Color textColor = {0, 255, 255, 0};
+    scoreText.str("");
+    scoreText << "MyScore: " << score;
+    iTemHp.str("");
+    iTemHp << mPlayer.getHealingFull();
+    iTemExp.str("");
+    iTemExp << mPlayer.getExpFull();
+    mWindow.LoadFromRenderText(mFont, scoreText.str().c_str(), textColor, 300, 50);
+    mWindow.LoadFromRenderText(mFont, "HightScore 4000", textColor, 300, 10);
+    mWindow.LoadFromRenderText(mFont, iTemHp.str().c_str(), textColor, 75, 155);
+    mWindow.LoadFromRenderText(mFont, iTemExp.str().c_str(), textColor, 195, 155);
+}
 
 
 
-
-void commom::render(){
+void common::render(){
     mWindow.setRender();
     mWindow.renderClear();
     setCamera();
@@ -389,7 +445,8 @@ void commom::render(){
     {
         mMenu.render(mWindow, mTexture);
     }
-//    std::cout << is_play << std::endl;
+    if(is_guide)
+        mGuide.render(mWindow, mTexture);
     if(is_play){
         if(mBoss.getCnt()){
             random_enemy = rand() % 2;
@@ -402,6 +459,7 @@ void commom::render(){
 
         mMap.renderMap(mPlayer.getVelX(), mPlayer.getFlip(), mWindow, camera, mTexture, mtile, mTilesClip);
         mPlayer.move(mtile);
+        if(!mBoss.getDeath()){
         for(int i = 0; i < mMonster.size(); i++){
     //        mMonster[i].setPosX()
             mMonster[i].move(mPlayer, mtile);
@@ -411,6 +469,11 @@ void commom::render(){
                 mPlayer.setHP();
                 mMonster[i].setBlood();
                 mMonster.erase(mMonster.begin() + i);
+
+            }
+            if(mMonster[i].getDeath() && dd[i] == 0){
+                score += 15;
+                dd[i] = 1;
             }
             if(mMonster[i].getMonsterAttack())
                 damage += 1;
@@ -426,8 +489,11 @@ void commom::render(){
                 damage += 1;
             if(mWizard[i].getIsTakeHit())
                 cnt++;
-            if(mWizard[i].getDeath())
+            if(mWizard[i].getDeath()){
                 mWizard.erase(mWizard.begin() + i);
+                score += 10;
+            }
+        }
         }
         mBoss.setPosX();
         mBoss.setTotal_damage();
@@ -445,32 +511,49 @@ void commom::render(){
         mPlayer.setIsTakeHit(damage);
         mPlayer.render(mWindow, camera, mTexture, gameSound);
         damage = 0;
-        mWindow.renderBox(mPlayer.getBox());
+//        mWindow.renderBox(mPlayer.getBox());
         if(mPlayer.getIsDeath()){
 //            std::cout << 1 << std::endl;
             mReload.render(mWindow, mTexture);
         }
-            if(restart){
+        if(restart){
 //                    std::cout << 1;
                 mPlayer = player();
                 setEnemy();
                 mReload = reload();
+                score = 0;
                 restart = false;
             }
         if(mPlayer.getPause()){
             mPause.render(mWindow, mTexture);
         }
+        if(mBoss.getDeath())
+            mWon.render(mWindow, mTexture);
+
+    }
+    if(is_play){
+        renderScore();
     }
 
     mWindow.renderPresent();
 
 }
 
-int commom::getGameState(){
+int common::getGameState(){
     return gameStateMenu;
 }
 
-void commom::endGame(){
+void common::endGame(){
+    for(auto texture : mTexture){
+        SDL_DestroyTexture(texture);
+    }
+    for(auto chunk : gameSound){
+        Mix_FreeChunk(chunk);
+    }
+    for(auto music : gameMusic){
+        Mix_FreeMusic(music);
+    }
+    TTF_CloseFont(mFont);
     mWindow.close();
 }
 

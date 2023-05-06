@@ -46,7 +46,7 @@ private:
     bool take_hit;
     bool attackPlayer;
     bool isDeath;
-    bool ban;
+    bool shot;
     int cnt;
     int hp;
 };

@@ -20,6 +20,7 @@ public:
 
     void setColor(Uint8 red, Uint8 green, Uint8 blue);
     SDL_Texture* loadFromFile(std::string path);
+    void LoadFromRenderText(TTF_Font* gFont, std::string textureText, SDL_Color textColor, int x, int y);
     void render(SDL_Texture* object, int x, int y, SDL_Rect* clip = NULL, double angle = 0.0,
                 SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE, double width_real = 0, double height_real = 0);
 
@@ -30,7 +31,7 @@ public:
     void renderClear();
 
     void renderPresent();
-    void renderBox(SDL_Rect rect);
+//    void renderBox(SDL_Rect rect);
 private:
     SDL_Window* gWindow;
     SDL_Renderer* gRenderer;

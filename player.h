@@ -1,6 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <vector>
 #include "base.h"
 #include "tile_map.h"
 class player{
@@ -33,6 +34,8 @@ public:
     SDL_Rect getBoxShot();
     void setPause();
     bool getPause();
+    int getHealingFull();
+    int getExpFull();
 private:
     int cnt_jump;
     SDL_Rect boxPlayer;
@@ -62,10 +65,19 @@ private:
     SDL_Rect mPlayerExp[PLAYER_EXP];
     SDL_Rect mplayerAttackSkill[PLAYER_ATTACK];
     SDL_Rect mAttackSkill[ATTACK_SKILL];
+    SDL_Rect boxChestClip[TOTAL_ITEM];
+    std::vector<SDL_Rect> boxChestSliver;
+    std::vector<SDL_Rect> boxChestGold;
+
+    SDL_Rect mItem[TOTAL_ITEM];
     SDL_Rect boxShot;
     SDL_Rect boxCam;
     int hp;
+    int healing_full;
+    int count_healingfull;
+    int count_expfull;
     int exp;
+    int exp_full;
     bool attackPlayer;
     bool attackSkill;
     bool isShot;

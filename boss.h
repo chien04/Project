@@ -25,6 +25,7 @@ public:
     void setCnt();
     bool getCnt();
     int getPosX();
+    bool getDeath();
 private:
     SDL_Rect boxBoss;
     int velX, velY;

@@ -330,8 +330,8 @@ void monster::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTextur
             mWindow.render(mTexture[HP_ENEMY_TEXTURE], boxMonster.x - camera.x, boxMonster.y - camera.y + 24,
                            &bloodClip, 0, NULL, SDL_FLIP_NONE, 48, 48);
         }
-        mWindow.renderBox(mPlayer.getBox());
-        mWindow.renderBox(boxBlood);
+//        mWindow.renderBox(mPlayer.getBox());
+//        mWindow.renderBox(boxBlood);
     if(is_death)
         return;
     if(hp > 0)

@@ -36,6 +36,10 @@ void menu::handle(SDL_Event &e, int &stateMenu, Mix_Chunk *gameSound[]){
                             stateMenu = PLAY_STATE;
                             Mix_PlayChannel(-1, gameSound[PRESS_BUTTON], 0);
                         }
+                        if(i == GUIDE){
+                            stateMenu = GUIDE_STATE;
+                            Mix_PlayChannel(-1, gameSound[PRESS_BUTTON], 0);
+                        }
                         if(i == QUIT){
                             stateMenu = QUIT_STATE;
                             Mix_PlayChannel(-1, gameSound[PRESS_BUTTON], 0);
@@ -188,3 +192,114 @@ void pause::render(createWindow mWindow, SDL_Texture* mTexture[]){
                    0, NULL, SDL_FLIP_NONE, BUTTON_WIDTH/2, BUTTON_HEIGHT);
     }
 }
+
+won::won(){
+    backgroundClip = {928, 1104, 976, 1280};
+        buttonBox[0] = {(SCREEN_WIDTH - WINGAME_WIDTH) / 2 + WINGAME_WIDTH* +1/4 - 50,
+                         (SCREEN_HEIGHT - WINGAME_HEIGHT) / 2 + 313, 100, 100};
+        buttonBox[1] = {(SCREEN_WIDTH - WINGAME_WIDTH) / 2 + WINGAME_WIDTH* + 3/4 - 50,
+                         (SCREEN_HEIGHT - WINGAME_HEIGHT) / 2 + 313, 100, 100};
+    int x = 976;
+    for(int i = 0; i < TOTAL_BUTTONWIN; i++){
+        buttonClip[i][0] = {0, x, 208, 208};
+        buttonClip[i][1] = {240, x, 208, 208};
+        mouseOver[i] = 0;
+        x += 240;
+    }
+}
+
+void won::handle(SDL_Event &e, int& stateWin, Mix_Chunk *gameSound[]){
+    if(e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN ){
+        for(int i = 0; i < TOTAL_BUTTONWIN; i++){
+            mouseOver[i] = 0;
+        }
+//        std::cout << "ccccc";
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        for(int i = 0; i < TOTAL_BUTTONWIN; i++){
+            bool inside = 0;
+            if(buttonBox[i].x < x && x < buttonBox[i].x + BUTTON_WIDTH/2 && buttonBox[i].y < y && y < buttonBox[i].y + BUTTON_HEIGHT)
+                inside = 1;
+            if(inside){
+
+                switch(e.type){
+                    case SDL_MOUSEBUTTONDOWN:
+                        if(i == RESTART){
+                            stateWin = RELOAD_STATE;
+                            Mix_PlayChannel(-1, gameSound[PRESS_BUTTON], 0);
+                        }
+                        if(i == MENU){
+                            stateWin = MENU_STATE;
+                            Mix_PlayChannel(-1, gameSound[PRESS_BUTTON], 0);
+                        }
+                        break;
+                    case SDL_MOUSEMOTION:
+                        mouseOver[i] = 1;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+}
+
+void won::render(createWindow mWindow, SDL_Texture *mTexture[]){
+    mWindow.render(mTexture[MENU_TEXTURE], SCREEN_WIDTH/2 - WINGAME_WIDTH/2, SCREEN_HEIGHT/2 - WINGAME_HEIGHT/2, &backgroundClip,
+                   0, NULL, SDL_FLIP_NONE, WINGAME_WIDTH, WINGAME_HEIGHT);
+    for(int i = 0; i < TOTAL_BUTTONWIN; i++){
+            mWindow.render(mTexture[MENU_TEXTURE], buttonBox[i].x, buttonBox[i].y, &buttonClip[i][mouseOver[i]],
+                   0, NULL, SDL_FLIP_NONE, BUTTON_WIDTH/2, BUTTON_HEIGHT);
+    }
+}
+guide::guide(){
+        buttonBox[0] = {25, 25, 100, 100};
+    int x = 1216;
+    for(int i = 0; i < TOTAL_BUTTON; i++){
+        buttonClip[i][0] = {0, x, 208, 208};
+        buttonClip[i][1] = {240, x, 208, 208};
+        mouseOver[i] = 0;
+        x += 240;
+    }
+}
+
+void guide::handle(SDL_Event &e, int& stateGuide, Mix_Chunk *gameSound[]){
+    if(e.type == SDL_MOUSEMOTION || e.type == SDL_MOUSEBUTTONDOWN ){
+        for(int i = 0; i < TOTAL_BUTTON; i++){
+            mouseOver[i] = 0;
+        }
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        for(int i = 0; i < TOTAL_BUTTON; i++){
+            bool inside = 0;
+            if(buttonBox[i].x < x && x < buttonBox[i].x + BUTTON_WIDTH/2 && buttonBox[i].y < y && y < buttonBox[i].y + BUTTON_HEIGHT)
+                inside = 1;
+            if(inside){
+
+                switch(e.type){
+                    case SDL_MOUSEBUTTONDOWN:
+                        if(i == MENU){
+                            stateGuide = MENU_STATE;
+                            Mix_PlayChannel(-1, gameSound[PRESS_BUTTON], 0);
+                        }
+                        break;
+                    case SDL_MOUSEMOTION:
+                        mouseOver[i] = 1;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+}
+
+void guide::render(createWindow mWindow, SDL_Texture *mTexture[]){
+    mWindow.render(mTexture[GUIDE_TEXTURE], 0, 0, NULL,
+                   0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
+    for(int i = 0; i < TOTAL_BUTTON; i++){
+            mWindow.render(mTexture[MENU_TEXTURE], buttonBox[i].x, buttonBox[i].y, &buttonClip[i][mouseOver[i]],
+                   0, NULL, SDL_FLIP_NONE, BUTTON_WIDTH/2, BUTTON_HEIGHT);
+    }
+}
+

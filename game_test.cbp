@@ -50,6 +50,8 @@
 		<Unit filename="player.h" />
 		<Unit filename="tile_map.cpp" />
 		<Unit filename="tile_map.h" />
+		<Unit filename="time.cpp" />
+		<Unit filename="time.h" />
 		<Unit filename="wizard.cpp" />
 		<Unit filename="wizard.h" />
 		<Extensions>

@@ -1,13 +1,13 @@
 # depslib dependency file v1.0
-1683278186 source:d:\code\game_test\main.cpp
+1683366816 source:d:\code\game_test\main.cpp
 	"game.h"
-	"player.h"
+	"time.h"
 
-1683276712 source:d:\code\game_test\base.cpp
+1683367958 source:d:\code\game_test\base.cpp
 	"base.h"
 	"game.h"
 
-1683276061 d:\code\game_test\base.h
+1683367905 d:\code\game_test\base.h
 	<set>
 	<iostream>
 	<ctime>
@@ -42,7 +42,8 @@
 	<fstream>
 	"player.h"
 
-1683304338 d:\code\game_test\game.h
+1683380339 d:\code\game_test\game.h
+	"sstream"
 	"base.h"
 	"tile_map.h"
 	"base.h"
@@ -53,10 +54,10 @@
 	"boss.h"
 	"menu.h"
 
-1683304469 source:d:\code\game_test\game.cpp
+1683380425 source:d:\code\game_test\game.cpp
 	"game.h"
 
-1683297880 source:d:\code\game_test\player.cpp
+1683383443 source:d:\code\game_test\player.cpp
 	"player.h"
 	"game.h"
 	"hangso_const.h"
@@ -64,9 +65,10 @@
 	<stdlib.h>
 	"monster.h"
 
-1683305800 d:\code\game_test\hangso_const.h
+1683381270 d:\code\game_test\hangso_const.h
 
-1683294958 d:\code\game_test\player.h
+1683382160 d:\code\game_test\player.h
+	<vector>
 	"base.h"
 	"tile_map.h"
 
@@ -77,37 +79,37 @@
 	"player.h"
 	"hangso_const.h"
 
-1683297725 source:d:\code\game_test\monster.cpp
+1683367958 source:d:\code\game_test\monster.cpp
 	<vector>
 	"monster.h"
 
-1682320895 d:\code\game_test\ice_ball.h
+1683344035 d:\code\game_test\ice_ball.h
 	"base.h"
 	"tile_map.h"
 
-1682414652 source:d:\code\game_test\ice_ball.cpp
+1683344051 source:d:\code\game_test\ice_ball.cpp
 	"ice_ball.h"
 
-1683279946 d:\code\game_test\wizard.h
+1683343989 d:\code\game_test\wizard.h
 	<vector>
 	"base.h"
 	"ice_ball.h"
 	"tile_map.h"
 	"player.h"
 
-1683305018 source:d:\code\game_test\wizard.cpp
+1683344060 source:d:\code\game_test\wizard.cpp
 	"wizard.h"
 
-1683278638 source:d:\code\game_test\menu.cpp
+1683368760 source:d:\code\game_test\menu.cpp
 	"menu.h"
 
-1683278531 d:\code\game_test\menu.h
+1683359287 d:\code\game_test\menu.h
 	"base.h"
 
-1683302474 source:d:\code\game_test\boss.cpp
+1683367958 source:d:\code\game_test\boss.cpp
 	"boss.h"
 
-1683301556 d:\code\game_test\boss.h
+1683340585 d:\code\game_test\boss.h
 	<vector>
 	"base.h"
 	"tile_map.h"
@@ -115,4 +117,10 @@
 	"ice_ball.h"
 	"monster.h"
 	"wizard.h"
+
+1683343826 source:d:\code\game_test\time.cpp
+	"time.h"
+
+1683343510 d:\code\game_test\time.h
+	<SDL.h>
 

@@ -7,7 +7,7 @@
 player::player()
 {
     cnt_jump = 0;
-    boxPlayer.x = 16500;
+    boxPlayer.x = 16000;
     boxPlayer.y = 0;
     boxPlayer.w = PLAYER_WIDTH;
     boxPlayer.h = PLAYER_HEIGHT;
@@ -31,7 +31,11 @@ player::player()
     createPlayerClip();
 //    createEffectTexture();
     hp = 5;
+    healing_full = 0;
+    count_healingfull = 0;
+    exp_full = 0;
     exp = 6;
+    count_expfull = 0;
     attackPlayer = false;
     attackSkill = false;
     isShot = false;
@@ -42,6 +46,16 @@ player::player()
     isPause = false;
     boxPause = {SCREEN_WIDTH - 120, 20 , 100, 100};
     boxPauseClip = {496, 976, 208, 208};
+    SDL_Rect rect0{5088, 1548, 48, 48};
+    SDL_Rect rect1{8160, 1680, 48, 48};
+    SDL_Rect rect2{12672, 1776, 48, 48};
+    boxChestSliver.push_back(rect0);
+    boxChestSliver.push_back(rect1);
+    boxChestSliver.push_back(rect2);
+    SDL_Rect gold{5568, 1008, 48, 48};
+    SDL_Rect gold1{11230, 1056, 48, 48};
+    boxChestGold.push_back(gold);
+    boxChestGold.push_back(gold1);
 }
 
 void player::createPlayerClip()
@@ -94,13 +108,23 @@ void player::createPlayerClip()
     }
     sum = 0;
     for(int i = 0; i < PLAYER_ATTACK; i++){
-        mplayerAttackSkill[i] = {sum, 656, 96, 80};
+        mplayerAttackSkill[i] = {sum, 704, 96, 80};
         sum += 96;
     }
     sum = 1408;
     for(int i = PLAYER_EXP - 1; i >= 0; i--){
         mPlayerExp[i] = {0, sum, 384, 64};
         sum += 80;
+    }
+    sum = 464;
+    for(int i = 0; i < TOTAL_ITEM; i++){
+        mItem[i] = {0, sum, 192, 128};
+        sum += 144;
+    }
+    sum = 0;
+    for(int i = 0; i < TOTAL_ITEM; i++){
+        boxChestClip[i] = {272, sum, 48, 48};
+        sum += 48;
     }
 }
 
@@ -126,6 +150,18 @@ void player::handle(SDL_Event& e, Mix_Chunk *gameSound[])
                 on_ground = false;
                 cnt_jump = 0;
                 Mix_PlayChannel(-1, gameSound[PLAYER_JUMPSOUND], 0);
+            }
+            break;
+        case SDLK_e:
+            if(healing_full > 0){
+                hp = 5;
+                healing_full--;
+            }
+            break;
+        case SDLK_r:
+            if(exp_full > 0){
+                exp = 6;
+                exp_full--;
             }
             break;
         case SDLK_a:
@@ -269,6 +305,22 @@ void player::move(tile tiles[])
         }
     }
 
+    for(int i = 0; i < boxChestGold.size(); i++){
+        if(checkCollision(boxPlayer, boxChestGold[i])){
+            if(getIsttacking()){
+                healing_full++;
+                boxChestGold.erase(boxChestGold.begin() + i);
+            }
+        }
+    }
+    for(int i = 0; i < boxChestSliver.size(); i++){
+        if(checkCollision(boxPlayer, boxChestSliver[i])){
+            if(getIsttacking()){
+                exp_full++;
+                boxChestSliver.erase(boxChestSliver.begin() + i);
+            }
+        }
+    }
     boxPlayer.x += velX;
     if(boxPlayer.x < 0 || boxPlayer.x + PLAYER_WIDTH > WIDTH_MAP || touchesWall(boxPlayer, tiles) )
     {
@@ -376,7 +428,21 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
         cnt_trap = 120;
 
     SDL_Rect bp = {boxPlayer.x - camera.x , boxPlayer.y - camera.y, PLAYER_WIDTH, PLAYER_HEIGHT};
-    mWindow.renderBox(bp);
+
+    //render chest
+    for(int i = 0; i < boxChestGold.size(); i++){
+        mWindow.render(mTexture[PLAYER_TEXTURE], boxChestGold[i].x - camera.x, boxChestGold[i].y - camera.y,
+            &boxChestClip[1], 0, NULL, SDL_FLIP_NONE, 48, 48);
+    }
+    for(int i = 0; i < boxChestSliver.size(); i++){
+        mWindow.render(mTexture[PLAYER_TEXTURE], boxChestSliver[i].x - camera.x, boxChestSliver[i].y - camera.y,
+            &boxChestClip[0], 0, NULL, SDL_FLIP_NONE, 48, 48);
+    }
+    //render player item
+    mWindow.render(mTexture[HP_ENEMY_TEXTURE], 30, 150,
+        &mItem[0], 0, NULL, SDL_FLIP_NONE, 45, 30);
+    mWindow.render(mTexture[HP_ENEMY_TEXTURE], 150, 150,
+        &mItem[1], 0, NULL, SDL_FLIP_NONE, 45, 30);
     for(int i = 0; i < PLAYER_HEALTH; i++)
     {
         if(i == hp)
@@ -385,7 +451,7 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
     }
     for(int i= 0; i < PLAYER_EXP; i++){
         if(i == exp){
-            mWindow.render(mTexture[HEALTH_TEXTURE], 50, 100, &mPlayerExp[i], 0, NULL, SDL_FLIP_NONE, 180, 30);
+            mWindow.render(mTexture[HEALTH_TEXTURE], 65, 90, &mPlayerExp[i], 0, NULL, SDL_FLIP_NONE, 150, 25);
         }
     }
     mWindow.render(mTexture[MENU_TEXTURE], boxPause.x, boxPause.y, &boxPauseClip, 0, NULL, SDL_FLIP_NONE, 100, 100);
@@ -486,10 +552,6 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                     boxShot.y = boxPlayer.y;
                     boxShot.w = 800;
                     boxShot.h = 50;
-                    boxCam.x = boxPlayer.x - camera.x - 48 + boxPlayer.w *2 + 20;
-                    boxCam.y = boxPlayer.y - camera.y;
-                    boxCam.w = 800;
-                    boxCam.h = 50;
                 }
                 if(flip == SDL_FLIP_HORIZONTAL){
                     mWindow.render(mTexture[SKILL_TEXTURE], boxPlayer.x - camera.x - 856, boxPlayer.y - camera.y - 16,
@@ -498,10 +560,6 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                     boxShot.y = boxPlayer.y;
                     boxShot.w = 800;
                     boxShot.h = 50;
-                    boxCam.x = boxPlayer.x - 808 - camera.x+ 20;
-                    boxCam.y = boxPlayer.y - camera.y;
-                    boxCam.w = 800;
-                    boxCam.h = 50;
                 }
 
                 if(frame_skill == 54)
@@ -554,7 +612,7 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             isDeath = true;
         }
     }
-    mWindow.renderBox(boxCam);
+//    mWindow.renderBox(boxCam);
 
 
 }
@@ -600,4 +658,12 @@ SDL_Rect player::getBoxShot(){
 }
 bool player::getIsDeath(){
     return isDeath;
+}
+
+int player::getHealingFull(){
+    return healing_full;
+}
+
+int player::getExpFull(){
+    return exp_full;
 }

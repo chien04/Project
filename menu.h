@@ -64,4 +64,40 @@ private:
     SDL_Rect buttonClip[TOTAL_BUTTONPAUSE][2];
     bool mouseOver[TOTAL_BUTTONPAUSE];
 };
+
+class won{
+public:
+    won();
+    void handle(SDL_Event &e, int& statesWon, Mix_Chunk *gameSound[]);
+    void render(createWindow mWindow, SDL_Texture *mTexture[]);
+
+private:
+    enum winGame{
+        RESTART,
+        MENU,
+        TOTAL_BUTTONWIN
+    };
+    SDL_Rect backgroundClip;
+    SDL_Rect buttonBox[TOTAL_BUTTONWIN];
+    SDL_Rect buttonClip[TOTAL_BUTTONWIN][2];
+    bool mouseOver[TOTAL_BUTTONWIN];
+
+};
+
+class guide{
+public:
+    guide();
+    void handle(SDL_Event &e, int& statesGuide, Mix_Chunk *gameSound[]);
+    void render(createWindow mWindow, SDL_Texture *mTexture[]);
+
+private:
+    enum winGame{
+        MENU,
+        TOTAL_BUTTON
+    };
+    SDL_Rect buttonBox[TOTAL_BUTTON];
+    SDL_Rect buttonClip[TOTAL_BUTTON][2];
+    bool mouseOver[TOTAL_BUTTON];
+
+};
 #endif // MENU_H

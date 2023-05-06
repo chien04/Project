@@ -22,7 +22,7 @@ wizard::wizard(int x, int y)
     attackPlayer = false;
     isDeath = false;
     boxWizard = {x, y, WIZARD_WIDTH, WIZARD_HEIGHT};
-    ban = false;
+    shot = false;
     cnt = 0;
     hp = 3;
 }
@@ -221,7 +221,7 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
 {
     if(isDeath)
         return;
-    if(!ban)
+    if(!shot)
         flip_ball = flip;
     if(hp > 0)
     {
@@ -275,7 +275,7 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                 {
                     if(mBall.size() != 0){
 //                        Mix_PlayChannel(-1, gameSound[WIZARD_ATTACKSOUND], 0);
-                        ban = true;
+                        shot = true;
                     }
                 }
                 if(frame[ATTACK] / (WIZARD_ATTACK*2) >= WIZARD_ATTACK)
@@ -287,19 +287,19 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             }
         }
 
-        if(ban)
+        if(shot)
         {
             for(int i = 0; i < mBall.size(); i++)
             {
                 mBall[i].move(flip_ball, mplayer.getBox());
-                if(mBall[i].getBan())
+                if(mBall[i].getShot())
                 {
                     mBall[i].render(mWindow, camera, mTexture);
                 }
                 else
                 {
                     mBall.erase(mBall.begin() + i);
-                    ban = false;
+                    shot = false;
                 }
 //                mBall[i].setAttackPlayer();
                 if(mBall[i].getAttackPlayer())
@@ -362,7 +362,7 @@ int wizard::getPosY()
 
 bool wizard::getBan()
 {
-    return ban;
+    return shot;
 }
 
 SDL_Rect wizard::getBoxWizard()

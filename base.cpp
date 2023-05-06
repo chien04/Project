@@ -29,6 +29,33 @@ SDL_Texture* createWindow::loadFromFile(std::string path){
     return newObject;
 }
 
+void createWindow::LoadFromRenderText(TTF_Font* gFont, std::string textureText, SDL_Color textColor, int x, int y)
+{
+    SDL_Texture *newObject = NULL;
+	//Render text surface
+	SDL_Surface* textSurface = TTF_RenderText_Solid( gFont, textureText.c_str(), textColor );
+	if( textSurface == NULL )
+	{
+		printf( "Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError() );
+	}
+	else
+	{
+		//Create texture from surface pixels
+        newObject = SDL_CreateTextureFromSurface( gRenderer, textSurface );
+		if( newObject == NULL )
+		{
+			printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
+		}
+		//Get rid of old surface
+		SDL_FreeSurface( textSurface );
+	}
+    SDL_Rect textRect = {x, y, 0, 0};
+    SDL_QueryTexture(newObject, NULL, NULL, &textRect.w, &textRect.h); // lấy kích thước của texture
+    SDL_RenderCopy(gRenderer, newObject, NULL, &textRect);
+    SDL_DestroyTexture(newObject);
+
+}
+
 void createWindow::render(SDL_Texture* object, int x, int y, SDL_Rect* clip, double angle, SDL_Point* center,
                            SDL_RendererFlip flip, double width_real, double height_real){
     SDL_Rect renderquad = {x, y, width_real, height_real};
@@ -67,7 +94,7 @@ bool createWindow::init(){
         else
         {
             //Create renderer for window
-            gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+            gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
             if( gRenderer == NULL )
             {
                 printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -90,6 +117,12 @@ bool createWindow::init(){
 					printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
 					success = false;
 				}
+                //Initialize SDL_ttf
+				if( TTF_Init() == -1 )
+				{
+					printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
+					success = false;
+				}
             }
         }
     }
@@ -101,12 +134,13 @@ void createWindow::close(){
 
 
     SDL_DestroyWindow(gWindow);
-
     gWindow = NULL;
     SDL_DestroyRenderer(gRenderer);
-
+    TTF_Quit();
     gRenderer = NULL;
-
+    Mix_Quit();
+    IMG_Quit();
+    SDL_Quit();
 }
 
 void createWindow::setRender(){
@@ -121,7 +155,7 @@ void createWindow::renderPresent(){
     SDL_RenderPresent(gRenderer);
 }
 
-void createWindow::renderBox(SDL_Rect rect){
-    SDL_SetRenderDrawColor(gRenderer, 100, 100, 100, 100);
-    SDL_RenderDrawRect(gRenderer, &rect);
-}
+//void createWindow::renderBox(SDL_Rect rect){
+//    SDL_SetRenderDrawColor(gRenderer, 100, 100, 100, 100);
+//    SDL_RenderDrawRect(gRenderer, &rect);
+//}
