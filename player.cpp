@@ -32,10 +32,8 @@ player::player()
 //    createEffectTexture();
     hp = 5;
     healing_full = 0;
-    count_healingfull = 0;
     exp_full = 0;
     exp = 6;
-    count_expfull = 0;
     attackPlayer = false;
     attackSkill = false;
     isShot = false;
@@ -172,8 +170,10 @@ void player::handle(SDL_Event& e, Mix_Chunk *gameSound[])
             }
             break;
         case SDLK_w:
-            if(!attackSkill && !attackSkill && exp == 6)
+            if(attacking == false && attackSkill == false && exp == 6)
                 attackSkill = true;
+            break;
+        default:
             break;
         }
     }
@@ -562,7 +562,7 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                     boxShot.h = 50;
                 }
 
-                if(frame_skill == 54)
+                if(frame_skill == 27)
                     attackMonsterByShot = true;
                 else
                     attackMonsterByShot = false;

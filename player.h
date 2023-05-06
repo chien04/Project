@@ -74,8 +74,6 @@ private:
     SDL_Rect boxCam;
     int hp;
     int healing_full;
-    int count_healingfull;
-    int count_expfull;
     int exp;
     int exp_full;
     bool attackPlayer;
