@@ -168,7 +168,7 @@ void boss::move(tile tiles[], player mPlayer)
             isAttacking = false;
             isIdle = false;
             isRunning = false;
-            hp -= 10;
+            hp --;
         }
     }
     if(hp <= 0)

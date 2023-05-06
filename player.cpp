@@ -7,7 +7,7 @@
 player::player()
 {
     cnt_jump = 0;
-    boxPlayer.x = 16000;
+    boxPlayer.x = 60;
     boxPlayer.y = 0;
     boxPlayer.w = PLAYER_WIDTH;
     boxPlayer.h = PLAYER_HEIGHT;
