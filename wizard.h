@@ -21,7 +21,7 @@ public:
     int getPosX();
     int getPosY();
     SDL_Rect getBoxWizard();
-    bool getBan();
+    bool getShot();
     SDL_RendererFlip getFlip();
     bool getAttackPlayer();
     bool getIsTakeHit();

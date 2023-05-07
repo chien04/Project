@@ -21,7 +21,6 @@ public:
     int getPosX();
     bool getMonsterAttack();
     bool getIsTakeHit();
-//    bool checkBoxBlood(SDL_Rect boxPlayer);
     SDL_Rect getBoxBlood();
     void setBlood();
     bool getDeath();

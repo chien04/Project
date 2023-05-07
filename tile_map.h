@@ -28,8 +28,6 @@ public:
 private:
     int x_coordinate;
     int y_coordinate;
-    double scrolling;
-    double scrolling_middle;
 };
 
 #endif // TILEMAP_H

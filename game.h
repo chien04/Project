@@ -38,6 +38,7 @@ private:
     int damage;
     int cnt;
     int random_enemy;
+    int random_blood;
     std::vector<monster> mMonster;
     std::vector<wizard> mWizard;
     bool dd[10005];

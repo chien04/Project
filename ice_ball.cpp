@@ -46,19 +46,23 @@ bool ice_ball::touchesWall( SDL_Rect boxWizard, tile tiles[] )
     //If no wall tiles were touched
     return false;
 }
-ice_ball::ice_ball(){
+ice_ball::ice_ball()
+{
     boxBall = {0,0,0,0};
     boxBallClip = {0, 0, 0, 0};
     shot = false;
     attackPlayer = false;
 }
 
-ice_ball::ice_ball(SDL_Rect box, SDL_RendererFlip flip){
-    if(flip == SDL_FLIP_NONE){
+ice_ball::ice_ball(SDL_Rect box, SDL_RendererFlip flip)
+{
+    if(flip == SDL_FLIP_NONE)
+    {
         boxBall = {box.x + 48, box.y + 48, 32, 32};
         initialPosX = boxBall.x;
     }
-    else{
+    else
+    {
         boxBall = {box.x - 48, box.y + 48, 32, 32};
         initialPosX = boxBall.x;
     }
@@ -68,26 +72,32 @@ ice_ball::ice_ball(SDL_Rect box, SDL_RendererFlip flip){
     attackPlayer = false;
 }
 
-void ice_ball::move(SDL_RendererFlip flip, SDL_Rect boxPlayer){
-    if(flip == SDL_FLIP_NONE){
+void ice_ball::move(SDL_RendererFlip flip, SDL_Rect boxPlayer)
+{
+    if(flip == SDL_FLIP_NONE)
+    {
         if(shot) boxBall.x += BULLET_VEL;
     }
-    if(flip == SDL_FLIP_HORIZONTAL){
+    if(flip == SDL_FLIP_HORIZONTAL)
+    {
         if(shot) boxBall.x -= BULLET_VEL;
     }
     if(abs(initialPosX - boxBall.x) > 500) shot = false;
-        if(checkCollision(boxBall, boxPlayer)){
-            attackPlayer = true;
-             shot = false;
+    if(checkCollision(boxBall, boxPlayer))
+    {
+        attackPlayer = true;
+        shot = false;
     }
 }
-void ice_ball::setAttackPlayer(){
+void ice_ball::setAttackPlayer()
+{
     attackPlayer = false;
 }
-void ice_ball::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]){
+void ice_ball::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[])
+{
     if(!attackPlayer)
-     mWindow.render(mTexture[WIZARD_TEXTURE], boxBall.x - camera.x, boxBall.y - camera.y - 20,
-                   &boxBallClip, 0, NULL, SDL_FLIP_HORIZONTAL, 32, 32);
+        mWindow.render(mTexture[WIZARD_TEXTURE], boxBall.x - camera.x, boxBall.y - camera.y - 20,
+                       &boxBallClip, 0, NULL, SDL_FLIP_HORIZONTAL, 32, 32);
 }
 
 bool ice_ball::getShot()
@@ -95,16 +105,19 @@ bool ice_ball::getShot()
     return shot;
 }
 
-SDL_Rect ice_ball::getBoxBall(){
+SDL_Rect ice_ball::getBoxBall()
+{
     return boxBall;
 }
 
-bool ice_ball::getAttackPlayer(){
+bool ice_ball::getAttackPlayer()
+{
     return attackPlayer;
 }
 
 
-fire_ball::fire_ball(){
+fire_ball::fire_ball()
+{
     boxBall = {0, 0, 32, 32};
     boxBallClip = {0, 384, 80, 96};
     initialPosX = 0;
@@ -112,16 +125,17 @@ fire_ball::fire_ball(){
     attackPlayer = false;
 }
 
-fire_ball::fire_ball(SDL_Rect box, SDL_RendererFlip flip){
-    if(flip == SDL_FLIP_NONE){
+fire_ball::fire_ball(SDL_Rect box, SDL_RendererFlip flip)
+{
+    if(flip == SDL_FLIP_NONE)
+    {
         boxBall = {box.x + 64, box.y + 100, 40, 48};
         initialPosX = boxBall.x;
-//        std::cout << "NONE " << initialPosX << std::endl;
     }
-    if(flip == SDL_FLIP_HORIZONTAL){
+    if(flip == SDL_FLIP_HORIZONTAL)
+    {
         boxBall = {box.x - 48, box.y + 100, 40, 48};
         initialPosX = boxBall.x;
-//        std::cout << "HOZIRENTIAL " << initialPosX << std::endl;
     }
 
     boxBallClip = {0, 384, 80, 96};
@@ -129,24 +143,29 @@ fire_ball::fire_ball(SDL_Rect box, SDL_RendererFlip flip){
     attackPlayer = false;
 }
 
-void fire_ball::move(SDL_RendererFlip flip, SDL_Rect boxPlayer){
-    if(flip == SDL_FLIP_NONE){
+void fire_ball::move(SDL_RendererFlip flip, SDL_Rect boxPlayer)
+{
+    if(flip == SDL_FLIP_NONE)
+    {
         if(shot) boxBall.x += BULLET_VEL;
     }
-    if(flip == SDL_FLIP_HORIZONTAL){
+    if(flip == SDL_FLIP_HORIZONTAL)
+    {
         if(shot) boxBall.x -= BULLET_VEL;
     }
     if(abs(initialPosX - boxBall.x) > 500) shot = false;
 
-    if(checkCollision(boxBall, boxPlayer)){
+    if(checkCollision(boxBall, boxPlayer))
+    {
         attackPlayer = true;
         shot = false;
     }
 }
-void fire_ball::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[]){
+void fire_ball::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[])
+{
     if(shot)
         mWindow.render(mTexture[WIZARD_TEXTURE], boxBall.x - camera.x, boxBall.y - camera.y + 32,
-                   &boxBallClip, 0, NULL, SDL_FLIP_HORIZONTAL, 40, 48);
+                       &boxBallClip, 0, NULL, SDL_FLIP_HORIZONTAL, 40, 48);
 }
 
 bool fire_ball::getShot()
@@ -154,10 +173,12 @@ bool fire_ball::getShot()
     return shot;
 }
 
-SDL_Rect fire_ball::getBoxBall(){
+SDL_Rect fire_ball::getBoxBall()
+{
     return boxBall;
 }
 
-bool fire_ball::getAttackPlayer(){
+bool fire_ball::getAttackPlayer()
+{
     return attackPlayer;
 }

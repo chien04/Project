@@ -9,7 +9,6 @@ public:
     player();
 
     void createPlayerClip();
-//    void createEffectTexture();
 
     void handle(SDL_Event &e, Mix_Chunk *gameSound[]);
     bool checkCollision(SDL_Rect a, SDL_Rect b);
@@ -21,7 +20,6 @@ public:
     SDL_Rect getBox();
     int getVelX();
     SDL_RendererFlip getFlip();
-    bool check();
 
     int getPosX();
     bool getIsttacking();
@@ -72,7 +70,6 @@ private:
 
     SDL_Rect mItem[TOTAL_ITEM];
     SDL_Rect boxShot;
-    SDL_Rect boxCam;
     int hp;
     int healing_full;
     bool checkUseItemHP;

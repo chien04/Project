@@ -29,9 +29,8 @@ player::player()
     isTakeHit = false;
     isDeath = false;
     createPlayerClip();
-//    createEffectTexture();
     hp = 5;
-    healing_full = 2;
+    healing_full = 1;
     frame_itemhp = 0;
     checkUseItemHP = false;
     exp_full = 2;
@@ -43,7 +42,6 @@ player::player()
     isShot = false;
     cnt_trap = 0;
     SDL_Rect boxShot = {0, 0, 640, 64};
-    SDL_Rect boxCam = {0, 0, 640, 64};
 
     isPause = false;
     boxPause = {SCREEN_WIDTH - 120, 20 , 100, 100};
@@ -184,6 +182,9 @@ void player::handle(SDL_Event& e, Mix_Chunk *gameSound[])
             if(attacking == false && attackSkill == false && exp == 6)
                 attackSkill = true;
             break;
+        case SDLK_ESCAPE:
+            isPause = true;
+            break;
         default:
             break;
         }
@@ -273,7 +274,6 @@ bool player::checkCollisionTrap(SDL_Rect a, SDL_Rect b)
 
 bool player::touchesWall( SDL_Rect boxPlayer, tile tiles[] )
 {
-    //Go through the tiles
     std::set<int> mySet;
     for(int i = 0; i < 30; i++){
         mySet.insert(i);
@@ -456,17 +456,20 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
         &mItem[0], 0, NULL, SDL_FLIP_NONE, 45, 30);
     mWindow.render(mTexture[HP_ENEMY_TEXTURE], 150, 150,
         &mItem[1], 0, NULL, SDL_FLIP_NONE, 45, 30);
+    //render hp player
     for(int i = 0; i < PLAYER_HEALTH; i++)
     {
         if(i == hp)
             mWindow.render(mTexture[HEALTH_TEXTURE], 10, 30,
                            &mPlayeHeath[i], 0, NULL, SDL_FLIP_NONE, 210, 70);
     }
+    //render exp player
     for(int i= 0; i < PLAYER_EXP; i++){
         if(i == exp){
             mWindow.render(mTexture[HEALTH_TEXTURE], 65, 90, &mPlayerExp[i], 0, NULL, SDL_FLIP_NONE, 150, 25);
         }
     }
+    //render button pause
     mWindow.render(mTexture[MENU_TEXTURE], boxPause.x, boxPause.y, &boxPauseClip, 0, NULL, SDL_FLIP_NONE, 100, 100);
     if(isDeath)
         return;
@@ -649,7 +652,6 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
             isDeath = true;
         }
     }
-//    mWindow.renderBox(boxCam);
 
 
 }

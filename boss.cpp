@@ -227,8 +227,6 @@ void boss::move(tile tiles[], player mPlayer)
 
 void boss::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer, Mix_Chunk *gameSound[])
 {
-    SDL_Rect ba = {posX - 500 - camera.x , boxBoss.y - camera.y, 1000, BOSS_HEIGHT};
-//    mWindow.renderBox(ba);
     if(isDeath)
         return;
     if(!ban)

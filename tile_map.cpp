@@ -24,14 +24,13 @@ int tile::getY_position(){
     return mBoxTile.y;
 }
 
+SDL_Rect tile::getBox(){
+    return mBoxTile;
+}
+
 gameMap::gameMap(){
     x_coordinate = 0;
     y_coordinate = 0;
-    scrolling = 0;
-    scrolling_middle = 0;
-}
-SDL_Rect tile::getBox(){
-    return mBoxTile;
 }
 
 bool gameMap::loadMap( tile tiles[]){
@@ -62,12 +61,8 @@ bool gameMap::loadMap( tile tiles[]){
 
 void gameMap::renderMap(int velX, SDL_RendererFlip flip, createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[],tile tiles[], SDL_Rect mTilesClip[]){
 
-//    scrolling--;
-//    if(scrolling < -SCREEN_WIDTH){
-//        scrolling = 0;
-//    }
+
     mWindow.render(mTexture[BACKGROUND_TEXTURE], 0, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
-//    mWindow.render(mTexture[BACKGROUND_TEXTURE], scrolling + SCREEN_WIDTH, 0, NULL, 0, NULL, SDL_FLIP_NONE, SCREEN_WIDTH, SCREEN_HEIGHT);
     for(int i = 0; i < TOTAL_TILES; i++){
         int x = tiles[i].getX_position();
         int y = tiles[i].getY_position();

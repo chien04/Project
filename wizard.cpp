@@ -208,14 +208,17 @@ void wizard::move(player mPlayer, tile tiles[])
     else
     {
         inZone = false;
-//        frame[ATTACK] = 0;
     }
 }
 
 void wizard::setPosX()
 {
-    if(isHitting)
-        pos_x = boxWizard.x - 32;
+    if(isHitting){
+        if(flip == SDL_FLIP_HORIZONTAL)
+            pos_x = boxWizard.x - 32;
+        if(flip == SDL_FLIP_NONE)
+            pos_x = boxWizard.x + 32;
+    }
 }
 void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], player mplayer, Mix_Chunk *gameSound[])
 {
@@ -245,7 +248,6 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                     frame[TAKE_HIT]++;
                 if(frame[TAKE_HIT] / (WIZARD_TAKE_HIT*5) >= WIZARD_TAKE_HIT)
                 {
-//                    Mix_PlayChannel(-1, gameSound[WIZARD_TAKEHITSOUND], 0);
                     frame[TAKE_HIT] = 0;
                     isHitting = false;
                     isAttacking = true;
@@ -274,7 +276,6 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                 if(frame[ATTACK] == 7*(WIZARD_ATTACK*2) )
                 {
                     if(mBall.size() != 0){
-//                        Mix_PlayChannel(-1, gameSound[WIZARD_ATTACKSOUND], 0);
                         shot = true;
                     }
                 }
@@ -301,7 +302,6 @@ void wizard::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                     mBall.erase(mBall.begin() + i);
                     shot = false;
                 }
-//                mBall[i].setAttackPlayer();
                 if(mBall[i].getAttackPlayer())
                     attackPlayer = true;
                 else
@@ -360,7 +360,7 @@ int wizard::getPosY()
     return boxWizard.y;
 }
 
-bool wizard::getBan()
+bool wizard::getShot()
 {
     return shot;
 }

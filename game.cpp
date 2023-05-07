@@ -4,6 +4,8 @@ common::common(){
     for(int i = 0; i < 1005; i++){
         dd[i] = 0;
     }
+    random_enemy = 0;
+    random_blood = 0;
     gameStateMenu = -1;
     gameStateGuide = -1;
     gameStateReload = -1;
@@ -19,7 +21,6 @@ common::common(){
     createTilesClip();
     camera = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
     damage = 0;
-    random_enemy = 0;
     tmp1 = false;
     tmp2 = false;
     score = 0;
@@ -486,8 +487,10 @@ void common::render(){
     if(is_play){
         if(mBoss.getCnt()){
             random_enemy = rand() % 2;
-                if(random_enemy == 0)
-                    mMonster.push_back(monster(mBoss.getPosX(), 0, 1));
+                if(random_enemy == 0){
+                    random_blood = rand() % 2;
+                    mMonster.push_back(monster(mBoss.getPosX(), 0, random_blood));
+                }
                 if(random_enemy == 1)
                     mWizard.push_back(wizard(mBoss.getPosX() , 0));
             mBoss.setCnt();
