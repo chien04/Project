@@ -469,6 +469,7 @@ int monster::getPosX()
 bool monster::getMonsterAttack()
 {
     return attackPlayer;
+
 }
 
 bool monster::getIsTakeHit()
