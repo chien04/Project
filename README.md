@@ -71,7 +71,7 @@ LEGACY FANTASY là một tựa game 2D được viết bằng ngôn ngữ C++ v�
 - Phân chia thời gian hiệu quả hơn trong một project
 - Học thêm các kĩ năng sử lý ảnh 
 - ...
-##Bổ sung
+## Bổ sung
 - Có thể sẽ cập nhật thêm các quái mới 
 - Thêm kĩ năng tấn công mới 
 - tạo level cho game 
