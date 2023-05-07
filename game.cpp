@@ -463,7 +463,7 @@ void common::renderScore(){
     iTemExp.str("");
     iTemExp << mPlayer.getExpFull();
     mWindow.LoadFromRenderText(mFont, scoreText.str().c_str(), textColor, 300, 50);
-    mWindow.LoadFromRenderText(mFont, "HightScore 4000", textColor, 300, 10);
+    mWindow.LoadFromRenderText(mFont, "HighScore 4000", textColor, 300, 10);
     mWindow.LoadFromRenderText(mFont, iTemHp.str().c_str(), textColor, 75, 155);
     mWindow.LoadFromRenderText(mFont, iTemExp.str().c_str(), textColor, 195, 155);
     if(mBoss.getDeath())
