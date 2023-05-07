@@ -38,7 +38,6 @@ LEGACY FANTASY là một tựa game 2D được viết bằng ngôn ngữ C++ v�
 
 ![player_sheet](https://github.com/chien04/Project/blob/master/image/bossgit.png)
 
-
 **chest**
 
 ![player_sheet](https://github.com/chien04/Project/blob/master/image/chest.png)
