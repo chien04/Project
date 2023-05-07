@@ -57,7 +57,7 @@
 1683438483 source:d:\code\game_test\game.cpp
 	"game.h"
 
-1683439149 source:d:\code\game_test\player.cpp
+1683449986 source:d:\code\game_test\player.cpp
 	"player.h"
 	"game.h"
 	"hangso_const.h"
@@ -97,7 +97,7 @@
 	"tile_map.h"
 	"player.h"
 
-1683344060 source:d:\code\game_test\wizard.cpp
+1683451701 source:d:\code\game_test\wizard.cpp
 	"wizard.h"
 
 1683368760 source:d:\code\game_test\menu.cpp
