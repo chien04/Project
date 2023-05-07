@@ -6,10 +6,9 @@
 - Mã sinh viên : 22021195
 - Trường Đại học Công Nghệ - Đại Học Quốc Gia Hà Nội 
 
-LEGACY FANTASY là một tựa game 2D được viết bằng ngôn ngữ C++ và sử dụng đồ hoạ SDL2 . Bạn sẽ được hoá thân vào một hiệp sĩ để thực hiện các thử thách bằng cách tiêu diệt quái và né các bẫy được tạo ra để hoàn thành thử thánh cho chính mình.
+LEGACY FANTASY là một tựa game 2D được viết bằng ngôn ngữ C++ và sử dụng đồ hoạ SDL2 . Bạn sẽ được hoá thân vào một hiệp sĩ để thực hiện các thử thách bằng cách tiêu diệt quái và né các bẫy được tạo ra để hoàn thành thử thách cho chính mình.
 ## Cách cài đặt game 
 - Bước 1 : Clone hoặc tải file zip về [tại đây](https://github.com/chien04/Project/archive/refs/heads/master.zip)
-- Bước 2 : Tải codeblock hoặc app viết code
 - Bước 2 : Giải nén file zip và click vào file "game_test.exe" để chạy chương trình và chơi
 
 ## Gameplay
