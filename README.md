@@ -66,6 +66,7 @@ LEGACY FANTASY là một tựa game 2D được viết bằng ngôn ngữ C++ v�
 - Các kiểu dữ liệu cơ bản : int, set, vector,...
 - Cách thuật toán : đánh dấu, ramdom, sử lý va chạm, tấn công kẻ thù khi vào phạm vi,... 
 - modul hoá code, clean code.
+- Sử dụng tối đa thư viện đồ hoạ SDL2 : SDL.h, SDL_image.h, SDL_mixel.h, SDL_ttf.h,..
 ## Bài học
 - Hiểu sâu hơn về chia file và class 
 - Phân chia thời gian hiệu quả hơn trong một project
