@@ -156,7 +156,7 @@ void boss::move(tile tiles[], player mPlayer)
             isAttacking = false;
             isIdle = false;
             isRunning = false;
-            hp -= 4;
+            hp -= 2;
         }
     }
     if(checkCollision(boxBoss, mPlayer.getBox()))
@@ -168,7 +168,7 @@ void boss::move(tile tiles[], player mPlayer)
             isAttacking = false;
             isIdle = false;
             isRunning = false;
-            hp --;
+            hp--;
         }
     }
     if(hp <= 0)

@@ -127,6 +127,16 @@ bool common::checkLoadFile(){
         std::cout << "unable load guide texture\n";
         return false;
     }
+    mTexture[EFFECT_TEXTURE] = mWindow.loadFromFile("image//effect.png");
+    if(mTexture[EFFECT_TEXTURE] == NULL){
+        std::cout << "unable load effect texture\n";
+        return false;
+    }
+    mTexture[EFFECT_TEXTUREEXP] = mWindow.loadFromFile("image//effectexp.png");
+    if(mTexture[EFFECT_TEXTUREEXP] == NULL){
+        std::cout << "unable load effect exp texture\n";
+        return false;
+    }
 
     return true;
 }
@@ -222,6 +232,22 @@ bool common::checkLoadSound(){
         std::cout << "load sound player healing sound is fail";
         return false;
     }
+    gameSound[USE_ITEMSOUND] = Mix_LoadWAV("sound//useitem.wav");
+    if(gameSound[USE_ITEMSOUND] == NULL){
+        std::cout << "load sound player healing sound is fail";
+        return false;
+    }
+        gameSound[USE_ITEMSOUND] = Mix_LoadWAV("sound//useitem.wav");
+    if(gameSound[USE_ITEMSOUND] == NULL){
+        std::cout << "load sound item healing sound is fail";
+        return false;
+    }
+    gameSound[ATTACK_CHESTSOUND] = Mix_LoadWAV("sound//attackchest.wav");
+    if(gameSound[ATTACK_CHESTSOUND] == NULL){
+        std::cout << "load sound player attack chest sound is fail";
+        return false;
+    }
+
     gameMusic[MUSIC_HOME] = Mix_LoadMUS("music//musichome.wav");
     if(gameMusic[MUSIC_HOME] == NULL){
         std::cout << "load music home is fail";
@@ -419,12 +445,18 @@ bool common::checkLoadFont(){
         std::cout << "font is fail";
         return false;
     }
+    fontArial = TTF_OpenFont("font//Arialn.ttf", 70);
+    if(fontArial == NULL){
+        std::cout << "font is fail";
+        return false;
+    }
     return true;
 }
 void common::renderScore(){
     SDL_Color textColor = {0, 255, 255, 0};
+    SDL_Color textColor1 = {0, 0, 0, 255};
     scoreText.str("");
-    scoreText << "MyScore: " << score;
+    scoreText << "Score: " << score;
     iTemHp.str("");
     iTemHp << mPlayer.getHealingFull();
     iTemExp.str("");
@@ -433,6 +465,10 @@ void common::renderScore(){
     mWindow.LoadFromRenderText(mFont, "HightScore 4000", textColor, 300, 10);
     mWindow.LoadFromRenderText(mFont, iTemHp.str().c_str(), textColor, 75, 155);
     mWindow.LoadFromRenderText(mFont, iTemExp.str().c_str(), textColor, 195, 155);
+    if(mBoss.getDeath())
+        mWindow.LoadFromRenderText(fontArial, scoreText.str().c_str(), textColor1, 500, 300);
+    if(mPlayer.getIsDeath())
+        mWindow.LoadFromRenderText(fontArial, scoreText.str().c_str(), textColor1, 500, 250);
 }
 
 
@@ -458,7 +494,7 @@ void common::render(){
         }
 
         mMap.renderMap(mPlayer.getVelX(), mPlayer.getFlip(), mWindow, camera, mTexture, mtile, mTilesClip);
-        mPlayer.move(mtile);
+        mPlayer.move(mtile, gameSound);
         if(!mBoss.getDeath()){
         for(int i = 0; i < mMonster.size(); i++){
     //        mMonster[i].setPosX()
@@ -527,8 +563,12 @@ void common::render(){
         if(mPlayer.getPause()){
             mPause.render(mWindow, mTexture);
         }
-        if(mBoss.getDeath())
+        if(mBoss.getDeath()){
+            if(dd[1000] == 0)
+                score += 300;
             mWon.render(mWindow, mTexture);
+            dd[1000] = 1;
+        }
 
     }
     if(is_play){

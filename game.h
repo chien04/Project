@@ -51,6 +51,7 @@ private:
     bool tmp2;
     int score;
     TTF_Font *mFont;
+    TTF_Font *fontArial;
     std::stringstream scoreText;
     std::stringstream iTemHp;
     std::stringstream iTemExp;

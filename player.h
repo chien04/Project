@@ -15,7 +15,7 @@ public:
     bool checkCollision(SDL_Rect a, SDL_Rect b);
     bool checkCollisionTrap(SDL_Rect a, SDL_Rect b);
     bool touchesWall( SDL_Rect  boxPlayer, tile tiles[] );
-    void move(tile tiles[]);
+    void move(tile tiles[], Mix_Chunk *gameSound[]);
 
     void render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture[], Mix_Chunk *gameSound[]);
     SDL_Rect getBox();
@@ -66,6 +66,7 @@ private:
     SDL_Rect mplayerAttackSkill[PLAYER_ATTACK];
     SDL_Rect mAttackSkill[ATTACK_SKILL];
     SDL_Rect boxChestClip[TOTAL_ITEM];
+    SDL_Rect effectHpClip[TOTAL_EFFECTHP];
     std::vector<SDL_Rect> boxChestSliver;
     std::vector<SDL_Rect> boxChestGold;
 
@@ -74,8 +75,12 @@ private:
     SDL_Rect boxCam;
     int hp;
     int healing_full;
+    bool checkUseItemHP;
+    int frame_itemhp;
     int exp;
     int exp_full;
+    bool checkUseItemEXP;
+    int frame_itemexp;
     bool attackPlayer;
     bool attackSkill;
     bool isShot;

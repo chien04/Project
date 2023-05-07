@@ -7,7 +7,7 @@
 player::player()
 {
     cnt_jump = 0;
-    boxPlayer.x = 60;
+    boxPlayer.x = 50;
     boxPlayer.y = 0;
     boxPlayer.w = PLAYER_WIDTH;
     boxPlayer.h = PLAYER_HEIGHT;
@@ -31,9 +31,13 @@ player::player()
     createPlayerClip();
 //    createEffectTexture();
     hp = 5;
-    healing_full = 0;
-    exp_full = 0;
+    healing_full = 2;
+    frame_itemhp = 0;
+    checkUseItemHP = false;
+    exp_full = 2;
     exp = 6;
+    frame_itemexp = 0;
+    checkUseItemEXP = false;
     attackPlayer = false;
     attackSkill = false;
     isShot = false;
@@ -44,7 +48,7 @@ player::player()
     isPause = false;
     boxPause = {SCREEN_WIDTH - 120, 20 , 100, 100};
     boxPauseClip = {496, 976, 208, 208};
-    SDL_Rect rect0{5088, 1548, 48, 48};
+    SDL_Rect rect0{5088, 1584, 48, 48};
     SDL_Rect rect1{8160, 1680, 48, 48};
     SDL_Rect rect2{12672, 1776, 48, 48};
     boxChestSliver.push_back(rect0);
@@ -124,6 +128,11 @@ void player::createPlayerClip()
         boxChestClip[i] = {272, sum, 48, 48};
         sum += 48;
     }
+    sum = 0;
+    for(int i = 0; i < TOTAL_EFFECTHP; i++){
+        effectHpClip[i] = {sum, 0, 224, 224};
+        sum += 224;
+    }
 }
 
 void player::handle(SDL_Event& e, Mix_Chunk *gameSound[])
@@ -154,12 +163,14 @@ void player::handle(SDL_Event& e, Mix_Chunk *gameSound[])
             if(healing_full > 0){
                 hp = 5;
                 healing_full--;
+                checkUseItemHP = true;
             }
             break;
         case SDLK_r:
             if(exp_full > 0){
                 exp = 6;
                 exp_full--;
+                checkUseItemEXP = true;
             }
             break;
         case SDLK_a:
@@ -289,7 +300,7 @@ bool player::touchesWall( SDL_Rect boxPlayer, tile tiles[] )
     return false;
 }
 
-void player::move(tile tiles[])
+void player::move(tile tiles[], Mix_Chunk *gameSound[])
 {
     if(isDeath)
         return;
@@ -310,6 +321,7 @@ void player::move(tile tiles[])
             if(getIsttacking()){
                 healing_full++;
                 boxChestGold.erase(boxChestGold.begin() + i);
+                Mix_PlayChannel(-1, gameSound[ATTACK_CHESTSOUND], 0);
             }
         }
     }
@@ -318,6 +330,7 @@ void player::move(tile tiles[])
             if(getIsttacking()){
                 exp_full++;
                 boxChestSliver.erase(boxChestSliver.begin() + i);
+                Mix_PlayChannel(-1, gameSound[ATTACK_CHESTSOUND], 0);
             }
         }
     }
@@ -596,6 +609,30 @@ void player::render(createWindow mWindow, SDL_Rect camera, SDL_Texture* mTexture
                     frame_takehit = 0;
                     isTakeHit = false;
                 }
+        }
+        // render effect item hp
+        if(checkUseItemHP){
+            mWindow.render(mTexture[EFFECT_TEXTURE], boxPlayer.x - camera.x - 80, boxPlayer.y - camera.y - 80,
+                        &effectHpClip[frame_itemhp/5], 0, NULL, SDL_FLIP_NONE, 200, 200);
+            if(frame_itemhp == 0)
+                Mix_PlayChannel(-1, gameSound[USE_ITEMSOUND], 0);
+            frame_itemhp++;
+            if(frame_itemhp / 5 >= TOTAL_EFFECTHP ){
+                frame_itemhp = 0;
+                checkUseItemHP = false;
+            }
+        }
+        //render effect item exp
+            if(checkUseItemEXP){
+            mWindow.render(mTexture[EFFECT_TEXTUREEXP], boxPlayer.x - camera.x - 80, boxPlayer.y - camera.y - 80,
+                        &effectHpClip[frame_itemexp/5], 0, NULL, SDL_FLIP_NONE, 200, 200);
+            if(frame_itemexp == 0)
+                Mix_PlayChannel(-1, gameSound[USE_ITEMSOUND], 0);
+            frame_itemexp++;
+            if(frame_itemexp / 5 >= TOTAL_EFFECTHP ){
+                frame_itemexp = 0;
+                checkUseItemEXP = false;
+            }
         }
     }
     if(hp <= 0)
